@@ -9,16 +9,21 @@ var step = require('step');
 // 	$ echo 'ref: refs/heads/master' > ./pages.git/HEAD
 // 	- 확인: 폴더 정상적으로 생성되었는지 여부
 
+var _ifExistsSync = function(file, func) {
+	try{
+		fs.statSync(file);
+		return func(file);
+	}catch (e){
+		console.log(e);
+	}
+}
+
 suite('gitfs.init', function(){
 	setup(function(done) {
-        try {
-            fs.rmdirSync('pages.git/objects');
-            fs.rmdirSync('pages.git/refs');
-            fs.unlinkSync('pages.git/HEAD');
-            fs.rmdirSync('pages.git');
-        } catch (e) {
-            console.log(e.message);
-        }
+        _ifExistsSync('pages.git/objects', fs.rmdirSync);
+        _ifExistsSync('pages.git/refs', fs.rmdirSync);
+        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+        _ifExistsSync('pages.git', fs.rmdirSync);
         done();
 	});
 	test('필요한 디렉터리와 파일이 생성되어야 함', function(done){
@@ -50,9 +55,7 @@ suite('gitfs.init', function(){
 				    assert.fail('fail!');
 				}
 			}
-		);
-	// assert.ok( isDirectory('./pages.git/refs') );
-	// assert.equal( 'ref: refs/heads/master', readFile('./pages.git/HEAD') );		
+		);	
 	});
 
 })
