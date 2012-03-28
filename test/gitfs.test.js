@@ -3,6 +3,7 @@ var gitfs = require('../gitfs');
 var async = require('async');
 var fs = require('fs');
 var step = require('step');
+var crypto = require('crypto');
 
 //  $ mkdir -p ./pages.git/objects
 // 	$ mkdir -p ./pages.git/refs
@@ -79,5 +80,12 @@ suite('gitfs.commit', function() {
 				done();
 			}
 		);
+	});
+	test('이 blob object에 대한 hexdigit sha1 해시값 계산', function(done) {
+		var blob = gitfs.createBlob(content);
+		var sha1sum = crypto.createHash('sha1');
+		sha1sum.update(blob);
+		assert.equal(sha1sum.digest('hex'), gitfs.sha1sum(blob));
+		done();
 	});
 });
