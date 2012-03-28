@@ -23,4 +23,9 @@ var init = function(callback) {
 	});
 }
 
+var createBlob = function(content) {
+    return 'blob ' + content.length + '\0' + content;
+}
+
 exports.init = init;
+exports.createBlob = createBlob;

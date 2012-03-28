@@ -58,4 +58,26 @@ suite('gitfs.init', function(){
 		);	
 	});
 
-})
+});
+
+suite('gitfs.commit', function() {
+	var content;
+	setup(function(done) {
+		content = 'wiki-content';
+		done();
+	});
+	test('blob object 객체 생성', function(done) {
+		var blob;
+		step(
+			function when() {
+				blob=gitfs.createBlob(content);
+				this();
+			},
+			function then(err) {
+				if (err) throw err;
+				assert.equal('blob ' + content.length + '\0' + content, blob);
+				done();
+			}
+		);
+	});
+});
