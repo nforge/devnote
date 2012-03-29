@@ -190,24 +190,20 @@ suite('gitfs.createBlob', function() {
 suite('gitfs.createTree', function(){
 	test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
 		// given		
-		var sha1sum = crypto.createHash('sha1');
-		sha1sum.update('content1');
-		var digest1 = sha1sum.digest('bin');
-		sha1sum = crypto.createHash('sha1');
-		sha1sum.update('content2');
-		var digest2 = sha1sum.digest('bin');
+		var digest1 = crypto.createHash('sha1').update('content1').digest('bin')
+		var digest2 = crypto.createHash('sha1').update('content2').digest('bin');
+
 		var blobs = [{name: 'page1', sha1sum: digest1}, {name: 'page2', sha1sum: digest2}];
+
+//ToDo: expected 생성시 Logic을 제거하고 HardCoded DATA로 바꿔야 함
 		var content = '';
 		blobs.forEach(function(blob) {
 			content += '100644 ' + blob.name + '\0' + blob.sha1sum;				
 		});
 		var expectedTreeRaw = "tree " + content.length + '\0' + content;
 
-		// when
-		var actualTreeRaw = gitfs.createTreeRaw(blobs);
-
-		// then
-		assert.equal(actualTreeRaw, expectedTreeRaw);
+		// when & then
+		assert.equal(expectedTreeRaw, gitfs.createTreeRaw(blobs));
 		done();
 	});
 });
