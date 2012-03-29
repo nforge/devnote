@@ -5,6 +5,7 @@ var fs = require('fs');
 var step = require('step');
 var crypto = require('crypto');
 var path = require('path');
+var zlib = require('zlib');
 
 //  $ mkdir -p ./pages.git/objects
 // 	$ mkdir -p ./pages.git/refs
@@ -63,13 +64,23 @@ suite('gitfs.commit', function() {
 	var content;
 	setup(function(done) {
 		content = 'wiki-content';
-		done();
+		_ifExistsSync('pages.git/objects/f2/c0c508c21b3a49e9f8ffdc82277fb5264fed4f', fs.unlinkSync);
+		_ifExistsSync('pages.git/objects/f2', fs.rmdirSync);
+        _ifExistsSync('pages.git/objects', fs.rmdirSync);
+        _ifExistsSync('pages.git/refs', fs.rmdirSync);
+        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+        _ifExistsSync('pages.git', fs.rmdirSync);
+
+        gitfs.init(function (err) {
+        	if (err) throw err;
+        	done();
+        });
 	});
 	test('blob object 객체 생성', function(done) {
 		var blob;
 		step(
 			function when() {
-				blob=gitfs.createBlob(content);
+				blob=gitfs.createBlobRaw(content);
 				this();
 			},
 			function then(err) {
@@ -80,10 +91,98 @@ suite('gitfs.commit', function() {
 		);
 	});
 	test('이 blob object에 대한 hexdigit sha1 해시값 계산', function(done) {
-		var blob = gitfs.createBlob(content);
+		var blob = gitfs.createBlobRaw(content);
 		var sha1sum = crypto.createHash('sha1');
 		sha1sum.update(blob);
 		assert.equal(sha1sum.digest('hex'), gitfs.sha1sum(blob));
 		done();
 	});
+
+	test('blob object를 deflate 알고리즘으로 압축', function(done) {
+		var blob;
+		var expectedBlob;
+		var actualBlob;
+		step(
+			function given() {
+				blob = gitfs.createBlobRaw(content);
+				var next = this;
+				zlib.deflateRaw(new Buffer(blob, 'ascii'), function(err, result) {
+					if (err) throw err;
+					expectedBlob = result;
+					next();
+				});				
+			},
+			function when(err) {
+				var next = this;				
+				gitfs.deflate(new Buffer(blob, 'ascii'), function(err, result) {
+					if (err) throw err;
+					actualBlob = result;
+					next();
+				});
+			},
+			function then(err) {
+				assert.deepEqual(expectedBlob, actualBlob);
+				done();
+			}
+		);
+	});
+	test('pages.git/objects/<sha1 해시값 앞 2자리> 폴더 생성', function(done) {
+		var digest;
+		var bucketPath = 'pages.git/objects/f2';
+		step(
+			function given() {
+				var blob = gitfs.createBlobRaw(content);		
+				var sha1sum = crypto.createHash('sha1');
+				sha1sum.update(blob);
+				digest = sha1sum.digest('hex');			
+				this();
+			},
+			function when(err) {
+				if (err) throw err;
+				gitfs.createBlobBucket(digest, this);
+			},
+			function then(err) {
+				if (err) throw err;
+				assert.ok(path.existsSync(bucketPath));
+				done();
+			}
+		);
+	});
+	test('bucketPath 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장', function(done) {
+		var blobPath;
+		var expectedBlob;
+		step(
+			function given() {
+				var next = this;
+				var raw = gitfs.createBlobRaw(content);
+			    var digest = gitfs.sha1sum(raw);
+				blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
+				gitfs.deflate(raw, function(err, result) {
+					if (err) throw err;
+					expectedBlob = result;
+					next();
+				});
+
+			},
+			function when(err) {
+				if (err) throw err;
+				gitfs.createBlob(content, this);
+			},
+			function then(err) {
+				if (err) throw err;
+				var actualBlob = fs.readFileSync(blobPath);
+				assert.deepEqual(expectedBlob, actualBlob);
+				done();
+			}
+		);
+	});
+	teardown(function(done) {
+		_ifExistsSync('pages.git/objects/f2/c0c508c21b3a49e9f8ffdc82277fb5264fed4f', fs.unlinkSync);
+		_ifExistsSync('pages.git/objects/f2', fs.rmdirSync);
+        _ifExistsSync('pages.git/objects', fs.rmdirSync);
+        _ifExistsSync('pages.git/refs', fs.rmdirSync);
+        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+        _ifExistsSync('pages.git', fs.rmdirSync);
+        done();
+	});	
 });
