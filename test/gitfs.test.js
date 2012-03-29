@@ -4,6 +4,7 @@ var async = require('async');
 var fs = require('fs');
 var step = require('step');
 var crypto = require('crypto');
+var path = require('path');
 
 //  $ mkdir -p ./pages.git/objects
 // 	$ mkdir -p ./pages.git/refs
@@ -11,12 +12,9 @@ var crypto = require('crypto');
 // 	- 확인: 폴더 정상적으로 생성되었는지 여부
 
 var _ifExistsSync = function(file, func) {
-	try{
-		fs.statSync(file);
+    if (path.existsSync(file)) {
 		return func(file);
-	}catch (e){
-		console.log(e);
-	}
+    }
 }
 
 suite('gitfs.init', function(){
