@@ -1,0 +1,52 @@
+{
+  "name": "n4wiki",
+  "version": "0.0.1",
+  "author": "n4g",
+  "description": "nFORGE 4 wiki",
+  "bin": {
+    "n4wiki": "./bin/n4wiki"
+  },
+  "main": "./lib/n4wiki",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "wiki",
+    "git",
+    "nforge"
+  ],
+  "dependencies" : {
+    "async":  "*"
+  },
+  "devDependencies": {
+    "mocha" :  "1.0.x",
+    "async" :  ">= 0.1.x",
+    "step"  :  "*"
+  },
+  "noAnalyze": true,
+  "contributors": [ 
+    {
+      "name"  : "SW.CHAE",
+      "email" : "doortts@gmail.com"
+    } ,
+    {
+      "name"  : "Sangchel Hwang",
+      "email" : "k16wire@gmail.com"
+    } ,
+    {
+      "name"  : "EungJun Yi",
+      "email" : "semtlenori@gmail.com"
+    }
+  ],
+  "bundleDependencies": [],
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.6"
+  },
+  "scripts": {
+    "test"  : "mocha -u tdd -R spec",
+    "build" : "uglify mycode.js",
+    "start" : "node ./bin/n4wiki"
+  }
+}
