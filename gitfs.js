@@ -58,9 +58,18 @@ var createBlob = function(content, callback) {
     });
 }
 
+var createTreeRaw = function (blobs) {
+    var content = '';
+    blobs.forEach(function(blob) {
+        content += '100644 ' + blob.name + '\0' + blob.sha1sum;             
+    })
+    return "tree " + content.length + '\0' + content;
+}
+
 exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
 exports.deflate = deflate;
 exports.createBlobBucket = createBlobBucket;
 exports.createBlob = createBlob;
+exports.createTreeRaw = createTreeRaw;

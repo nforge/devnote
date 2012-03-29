@@ -60,7 +60,7 @@ suite('gitfs.init', function(){
 
 });
 
-suite('gitfs.commit', function() {
+suite('gitfs.createBlob', function() {
 	var content;
 	setup(function(done) {
 		content = 'wiki-content';
@@ -185,4 +185,29 @@ suite('gitfs.commit', function() {
         _ifExistsSync('pages.git', fs.rmdirSync);
         done();
 	});	
+});
+
+suite('gitfs.createTree', function(){
+	test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
+		// given		
+		var sha1sum = crypto.createHash('sha1');
+		sha1sum.update('content1');
+		var digest1 = sha1sum.digest('bin');
+		sha1sum = crypto.createHash('sha1');
+		sha1sum.update('content2');
+		var digest2 = sha1sum.digest('bin');
+		var blobs = [{name: 'page1', sha1sum: digest1}, {name: 'page2', sha1sum: digest2}];
+		var content = '';
+		blobs.forEach(function(blob) {
+			content += '100644 ' + blob.name + '\0' + blob.sha1sum;				
+		});
+		var expectedTreeRaw = "tree " + content.length + '\0' + content;
+
+		// when
+		var actualTreeRaw = gitfs.createTreeRaw(blobs);
+
+		// then
+		assert.equal(actualTreeRaw, expectedTreeRaw);
+		done();
+	});
 });
