@@ -12,12 +12,8 @@ var init = function(callback) {
             }
         } else {
             async.parallel([
-                function(cb) {
-                    async.map(['pages.git/objects', 'pages.git/refs'],fs.mkdir, cb);
-                },
-                function(cb) {
-                    fs.writeFile('pages.git/HEAD','ref: refs/heads/master', cb);	
-                }
+                async.apply(async.map, ['pages.git/objects', 'pages.git/refs'],fs.mkdir),
+                async.apply(fs.writeFile, 'pages.git/HEAD','ref: refs/heads/master'),
             ], callback
             );
         }
