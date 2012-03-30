@@ -18,7 +18,27 @@ var _ifExistsSync = function(file, func) {
     }
 }
 
+var _rm_rf = function(_path, func) {
+    if (!path.existsSync(_path)) {
+        return;
+    }
+
+    if (fs.statSync(_path).isDirectory()) {
+        var filenames = fs.readdirSync(_path);
+        filenames.forEach(function (filename) {
+            _rm_rf(path.join(_path, filename));
+        });
+        fs.rmdirSync(_path);
+    } else {
+        fs.unlinkSync(_path);
+    }
+}
+
 suite('gitfs.init', function(){
+	setup(function(done) {
+        _rm_rf('pages.git');
+        done();
+	});
 	test('필요한 디렉터리와 파일이 생성되어야 함', function(done){
 		step(
 			function when() {
@@ -52,25 +72,15 @@ suite('gitfs.init', function(){
 		);	
 	});
 	teardown(function(done) {
-		_ifExistsSync('pages.git/objects', fs.rmdirSync);
-        _ifExistsSync('pages.git/refs', fs.rmdirSync);
-        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-        _ifExistsSync('pages.git', fs.rmdirSync);
+        _rm_rf('pages.git');
         done();
 	});
-
 });
 
 suite('gitfs.createBlob', function() {
 	var content;
 	setup(function(done) {
 		content = 'wiki-content';
-		// _ifExistsSync('pages.git/objects/f2/c0c508c21b3a49e9f8ffdc82277fb5264fed4f', fs.unlinkSync);
-		// _ifExistsSync('pages.git/objects/f2', fs.rmdirSync);
-  //       _ifExistsSync('pages.git/objects', fs.rmdirSync);
-  //       _ifExistsSync('pages.git/refs', fs.rmdirSync);
-  //       _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-  //       _ifExistsSync('pages.git', fs.rmdirSync);
 
         gitfs.init(function (err) {
         	if (err) throw err;
@@ -150,12 +160,7 @@ suite('gitfs.createBlob', function() {
 		);
 	});
 	teardown(function(done) {
-		_ifExistsSync('pages.git/objects/f2/c0c508c21b3a49e9f8ffdc82277fb5264fed4f', fs.unlinkSync);
-		_ifExistsSync('pages.git/objects/f2', fs.rmdirSync);
-        _ifExistsSync('pages.git/objects', fs.rmdirSync);
-        _ifExistsSync('pages.git/refs', fs.rmdirSync);
-        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-        _ifExistsSync('pages.git', fs.rmdirSync);
+        _rm_rf('pages.git');
         done();
 	});	
 });
@@ -170,12 +175,7 @@ suite('gitfs.createTree', function(){
     var expectedTreeRaw;
 
     setup(function (done) {
-		_ifExistsSync('pages.git/objects/94/2de3d0f4ffde1161de9221bec2bc18ece58e47', fs.unlinkSync);
-		_ifExistsSync('pages.git/objects/94', fs.rmdirSync);
-        _ifExistsSync('pages.git/objects', fs.rmdirSync);
-        _ifExistsSync('pages.git/refs', fs.rmdirSync);
-        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-        _ifExistsSync('pages.git', fs.rmdirSync);
+        _rm_rf('pages.git');
 
 		var digest1 = crypto.createHash('sha1').update('content1').digest('binary')
 		var digest2 = crypto.createHash('sha1').update('content2').digest('binary');
@@ -216,12 +216,7 @@ suite('gitfs.createTree', function(){
     });
     
 	teardown(function(done) {
-		_ifExistsSync('pages.git/objects/94/2de3d0f4ffde1161de9221bec2bc18ece58e47', fs.unlinkSync);
-		_ifExistsSync('pages.git/objects/94', fs.rmdirSync);
-        _ifExistsSync('pages.git/objects', fs.rmdirSync);
-        _ifExistsSync('pages.git/refs', fs.rmdirSync);
-        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-        _ifExistsSync('pages.git', fs.rmdirSync);
+        _rm_rf('pages.git');
         done();
 	});	
 });
@@ -263,11 +258,7 @@ suite('gitfs.getParentId', function(){
 		);
 	});
 	teardown(function() {
-		_ifExistsSync('pages.git/refs/heads/master', fs.unlinkSync);		
-		_ifExistsSync('pages.git/refs/heads', fs.rmdirSync);
-        _ifExistsSync('pages.git/refs', fs.rmdirSync);
-        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-        _ifExistsSync('pages.git', fs.rmdirSync);
+        _rm_rf('pages.git');
 	});
 });
 
