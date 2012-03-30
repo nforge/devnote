@@ -67,8 +67,16 @@ var createTreeRaw = function (blobs) {
 }
 
 var getParentId = function (callback) {
-    if(path.existsSync('page.git/HEAD')) {
-        callback();
+    if(path.existsSync('pages.git/HEAD')) {
+        fs.readFile('pages.git/HEAD', function(err, data) {
+
+            if (err) throw err;
+            fs.readFile(path.join('pages.git/', data.toString().substr(5)), function(err, data) {
+                if (err) throw err;
+
+                callback(err, data);
+            });
+        });
     } else {
         callback(new Error('HEAD is not exitsts'));
     }

@@ -227,9 +227,10 @@ suite('gitfs.getParentId', function(){
 		fs.writeFileSync('pages.git/refs/heads/master','f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
         done();
 	});
-	test('HEAD 파일이 존재하는지 확인', function(done) {
+	test('HEAD 파일이 존재하지 않을 때 예외처리', function(done) {
 		step(
 			function when(){
+				_ifExistsSync('pages.git/HEAD', fs.unlinkSync);	
 				gitfs.getParentId(this);
 			},
 			function then(err) {
@@ -247,7 +248,7 @@ suite('gitfs.getParentId', function(){
 			function when() {
 				gitfs.getParentId(this);
 			},
-			function then(err,parentId) {
+			function then(err, parentId) {
 				assert.equal('f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f', parentId);
 				done();
 			}
