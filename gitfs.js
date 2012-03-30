@@ -46,22 +46,24 @@ var createBlob = function(content, callback) {
 }
 
 var createTreeRaw = function (blobs) {
-    var content = new Buffer(((7+5+1+20)*2)+5+2+1);
     var length = 0;
     var offset = 0;
+    var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
+    var MODE_LENGTH = '100644'.length;
     blobs.forEach(function(blob) {
-       length += 7+blob.name.length+1+20;
+       length += MODE_LENGTH + ' '.length + blob.name.length + '\0'.length + SHA1SUM_DIGEST_BINARY_LENGTH;
     })
     var header = "tree " + length + "\0";
+    console.log(header);
+    var content = new Buffer(length + header.length);
     content.write(header);
     offset += header.length;
     blobs.forEach(function(blob) {
         var entry = "100644 "+blob.name+"\0";
         content.write(entry, offset);
         offset += entry.length;
-        var buffer = new Buffer(blob.sha1sum,'binary');
-        buffer.copy(content, offset);
-        offset += buffer.length;
+        content.write(blob.sha1sum, offset, SHA1SUM_DIGEST_BINARY_LENGTH, 'binary');
+        offset += SHA1SUM_DIGEST_BINARY_LENGTH;
     })
 
     return content;
