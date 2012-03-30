@@ -99,34 +99,6 @@ suite('gitfs.createBlob', function() {
 		done();
 	});
 
-	test('blob object를 deflate 알고리즘으로 압축', function(done) {
-		var blob;
-		var expectedBlob;
-		var actualBlob;
-		step(
-			function given() {
-				blob = gitfs.createBlobRaw(content);
-				var next = this;
-				zlib.deflate(new Buffer(blob, 'ascii'), function(err, result) {
-					if (err) throw err;
-					expectedBlob = result;
-					next();
-				});				
-			},
-			function when(err) {
-				var next = this;				
-				gitfs.deflate(new Buffer(blob, 'ascii'), function(err, result) {
-					if (err) throw err;
-					actualBlob = result;
-					next();
-				});
-			},
-			function then(err) {
-				assert.deepEqual(expectedBlob, actualBlob);
-				done();
-			}
-		);
-	});
 	test('pages.git/objects/<sha1 해시값 앞 2자리> 폴더 생성', function(done) {
 		var digest;
 		var bucketPath = 'pages.git/objects/f2';
@@ -158,7 +130,7 @@ suite('gitfs.createBlob', function() {
 				var raw = gitfs.createBlobRaw(content);
 			    var digest = gitfs.sha1sum(raw);
 				blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
-				gitfs.deflate(raw, function(err, result) {
+				zlib.deflate(raw, function(err, result) {
 					if (err) throw err;
 					expectedBlob = result;
 					next();

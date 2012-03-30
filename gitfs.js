@@ -30,10 +30,6 @@ var sha1sum = function(data) {
     return crypto.createHash('sha1').update(data, 'binary').digest('hex');
 }
 
-var deflate = function(buffer, callback) {
-    zlib.deflate(buffer, callback);    
-}
-
 var createObjectBucket = function(digest, callback) {
     var bucketPath = 'pages.git/objects/' + digest.substr(0,2);
     fs.mkdir(bucketPath, function(err) {
@@ -71,7 +67,7 @@ var createTreeRaw = function (blobs) {
 var createObject = function(raw, callback) {
     var digest = this.sha1sum(raw);
     var self = this;
-    this.deflate(raw, function(err, result) {
+    zlib.deflate(raw, function(err, result) {
         var deflatedObject = result;
         self.createObjectBucket(digest, function(err, bucketPath) {
             if (err) throw err;
@@ -109,7 +105,6 @@ var getTree = function () {
 exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
-exports.deflate = deflate;
 exports.createObjectBucket = createObjectBucket;
 exports.createBlob = createBlob;
 exports.createTreeRaw = createTreeRaw;
