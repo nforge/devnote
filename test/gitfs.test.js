@@ -208,3 +208,31 @@ suite('gitfs.createTree', function(){
 		done();
 	});
 });
+
+	// 3. parent의 sha1 id 읽어오기
+	// 	* page.git/HEAD를 읽어서 
+	// HEAD가 가리키고 있는 참조를 읽어온다.
+
+	// 		예) ref: refs/heads/master
+
+	// 	* 참조가 가리키고 있는 commit id(=sha1)를 읽어온다.
+	// 		* 단, parent가 없어서 ref 참조 파일이 없을 경우에는 읽지 않는다.
+
+suite('gitfs.getParentId', function(){
+	test('HEAD 파일이 존재하는지 확인', function(done) {
+		step(
+			function when(){
+				gitfs.getParentId(this);
+			},
+			function then(err) {
+				if (err) {
+					assert.equal("HEAS is not exitsts", err.message);
+				} else {
+				    assert.fail('fail!');
+				}
+				done();
+			}
+		);	
+	});
+});
+

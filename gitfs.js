@@ -80,6 +80,10 @@ var createTreeRaw = function (blobs) {
     return content;
 }
 
+var getParentId = function () {
+
+}
+
 exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
@@ -87,3 +91,4 @@ exports.deflate = deflate;
 exports.createBlobBucket = createBlobBucket;
 exports.createBlob = createBlob;
 exports.createTreeRaw = createTreeRaw;
+exports.getParentId = getParentId;
