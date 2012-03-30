@@ -27,9 +27,7 @@ var createBlobRaw = function(content) {
 }
 
 var sha1sum = function(data) {
-    var sha1sum = crypto.createHash('sha1');
-    sha1sum.update(data);
-    return sha1sum.digest('hex');
+    return crypto.createHash('sha1').update(data, 'binary').digest('hex');
 }
 
 var deflate = function(buffer, callback) {
@@ -70,8 +68,7 @@ var createTreeRaw = function (blobs) {
 }
 
 var createObject = function(raw, callback) {
-    var digest = crypto.createHash('sha1').update(raw, 'binary').digest('hex');
-    // var digest = this.sha1sum(raw);
+    var digest = this.sha1sum(raw);
     var self = this;
     this.deflate(raw, function(err, result) {
         var deflatedBlob = result;
