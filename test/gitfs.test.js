@@ -310,3 +310,28 @@ suite('gitfs.getParentId', function(){
 // commit object를 deflate 알고리즘으로 압축
 // pages.git/objects/ 폴더 생성
 // 압축된 commit object를 pages.git/objects// 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장
+
+// Sangcheol-ui-MacBook-Pro:heads k16wire$ git cat-file -p c85d65e0f69ed38c1e1dd01d920f8022195c78ad
+// tree 635a6d85573c97658e6cd4511067f2e4f3fe48cb
+// parent 0cc71c0002496eccbe919c2e5f4c0616f9f2e611
+// author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
+// committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
+
+suite('gitfs.createCommit', function(){
+	test('commit object를 읽어오기', function(done) {
+		var expectedTreeId;
+		step(
+			function given(){
+			 	expectedTreeId = gitfs.getTree();
+			},
+			function when(){
+				
+			},
+			function then(err, expectedTreeId){
+				var actualTreeId = '1';
+				assert.equal(actualTreeId, expectedTreeId);
+				done();
+			}
+		);
+	});
+});

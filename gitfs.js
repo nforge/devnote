@@ -102,6 +102,11 @@ var getParentId = function (callback) {
     }
 }
 
+var getTree = function () {
+    var expectedTreeId = '1';
+    return expectedTreeId;
+}
+
 exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
@@ -112,3 +117,4 @@ exports.createTreeRaw = createTreeRaw;
 exports.getParentId = getParentId;
 exports.createTree = createTree;
 exports.createObject = createObject;
+exports.getTree = getTree;
