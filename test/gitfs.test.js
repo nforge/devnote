@@ -140,7 +140,7 @@ suite('gitfs.createBlob', function() {
 			},
 			function when(err) {
 				if (err) throw err;
-				gitfs.createBlobBucket(digest, this);
+				gitfs.createObjectBucket(digest, this);
 			},
 			function then(err) {
 				if (err) throw err;

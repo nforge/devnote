@@ -36,7 +36,7 @@ var deflate = function(buffer, callback) {
     zlib.deflate(buffer, callback);    
 }
 
-var createBlobBucket = function(digest, callback) {
+var createObjectBucket = function(digest, callback) {
     var bucketPath = 'pages.git/objects/' + digest.substr(0,2);
     fs.mkdir(bucketPath, function(err) {
         callback(err, bucketPath);
@@ -44,18 +44,7 @@ var createBlobBucket = function(digest, callback) {
 }
 
 var createBlob = function(content, callback) {
-    var raw = this.createBlobRaw(content);
-    var digest = this.sha1sum(raw);
-    var self = this;
-    this.deflate(raw, function(err, result) {
-        var deflatedBlob = result;
-        self.createBlobBucket(digest, function(err, bucketPath) {
-            if (err) throw err;
-            console.log(bucketPath);
-            console.log(path.existsSync(bucketPath));
-            fs.writeFile(path.join(bucketPath, digest.substr(2)), deflatedBlob, callback);
-        });
-    });
+    this.createObject(this.createBlobRaw(content), callback);
 }
 
 var createTreeRaw = function (blobs) {
@@ -80,19 +69,22 @@ var createTreeRaw = function (blobs) {
     return content;
 }
 
-var createTree = function (blobs, callback) {
-    var raw = this.createTreeRaw(blobs);
+var createObject = function(raw, callback) {
     var digest = crypto.createHash('sha1').update(raw, 'binary').digest('hex');
     // var digest = this.sha1sum(raw);
     var self = this;
     this.deflate(raw, function(err, result) {
         var deflatedBlob = result;
-        self.createBlobBucket(digest, function(err, bucketPath) {
+        self.createObjectBucket(digest, function(err, bucketPath) {
             if (err) throw err;
             var treePath = path.join(bucketPath, digest.substr(2));
             fs.writeFile(treePath, deflatedBlob, callback);
         });
     });
+}
+
+var createTree = function (blobs, callback) {
+    this.createObject(this.createTreeRaw(blobs), callback);
 }
 
 var getParentId = function (callback) {
@@ -115,8 +107,9 @@ exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
 exports.deflate = deflate;
-exports.createBlobBucket = createBlobBucket;
+exports.createObjectBucket = createObjectBucket;
 exports.createBlob = createBlob;
 exports.createTreeRaw = createTreeRaw;
 exports.getParentId = getParentId;
 exports.createTree = createTree;
+exports.createObject = createObject;
