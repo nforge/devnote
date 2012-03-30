@@ -19,13 +19,6 @@ var _ifExistsSync = function(file, func) {
 }
 
 suite('gitfs.init', function(){
-	setup(function(done) {
-        _ifExistsSync('pages.git/objects', fs.rmdirSync);
-        _ifExistsSync('pages.git/refs', fs.rmdirSync);
-        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-        _ifExistsSync('pages.git', fs.rmdirSync);
-        done();
-	});
 	test('필요한 디렉터리와 파일이 생성되어야 함', function(done){
 		step(
 			function when() {
@@ -40,7 +33,7 @@ suite('gitfs.init', function(){
 			}
 		)
 	});
-	test('이미 폴더가 존재할 경우 안내 메시지 출력', function(){
+	test('이미 폴더가 존재할 경우 안내 메시지 출력', function(done){
 		step(
 			function given(){
 				fs.mkdir('./pages.git', this);
@@ -51,11 +44,19 @@ suite('gitfs.init', function(){
 			function then(err) {
 				if (err) {
 					assert.equal("pages.git already exists", err.message);
+					done();
 				} else {
 				    assert.fail('fail!');
 				}
 			}
 		);	
+	});
+	teardown(function(done) {
+		_ifExistsSync('pages.git/objects', fs.rmdirSync);
+        _ifExistsSync('pages.git/refs', fs.rmdirSync);
+        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+        _ifExistsSync('pages.git', fs.rmdirSync);
+        done();
 	});
 
 });
@@ -64,12 +65,12 @@ suite('gitfs.createBlob', function() {
 	var content;
 	setup(function(done) {
 		content = 'wiki-content';
-		_ifExistsSync('pages.git/objects/f2/c0c508c21b3a49e9f8ffdc82277fb5264fed4f', fs.unlinkSync);
-		_ifExistsSync('pages.git/objects/f2', fs.rmdirSync);
-        _ifExistsSync('pages.git/objects', fs.rmdirSync);
-        _ifExistsSync('pages.git/refs', fs.rmdirSync);
-        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
-        _ifExistsSync('pages.git', fs.rmdirSync);
+		// _ifExistsSync('pages.git/objects/f2/c0c508c21b3a49e9f8ffdc82277fb5264fed4f', fs.unlinkSync);
+		// _ifExistsSync('pages.git/objects/f2', fs.rmdirSync);
+  //       _ifExistsSync('pages.git/objects', fs.rmdirSync);
+  //       _ifExistsSync('pages.git/refs', fs.rmdirSync);
+  //       _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+  //       _ifExistsSync('pages.git', fs.rmdirSync);
 
         gitfs.init(function (err) {
         	if (err) throw err;
@@ -208,16 +209,24 @@ suite('gitfs.createTree', function(){
 	});
 });
 
-	// 3. parent의 sha1 id 읽어오기
-	// 	* page.git/HEAD를 읽어서 
-	// HEAD가 가리키고 있는 참조를 읽어온다.
+// 	// 3. parent의 sha1 id 읽어오기
+// 	// 	* page.git/HEAD를 읽어서 
+// 	// HEAD가 가리키고 있는 참조를 읽어온다.
 
-	// 		예) ref: refs/heads/master
+// 	// 		예) ref: refs/heads/master
 
-	// 	* 참조가 가리키고 있는 commit id(=sha1)를 읽어온다.
-	// 		* 단, parent가 없어서 ref 참조 파일이 없을 경우에는 읽지 않는다.
+// 	// 	* 참조가 가리키고 있는 commit id(=sha1)를 읽어온다.
+// 	// 		* 단, parent가 없어서 ref 참조 파일이 없을 경우에는 읽지 않는다.
 
 suite('gitfs.getParentId', function(){
+	setup(function(done) {
+		fs.mkdirSync('pages.git');
+		fs.mkdirSync('pages.git/refs');
+		fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
+		fs.mkdirSync('pages.git/refs/heads');
+		fs.writeFileSync('pages.git/refs/heads/master','f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
+        done();
+	});
 	test('HEAD 파일이 존재하는지 확인', function(done) {
 		step(
 			function when(){
@@ -225,13 +234,31 @@ suite('gitfs.getParentId', function(){
 			},
 			function then(err) {
 				if (err) {
-					assert.equal("HEAS is not exitsts", err.message);
+					assert.equal('HEAD is not exitsts', err.message);
 				} else {
 				    assert.fail('fail!');
 				}
 				done();
 			}
 		);	
+	});
+	test('HEAD 파일 참조 읽어오기', function(done) {
+		step(
+			function when() {
+				gitfs.getParentId(this);
+			},
+			function then(err,parentId) {
+				assert.equal('f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f', parentId);
+				done();
+			}
+		);
+	});
+	teardown(function() {
+		_ifExistsSync('pages.git/refs/heads/master', fs.unlinkSync);		
+		_ifExistsSync('pages.git/refs/heads', fs.rmdirSync);
+        _ifExistsSync('pages.git/refs', fs.rmdirSync);
+        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+        _ifExistsSync('pages.git', fs.rmdirSync);
 	});
 });
 

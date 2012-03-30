@@ -66,8 +66,12 @@ var createTreeRaw = function (blobs) {
     return "tree " + content.length + '\0' + content;
 }
 
-var getParentId = function () {
-
+var getParentId = function (callback) {
+    if(path.existsSync('page.git/HEAD')) {
+        callback();
+    } else {
+        callback(new Error('HEAD is not exitsts'));
+    }
 }
 
 exports.init = init;
