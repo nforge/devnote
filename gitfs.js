@@ -33,7 +33,7 @@ var sha1sum = function(data) {
 }
 
 var deflate = function(buffer, callback) {
-    zlib.deflateRaw(buffer, callback);    
+    zlib.deflate(buffer, callback);    
 }
 
 var createBlobBucket = function(digest, callback) {

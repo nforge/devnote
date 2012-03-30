@@ -107,7 +107,7 @@ suite('gitfs.createBlob', function() {
 			function given() {
 				blob = gitfs.createBlobRaw(content);
 				var next = this;
-				zlib.deflateRaw(new Buffer(blob, 'ascii'), function(err, result) {
+				zlib.deflate(new Buffer(blob, 'ascii'), function(err, result) {
 					if (err) throw err;
 					expectedBlob = result;
 					next();
