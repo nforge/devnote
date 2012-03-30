@@ -191,20 +191,21 @@ suite('gitfs.createBlob', function() {
 suite('gitfs.createTree', function(){
 	test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
 		// given		
-		var digest1 = crypto.createHash('sha1').update('content1').digest('bin')
-		var digest2 = crypto.createHash('sha1').update('content2').digest('bin');
+		var digest1 = crypto.createHash('sha1').update('content1').digest('binary')
+		var digest2 = crypto.createHash('sha1').update('content2').digest('binary');
 
 		var blobs = [{name: 'page1', sha1sum: digest1}, {name: 'page2', sha1sum: digest2}];
 
-//ToDo: expected 생성시 Logic을 제거하고 HardCoded DATA로 바꿔야 함
-		var content = '';
-		blobs.forEach(function(blob) {
-			content += '100644 ' + blob.name + '\0' + blob.sha1sum;				
-		});
-		var expectedTreeRaw = "tree " + content.length + '\0' + content;
-
+		var expectedTreeRaw = new Buffer(((7+5+1+20)*2)+5+2+1);
+		expectedTreeRaw.write("tree 66\0");
+		expectedTreeRaw.write("100644 page1\0");
+		new Buffer(
+		[0x10, 0x5e, 0x7a, 0x84, 0x4a, 0xc8, 0x96, 0xf6, 0x8e, 0x6f, 0x7d, 0xc0, 0xa9, 0x38, 0x9d, 0x3e, 0x9b, 0xe9, 0x5a, 0xbc]).copy(expectedTreeRaw, 21);
+		expectedTreeRaw.write("100644 page2\0");
+		new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTreeRaw, 54);
+		
 		// when & then
-		assert.equal(expectedTreeRaw, gitfs.createTreeRaw(blobs));
+		assert.deepEqual(expectedTreeRaw, gitfs.createTreeRaw(blobs));
 		done();
 	});
 });
