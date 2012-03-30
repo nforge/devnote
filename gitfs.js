@@ -59,11 +59,25 @@ var createBlob = function(content, callback) {
 }
 
 var createTreeRaw = function (blobs) {
-    var content = '';
+    var content = new Buffer(((7+5+1+20)*2)+5+2+1);
+    var length = 0;
+    var offset = 0;
     blobs.forEach(function(blob) {
-        content += '100644 ' + blob.name + '\0' + blob.sha1sum;             
+       length += 7+blob.name.length+1+20;
     })
-    return "tree " + content.length + '\0' + content;
+    var header = "tree " + length + "\0";
+    content.write(header);
+    offset += header.length;
+    blobs.forEach(function(blob) {
+        var entry = "100644 "+blob.name+"\0";
+        content.write(entry);
+        offset += entry.length;
+        var buffer = new Buffer(blob.sha1sum,'binary');
+        buffer.copy(content, offset);
+        offset += buffer.length;
+    })
+
+    return content;
 }
 
 exports.init = init;
