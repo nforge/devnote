@@ -229,6 +229,7 @@ suite('gitfs.getParentId', function(){
 				} else {
 				    assert.fail('fail!');
 				}
+				done();
 			}
 		);	
 	});
