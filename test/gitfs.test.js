@@ -18,6 +18,23 @@ var _ifExistsSync = function(file, func) {
     }
 }
 
+var _mkdir_p = function(_path, func) {
+    var base = '';
+    var paths_to_create = [];
+    if (!path.normalize(_path).split('/').every(function (pathSegment) {
+        base = path.join(base, pathSegment);
+        if (!path.existsSync(base)) {
+            paths_to_create.push(base);
+            return true;
+        }
+        return fs.statSync(base).isDirectory();
+    })) {
+        return false;
+    }
+
+    paths_to_create.forEach(function (pathSegment) { fs.mkdirSync(pathSegment); });
+}
+
 var _rm_rf = function(_path, func) {
     if (!path.existsSync(_path)) {
         return;
@@ -131,7 +148,7 @@ suite('gitfs.createBlob', function() {
 			}
 		);
 	});
-	test('bucketPath 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장', function(done) {
+	test('bucketPath 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일을 deflate로 압축하여 저장', function(done) {
 		var blobPath;
 		var expectedBlob;
 		step(
@@ -223,10 +240,8 @@ suite('gitfs.createTree', function(){
 
 suite('gitfs.getParentId', function(){
 	setup(function(done) {
-		fs.mkdirSync('pages.git');
-		fs.mkdirSync('pages.git/refs');
+        _mkdir_p('pages.git/refs/heads');
 		fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
-		fs.mkdirSync('pages.git/refs/heads');
 		fs.writeFileSync('pages.git/refs/heads/master','f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
         done();
 	});
