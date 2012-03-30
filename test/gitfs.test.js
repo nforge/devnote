@@ -209,15 +209,6 @@ suite('gitfs.createTree', function(){
 	});
 });
 
-// 	// 3. parent의 sha1 id 읽어오기
-// 	// 	* page.git/HEAD를 읽어서 
-// 	// HEAD가 가리키고 있는 참조를 읽어온다.
-
-// 	// 		예) ref: refs/heads/master
-
-// 	// 	* 참조가 가리키고 있는 commit id(=sha1)를 읽어온다.
-// 	// 		* 단, parent가 없어서 ref 참조 파일이 없을 경우에는 읽지 않는다.
-
 suite('gitfs.getParentId', function(){
 	setup(function(done) {
 		fs.mkdirSync('pages.git');
@@ -262,4 +253,18 @@ suite('gitfs.getParentId', function(){
         _ifExistsSync('pages.git', fs.rmdirSync);
 	});
 });
+
+// commit object를 생성
+
+// 생성한 tree object 에 대한 참조를 갖는 commit object를 생성
+
+// "commit" <SP> content-length <NUL> tree <SP> sha-1 <NEWLINE> parent <SP> sha-1 <NEWLINE> author <SP> name <SP> "<" mail ">" <SP> unixtime <SP> timezone-offset <NEWLINE> committer <SP> name <SP> "<" mail ">" <SP> unixtime <SP> timezone-offset <NEWLINE> <NEWLINE> log-message
+
+// 단, parent가 없을 경우에는 parent 항목을 생성하지 않는다.
+// 이 commit object에 대한 hexdigit sha1 해시값 계산
+// commit object를 deflate 알고리즘으로 압축
+// pages.git/objects/ 폴더 생성
+// 압축된 commit object를 pages.git/objects// 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장
+
+
 
