@@ -73,11 +73,11 @@ var createObject = function(raw, callback) {
     var digest = this.sha1sum(raw);
     var self = this;
     this.deflate(raw, function(err, result) {
-        var deflatedBlob = result;
+        var deflatedObject = result;
         self.createObjectBucket(digest, function(err, bucketPath) {
             if (err) throw err;
             var treePath = path.join(bucketPath, digest.substr(2));
-            fs.writeFile(treePath, deflatedBlob, callback);
+            fs.writeFile(treePath, deflatedObject, callback);
         });
     });
 }
