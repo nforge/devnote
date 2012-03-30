@@ -70,7 +70,7 @@ var createTreeRaw = function (blobs) {
     offset += header.length;
     blobs.forEach(function(blob) {
         var entry = "100644 "+blob.name+"\0";
-        content.write(entry);
+        content.write(entry, offset);
         offset += entry.length;
         var buffer = new Buffer(blob.sha1sum,'binary');
         buffer.copy(content, offset);
@@ -78,6 +78,21 @@ var createTreeRaw = function (blobs) {
     })
 
     return content;
+}
+
+var createTree = function (blobs, callback) {
+    var raw = this.createTreeRaw(blobs);
+    var digest = crypto.createHash('sha1').update(raw, 'binary').digest('hex');
+    // var digest = this.sha1sum(raw);
+    var self = this;
+    this.deflate(raw, function(err, result) {
+        var deflatedBlob = result;
+        self.createBlobBucket(digest, function(err, bucketPath) {
+            if (err) throw err;
+            var treePath = path.join(bucketPath, digest.substr(2));
+            fs.writeFile(treePath, deflatedBlob, callback);
+        });
+    });
 }
 
 var getParentId = function (callback) {
@@ -104,3 +119,4 @@ exports.createBlobBucket = createBlobBucket;
 exports.createBlob = createBlob;
 exports.createTreeRaw = createTreeRaw;
 exports.getParentId = getParentId;
+exports.createTree = createTree;

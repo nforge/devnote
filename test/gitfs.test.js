@@ -188,26 +188,70 @@ suite('gitfs.createBlob', function() {
 	});	
 });
 
+// 		* 이 tree object에 대한 hexdigit sha1 해시값 계산
+// 		* tree object를 deflate 알고리즘으로 압축
+// 		* pages.git/objects/<sha1 해시값 앞 2자리> 폴더 생성
+// 		* 압축된 tree object를 pages.git/objects/<sha1 해시값 앞 2자리>/ 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장
+
 suite('gitfs.createTree', function(){
-	test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
-		// given		
+    var blobs;
+    var expectedTreeRaw;
+
+    setup(function (done) {
+		_ifExistsSync('pages.git/objects/94/2de3d0f4ffde1161de9221bec2bc18ece58e47', fs.unlinkSync);
+		_ifExistsSync('pages.git/objects/94', fs.rmdirSync);
+        _ifExistsSync('pages.git/objects', fs.rmdirSync);
+        _ifExistsSync('pages.git/refs', fs.rmdirSync);
+        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+        _ifExistsSync('pages.git', fs.rmdirSync);
+
 		var digest1 = crypto.createHash('sha1').update('content1').digest('binary')
 		var digest2 = crypto.createHash('sha1').update('content2').digest('binary');
 
-		var blobs = [{name: 'page1', sha1sum: digest1}, {name: 'page2', sha1sum: digest2}];
-
-		var expectedTreeRaw = new Buffer(((7+5+1+20)*2)+5+2+1);
+		expectedTreeRaw = new Buffer(((7+5+1+20)*2)+5+2+1);
 		expectedTreeRaw.write("tree 66\0");
-		expectedTreeRaw.write("100644 page1\0");
+		expectedTreeRaw.write("100644 page1\0", 5 + 2 + 1);
 		new Buffer(
 		[0x10, 0x5e, 0x7a, 0x84, 0x4a, 0xc8, 0x96, 0xf6, 0x8e, 0x6f, 0x7d, 0xc0, 0xa9, 0x38, 0x9d, 0x3e, 0x9b, 0xe9, 0x5a, 0xbc]).copy(expectedTreeRaw, 21);
-		expectedTreeRaw.write("100644 page2\0");
+		expectedTreeRaw.write("100644 page2\0", 21 + 20);
 		new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTreeRaw, 54);
-		
+
+		blobs = [{name: 'page1', sha1sum: digest1}, {name: 'page2', sha1sum: digest2}];
+
+        done();
+    });
+
+	test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
 		// when & then
 		assert.deepEqual(expectedTreeRaw, gitfs.createTreeRaw(blobs));
 		done();
 	});
+
+    test('생성된 tree object를 git object로 저장', function(done) {
+        gitfs.init(function (err) {
+            if (err) throw err;
+            var digest = crypto.createHash('sha1').update(expectedTreeRaw, 'binary').digest('hex');
+            var treePath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
+            gitfs.createTree(blobs, function (err) {
+                if (err) throw err;
+                zlib.inflate(fs.readFileSync(treePath), function(err, result) {
+                    if (err) throw err;
+                    assert.deepEqual(result, expectedTreeRaw);
+                    done();
+                });
+            });
+        });
+    });
+    
+	teardown(function(done) {
+		_ifExistsSync('pages.git/objects/94/2de3d0f4ffde1161de9221bec2bc18ece58e47', fs.unlinkSync);
+		_ifExistsSync('pages.git/objects/94', fs.rmdirSync);
+        _ifExistsSync('pages.git/objects', fs.rmdirSync);
+        _ifExistsSync('pages.git/refs', fs.rmdirSync);
+        _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+        _ifExistsSync('pages.git', fs.rmdirSync);
+        done();
+	});	
 });
 
 suite('gitfs.getParentId', function(){
@@ -266,6 +310,3 @@ suite('gitfs.getParentId', function(){
 // commit object를 deflate 알고리즘으로 압축
 // pages.git/objects/ 폴더 생성
 // 압축된 commit object를 pages.git/objects// 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장
-
-
-
