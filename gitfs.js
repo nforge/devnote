@@ -54,7 +54,6 @@ var createTreeRaw = function (blobs) {
        length += MODE_LENGTH + ' '.length + blob.name.length + '\0'.length + SHA1SUM_DIGEST_BINARY_LENGTH;
     })
     var header = "tree " + length + "\0";
-    console.log(header);
     var content = new Buffer(length + header.length);
     content.write(header);
     offset += header.length;
@@ -73,11 +72,11 @@ var createObject = function(raw, callback) {
     var digest = this.sha1sum(raw);
     var self = this;
     this.deflate(raw, function(err, result) {
-        var deflatedBlob = result;
+        var deflatedObject = result;
         self.createObjectBucket(digest, function(err, bucketPath) {
             if (err) throw err;
             var treePath = path.join(bucketPath, digest.substr(2));
-            fs.writeFile(treePath, deflatedBlob, callback);
+            fs.writeFile(treePath, deflatedObject, callback);
         });
     });
 }
