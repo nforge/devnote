@@ -38,10 +38,6 @@ var createObjectBucket = function(digest, callback) {
     });
 }
 
-var createBlob = function(content, callback) {
-    this.createObject(this.createBlobRaw(content), callback);
-}
-
 var _getTreeContentLength = function(tree) {
     var length = 0;
     var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
@@ -123,7 +119,6 @@ exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
 exports.createObjectBucket = createObjectBucket;
-exports.createBlob = createBlob;
 exports.createTreeRaw = createTreeRaw;
 exports.getParentId = getParentId;
 exports.createTree = createTree;

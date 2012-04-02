@@ -154,31 +154,42 @@ suite('gitfs.createBlob', function() {
             }
         );
     });
-    test('bucketPath 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일을 deflate로 압축하여 저장', function(done) {
+    teardown(function(done) {
+        _rm_rf('pages.git');
+        done();
+    });    
+});
+
+suite('gitfs.createObject', function() {
+    setup(function(done) {
+
+        gitfs.init(function (err) {
+            if (err) throw err;
+            done();
+        });
+    });
+    test('Git object를 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일을 deflate로 압축하여 저장', function(done) {
         var blobPath;
         var expectedBlob;
+        var content = 'wiki-content\n';
         step(
             function given() {
-                var next = this;
                 var raw = gitfs.createBlobRaw(content);
                 var digest = gitfs.sha1sum(raw);
                 blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
-                zlib.deflate(raw, function(err, result) {
-                    if (err) throw err;
-                    expectedBlob = result;
-                    next();
-                });
-
+                this();
             },
             function when(err) {
                 if (err) throw err;
-                gitfs.createBlob(content, this);
+                gitfs.createObject(gitfs.createBlobRaw(content), this);
             },
             function then(err) {
                 if (err) throw err;
                 var actualBlob = fs.readFileSync(blobPath);
-                assert.deepEqual(expectedBlob, actualBlob);
-                done();
+                zlib.inflate(fs.readFileSync(blobPath), function(err, result) {
+                    assert.deepEqual(result, new Buffer('blob 13\0wiki-content\n'));
+                    done();
+                });
             }
         );
     });
