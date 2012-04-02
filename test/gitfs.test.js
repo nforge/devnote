@@ -206,8 +206,8 @@ suite('gitfs.createTree', function(){
     setup(function (done) {
         _rm_rf('pages.git');
 
-        var digest1 = crypto.createHash('sha1').update('content1').digest('binary')
-        var digest2 = crypto.createHash('sha1').update('content2').digest('binary');
+        var digest1 = crypto.createHash('sha1').update('content1').digest('hex');
+        var digest2 = crypto.createHash('sha1').update('content2').digest('hex');
 
         expectedTree = new Buffer(((7+5+1+20)*2)+5+2+1);
         expectedTree.write("tree 66\0");

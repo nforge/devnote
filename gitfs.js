@@ -62,7 +62,7 @@ var createTree = function (tree) {
         var entry = "100644 "+blobName+"\0";
         content.write(entry, offset);
         offset += entry.length;
-        content.write(blobId, offset, SHA1SUM_DIGEST_BINARY_LENGTH, 'binary');
+        content.write(blobId, offset, SHA1SUM_DIGEST_BINARY_LENGTH, 'hex');
         offset += SHA1SUM_DIGEST_BINARY_LENGTH;
     });
 
