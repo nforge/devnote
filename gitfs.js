@@ -5,7 +5,7 @@ var zlib = require('zlib');
 var path = require('path');
 
 var init = function(callback) {
-	fs.mkdir('pages.git', function(err) {
+    fs.mkdir('pages.git', function(err) {
         if (err) {
             if (err.code == 'EEXIST') {
                 callback(new Error("pages.git already exists"));
@@ -19,7 +19,7 @@ var init = function(callback) {
             ], callback
             );
         }
-	});
+    });
 }
 
 var createBlobRaw = function(content) {
