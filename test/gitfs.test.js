@@ -189,7 +189,7 @@ suite('gitfs.createBlob', function() {
 });
 
 suite('gitfs.createTree', function(){
-    var blobs;
+    var tree;
     var expectedTreeRaw;
 
     setup(function (done) {
@@ -206,14 +206,14 @@ suite('gitfs.createTree', function(){
         expectedTreeRaw.write("100644 page2\0", 21 + 20);
         new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTreeRaw, 54);
 
-        blobs = [{name: 'page1', sha1sum: digest1}, {name: 'page2', sha1sum: digest2}];
+        tree = {'page1': digest1, 'page2': digest2};
 
         done();
     });
 
     test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
         // when & then
-        assert.deepEqual(expectedTreeRaw, gitfs.createTreeRaw(blobs));
+        assert.deepEqual(expectedTreeRaw, gitfs.createTreeRaw(tree));
         done();
     });
 
@@ -222,7 +222,7 @@ suite('gitfs.createTree', function(){
             if (err) throw err;
             var digest = crypto.createHash('sha1').update(expectedTreeRaw, 'binary').digest('hex');
             var treePath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs.createTree(blobs, function (err) {
+            gitfs.createTree(tree, function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(treePath), function(err, result) {
                     if (err) throw err;

@@ -3,6 +3,7 @@ var async = require('async');
 var crypto = require('crypto');
 var zlib = require('zlib');
 var path = require('path');
+var _ = require('underscore');
 
 var init = function(callback) {
     fs.mkdir('pages.git', function(err) {
@@ -41,23 +42,23 @@ var createBlob = function(content, callback) {
     this.createObject(this.createBlobRaw(content), callback);
 }
 
-var createTreeRaw = function (blobs) {
+var createTreeRaw = function (tree) {
     var length = 0;
     var offset = 0;
     var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
     var MODE_LENGTH = '100644'.length;
-    blobs.forEach(function(blob) {
-       length += MODE_LENGTH + ' '.length + blob.name.length + '\0'.length + SHA1SUM_DIGEST_BINARY_LENGTH;
+    _.each(tree, function(blobId, blobName) {
+       length += MODE_LENGTH + ' '.length + blobName.length + '\0'.length + SHA1SUM_DIGEST_BINARY_LENGTH;
     })
     var header = "tree " + length + "\0";
     var content = new Buffer(length + header.length);
     content.write(header);
     offset += header.length;
-    blobs.forEach(function(blob) {
-        var entry = "100644 "+blob.name+"\0";
+    _.each(tree, function(blobId, blobName) {
+        var entry = "100644 "+blobName+"\0";
         content.write(entry, offset);
         offset += entry.length;
-        content.write(blob.sha1sum, offset, SHA1SUM_DIGEST_BINARY_LENGTH, 'binary');
+        content.write(blobId, offset, SHA1SUM_DIGEST_BINARY_LENGTH, 'binary');
         offset += SHA1SUM_DIGEST_BINARY_LENGTH;
     })
 
@@ -77,8 +78,8 @@ var createObject = function(raw, callback) {
     });
 }
 
-var createTree = function (blobs, callback) {
-    this.createObject(this.createTreeRaw(blobs), callback);
+var createTree = function (tree, callback) {
+    this.createObject(this.createTreeRaw(tree), callback);
 }
 
 var getParentId = function (callback) {
