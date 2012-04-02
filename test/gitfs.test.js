@@ -321,24 +321,29 @@ suite('gitfs.replaceTreeContents', function(){
 			content: [
 			{
 				name: "Makefile",
-				id: "ad5daf27e84461244dd9cb4760678886d875d9a6"
+				id: "ad5daf27e84461244dd9cb4760678886d875d9a6",
+				type: "blob"
 			},
 			{
 				name: "README",
-				id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+				id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+				type: "blob"
 			},
 			{
 				name: "gitfs.js",
-				id: "55f228e3ce568fe0237c59a891963ad713e7d23c"
+				id: "55f228e3ce568fe0237c59a891963ad713e7d23c",
+				type: "blob"
 			},
 			{
 				name: "package.json",
-				id: "0c3929df90b4aefcc4ad3181033017ece2c4da88"
+				id: "0c3929df90b4aefcc4ad3181033017ece2c4da88",
+				type: "blob"
 			}]
 		}
 		var targetBlob = {
 			name: "README",
 			id: "ff9de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+			type: "blob"
 		}
 		var expectedTree ='', 
 			actualTree = '';
