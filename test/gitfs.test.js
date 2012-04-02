@@ -312,59 +312,7 @@ suite('gitfs.createCommit', function(){
             });
         });
     });
+    teardown(function() {
+        _rm_rf('pages.git');
+	});
 });
-
-suite('gitfs.replaceTreeContents', function(){
-	test('replace one blob object', function(){
-		var targetTree = {
-			id: "fb79cc39825ca4b50a6091848c324f221b40d92d",
-			content: [
-			{
-				name: "Makefile",
-				id: "ad5daf27e84461244dd9cb4760678886d875d9a6",
-				type: "blob"
-			},
-			{
-				name: "README",
-				id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-				type: "blob"
-			},
-			{
-				name: "gitfs.js",
-				id: "55f228e3ce568fe0237c59a891963ad713e7d23c",
-				type: "blob"
-			},
-			{
-				name: "package.json",
-				id: "0c3929df90b4aefcc4ad3181033017ece2c4da88",
-				type: "blob"
-			}]
-		}
-		var targetBlob = {
-			name: "README",
-			id: "ff9de29bb2d1d6434b8b29ae775ad8c2e48c5391",
-			type: "blob"
-		}
-		var expectedTree ='', 
-			actualTree = '';
-		step(
-			function given(){
-				expectedTree = _cloneJSON(targetTree);
-				expectedTree.content[1] = targetBlob;
-				this();
-			},
-			function when(){
-				actualTree = gitfs.replaceTreeContents(targetTree, targetBlob);
-				this();
-			},
-			function then(){
-				assert.equal(JSON.stringify(actualTree), JSON.stringify(expectedTree));
-				assert.notEqual(expectedTree, targetTree);
-			}			
-			)
-	})
-})
-
-_cloneJSON = function(target){
-	return JSON.parse( JSON.stringify(target) );
-}
