@@ -12,24 +12,19 @@ var zlib = require('zlib');
 // 	$ echo 'ref: refs/heads/master' > ./pages.git/HEAD
 // 	- 확인: 폴더 정상적으로 생성되었는지 여부
 
+
+var PATH_SEPERATOR = PATH_SEPERATOR || (process.platform == 'win32' ? '\\' : '/');
+
 var _ifExistsSync = function(file, func) {
     if (path.existsSync(file)) {
 		return func(file);
     }
 }
 
-path.separator = function () {
-	if (require('os').type().substr(0, 7) == 'Windows') {
-		return '\\';
-	} else {
-		return '/';
-	}
-}
-
 var _mkdir_p = function(_path, func) {
     var base = '';
     var paths_to_create = [];
-    if (!path.normalize(_path).split(path.separator()).every(function (pathSegment) {
+    if (!path.normalize(_path).split(PATH_SEPERATOR).every(function (pathSegment) {
         base = path.join(base, pathSegment);
         if (!path.existsSync(base)) {
             paths_to_create.push(base);
@@ -40,7 +35,10 @@ var _mkdir_p = function(_path, func) {
         return false;
     }
 
-    paths_to_create.forEach(function (pathSegment) { fs.mkdirSync(pathSegment); });
+
+    paths_to_create.forEach(function (pathSegment) { 
+    	fs.mkdirSync(pathSegment); 
+    });
 }
 
 var _rm_rf = function(_path, func) {
@@ -190,11 +188,6 @@ suite('gitfs.createBlob', function() {
 	});	
 });
 
-// 		* 이 tree object에 대한 hexdigit sha1 해시값 계산
-// 		* tree object를 deflate 알고리즘으로 압축
-// 		* pages.git/objects/<sha1 해시값 앞 2자리> 폴더 생성
-// 		* 압축된 tree object를 pages.git/objects/<sha1 해시값 앞 2자리>/ 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장
-
 suite('gitfs.createTree', function(){
     var blobs;
     var expectedTreeRaw;
@@ -246,7 +239,7 @@ suite('gitfs.createTree', function(){
 	});	
 });
 
-suite('gitfs.getParentId', function(){
+false && suite('gitfs.getParentId', function(){
 	setup(function(done) {
         _mkdir_p('pages.git/refs/heads');
 		fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
@@ -260,11 +253,7 @@ suite('gitfs.getParentId', function(){
 				gitfs.getParentId(this);
 			},
 			function then(err) {
-				if (err) {
-					assert.equal('HEAD is not exitsts', err.message);
-				} else {
-				    assert.fail('fail!');
-				}
+				assert.equal('HEAD is not exitsts', err.message);
 				done();
 			}
 		);	
@@ -324,3 +313,53 @@ suite('gitfs.createCommit', function(){
         });
     });
 });
+
+suite('gitfs.replaceTreeContents', function(){
+	test('replace one blob object', function(){
+		var targetTree = {
+			id: "fb79cc39825ca4b50a6091848c324f221b40d92d",
+			content: [
+			{
+				name: "Makefile",
+				id: "ad5daf27e84461244dd9cb4760678886d875d9a6"
+			},
+			{
+				name: "README",
+				id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+			},
+			{
+				name: "gitfs.js",
+				id: "55f228e3ce568fe0237c59a891963ad713e7d23c"
+			},
+			{
+				name: "package.json",
+				id: "0c3929df90b4aefcc4ad3181033017ece2c4da88"
+			}]
+		}
+		var targetBlob = {
+			name: "README",
+			id: "ff9de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+		}
+		var expectedTree ='', 
+			actualTree = '';
+		step(
+			function given(){
+				expectedTree = _cloneJSON(targetTree);
+				expectedTree.content[1] = targetBlob;
+				this();
+			},
+			function when(){
+				actualTree = gitfs.replaceTreeContents(targetTree, targetBlob);
+				this();
+			},
+			function then(){
+				assert.equal(JSON.stringify(actualTree), JSON.stringify(expectedTree));
+				assert.notEqual(expectedTree, targetTree);
+			}			
+			)
+	})
+})
+
+_cloneJSON = function(target){
+	return JSON.parse( JSON.stringify(target) );
+}

@@ -110,6 +110,23 @@ var createCommit = function(commit, callback) {
     this.createObject(this.createCommitRaw(commit), callback);
 }
 
+var replaceTreeContents = function(targetTree, targetBlob){
+    var clone = _cloneJSON(targetTree);
+
+    for(var idx in clone.content){
+        if( (clone.content[idx]).name === targetBlob.name ) {
+            clone.content[idx] = targetBlob;
+        }
+    };
+
+    return clone;
+}
+
+_cloneJSON = function(target){
+    return JSON.parse( JSON.stringify(target) );
+}
+
+exports.replaceTreeContents = replaceTreeContents;
 exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
