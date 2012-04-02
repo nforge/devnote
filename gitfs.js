@@ -69,7 +69,7 @@ var createTree = function (tree) {
     return content;
 }
 
-var createObject = function(raw, callback) {
+var storeObject = function(raw, callback) {
     var digest = this.sha1sum(raw);
     var self = this;
     zlib.deflate(raw, function(err, result) {
@@ -113,6 +113,6 @@ exports.sha1sum = sha1sum;
 exports.createObjectBucket = createObjectBucket;
 exports.createTree = createTree;
 exports.getParentId = getParentId;
-exports.createObject = createObject;
+exports.storeObject = storeObject;
 exports.getTree = getTree;
 exports.createCommit = createCommit;

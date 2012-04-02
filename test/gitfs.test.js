@@ -160,7 +160,7 @@ suite('gitfs.createBlob', function() {
     });    
 });
 
-suite('gitfs.createObject', function() {
+suite('gitfs.storeObject', function() {
     setup(function(done) {
 
         gitfs.init(function (err) {
@@ -181,7 +181,7 @@ suite('gitfs.createObject', function() {
             },
             function when(err) {
                 if (err) throw err;
-                gitfs.createObject(gitfs.createBlob(content), this);
+                gitfs.storeObject(gitfs.createBlob(content), this);
             },
             function then(err) {
                 if (err) throw err;
@@ -233,7 +233,7 @@ suite('gitfs.createTree', function(){
             if (err) throw err;
             var digest = crypto.createHash('sha1').update(expectedTree, 'binary').digest('hex');
             var treePath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs.createObject(gitfs.createTree(tree), function (err) {
+            gitfs.storeObject(gitfs.createTree(tree), function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(treePath), function(err, result) {
                     if (err) throw err;
@@ -313,7 +313,7 @@ suite('gitfs.createCommit', function(){
             if (err) throw err;
             var digest = crypto.createHash('sha1').update(expectedCommit, 'binary').digest('hex');
             var commitPath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs.createObject(gitfs.createCommit(commit), function (err) {
+            gitfs.storeObject(gitfs.createCommit(commit), function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(commitPath), function(err, result) {
                     if (err) throw err;
