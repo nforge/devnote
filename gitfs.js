@@ -42,14 +42,22 @@ var createBlob = function(content, callback) {
     this.createObject(this.createBlobRaw(content), callback);
 }
 
-var createTreeRaw = function (tree) {
+var _getTreeContentLength = function(tree) {
     var length = 0;
-    var offset = 0;
     var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
     var MODE_LENGTH = '100644'.length;
+
     _.each(tree, function(blobId, blobName) {
        length += MODE_LENGTH + ' '.length + blobName.length + '\0'.length + SHA1SUM_DIGEST_BINARY_LENGTH;
-    })
+    });
+
+    return length;
+}
+
+var createTreeRaw = function (tree) {
+    var offset = 0;
+    var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
+    var length = _getTreeContentLength(tree);
     var header = "tree " + length + "\0";
     var content = new Buffer(length + header.length);
     content.write(header);
@@ -60,7 +68,7 @@ var createTreeRaw = function (tree) {
         offset += entry.length;
         content.write(blobId, offset, SHA1SUM_DIGEST_BINARY_LENGTH, 'binary');
         offset += SHA1SUM_DIGEST_BINARY_LENGTH;
-    })
+    });
 
     return content;
 }
