@@ -239,7 +239,7 @@ suite('gitfs.createTree', function(){
     });    
 });
 
-false && suite('gitfs.getParentId', function(){
+suite('gitfs.getParentId', function(){
     setup(function(done) {
         _mkdir_p('pages.git/refs/heads');
         fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
