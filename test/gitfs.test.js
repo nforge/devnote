@@ -209,13 +209,26 @@ suite('gitfs.createTree', function(){
         var digest1 = crypto.createHash('sha1').update('content1').digest('hex');
         var digest2 = crypto.createHash('sha1').update('content2').digest('hex');
 
-        expectedTree = new Buffer(((7+5+1+20)*2)+5+2+1);
-        expectedTree.write("tree 66\0");
-        expectedTree.write("100644 page1\0", 5 + 2 + 1);
-        new Buffer(
-        [0x10, 0x5e, 0x7a, 0x84, 0x4a, 0xc8, 0x96, 0xf6, 0x8e, 0x6f, 0x7d, 0xc0, 0xa9, 0x38, 0x9d, 0x3e, 0x9b, 0xe9, 0x5a, 0xbc]).copy(expectedTree, 21);
-        expectedTree.write("100644 page2\0", 21 + 20);
-        new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTree, 54);
+        var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
+        var header = 'tree 66\0';
+        var length = 0;
+        var offset = 0;
+
+        length += header.length;
+        length += ('100644 page1\0'.length + SHA1SUM_DIGEST_BINARY_LENGTH);
+        length += ('100644 page2\0'.length + SHA1SUM_DIGEST_BINARY_LENGTH);
+
+        expectedTree = new Buffer(length);
+
+        expectedTree.write(header);
+        offset += header.length
+        expectedTree.write("100644 page1\0", offset);
+        offset += "100644 page1\0".length;
+        new Buffer([0x10, 0x5e, 0x7a, 0x84, 0x4a, 0xc8, 0x96, 0xf6, 0x8e, 0x6f, 0x7d, 0xc0, 0xa9, 0x38, 0x9d, 0x3e, 0x9b, 0xe9, 0x5a, 0xbc]).copy(expectedTree, offset);
+        offset += 20;
+        expectedTree.write("100644 page2\0", offset);
+        offset += "100644 page2\0".length;
+        new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTree, offset);
 
         tree = {'page1': digest1, 'page2': digest2};
 
