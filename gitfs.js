@@ -106,6 +106,10 @@ var createCommitRaw = function (commit) {
     return 'commit ' + raw.length + '\0' + raw;
 }
 
+var createCommit = function(commit, callback) {
+    this.createObject(this.createCommitRaw(commit), callback);
+}
+
 exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;
@@ -117,3 +121,4 @@ exports.createTree = createTree;
 exports.createObject = createObject;
 exports.getTree = getTree;
 exports.createCommitRaw = createCommitRaw;
+exports.createCommit = createCommit;

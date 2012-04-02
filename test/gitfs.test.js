@@ -285,31 +285,9 @@ suite('gitfs.getParentId', function(){
 	});
 });
 
-// commit object를 생성
-
-// 생성한 tree object 에 대한 참조를 갖는 commit object를 생성
-
-// "commit" <SP> content-length <NUL> tree <SP> sha-1 <NEWLINE> parent <SP> sha-1 <NEWLINE> author <SP> name <SP> "<" mail ">" <SP> unixtime <SP> timezone-offset <NEWLINE> committer <SP> name <SP> "<" mail ">" <SP> unixtime <SP> timezone-offset <NEWLINE> <NEWLINE> log-message
-
-// 단, parent가 없을 경우에는 parent 항목을 생성하지 않는다.
-// 이 commit object에 대한 hexdigit sha1 해시값 계산
-// commit object를 deflate 알고리즘으로 압축
-// pages.git/objects/ 폴더 생성
-// 압축된 commit object를 pages.git/objects// 에 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일로 저장
-
-// get Tree then sha-1
-// 
-
-
-// Sangcheol-ui-MacBook-Pro:heads k16wire$ git cat-file -p c85d65e0f69ed38c1e1dd01d920f8022195c78ad
-// tree 635a6d85573c97658e6cd4511067f2e4f3fe48cb
-// parent 0cc71c0002496eccbe919c2e5f4c0616f9f2e611
-// author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
-// committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
-
-
 suite('gitfs.createCommit', function(){
 	var commit;
+	var expectedCommitRaw;
 	setup(function() {
 		commit = {
 			tree: '635a6d85573c97658e6cd4511067f2e4f3fe48cb',
@@ -318,16 +296,31 @@ suite('gitfs.createCommit', function(){
 			committer: 'Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900',
 			logMessage: 'Remove duplication between gitfs.createTreeRaw() and its test.\n'
 		};
+
+		expectedCommitRaw = 'commit 279' + '\0';
+		expectedCommitRaw += 'tree 635a6d85573c97658e6cd4511067f2e4f3fe48cb\n';
+		expectedCommitRaw += 'parent 0cc71c0002496eccbe919c2e5f4c0616f9f2e611\n';
+		expectedCommitRaw += 'author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n';
+		expectedCommitRaw += 'committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n\n';
+		expectedCommitRaw += 'Remove duplication between gitfs.createTreeRaw() and its test.\n';
 	});
 	test('commit object 생성', function() {
-		var expectedCommit = 'commit 279' + '\0';
-		expectedCommit += 'tree 635a6d85573c97658e6cd4511067f2e4f3fe48cb\n';
-		expectedCommit += 'parent 0cc71c0002496eccbe919c2e5f4c0616f9f2e611\n';
-		expectedCommit += 'author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n';
-		expectedCommit += 'committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n\n';
-		expectedCommit += 'Remove duplication between gitfs.createTreeRaw() and its test.\n';
-
 		var actualCommit = gitfs.createCommitRaw(commit);				
-		assert.equal(actualCommit, expectedCommit);
+		assert.equal(actualCommit, expectedCommitRaw);
 	});
+	test('생성된 commit object를 압축해서 저장', function(done) {
+        gitfs.init(function (err) {
+            if (err) throw err;
+            var digest = crypto.createHash('sha1').update(expectedCommitRaw, 'binary').digest('hex');
+            var commitPath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
+            gitfs.createCommit(commit, function (err) {
+                if (err) throw err;
+                zlib.inflate(fs.readFileSync(commitPath), function(err, result) {
+                    if (err) throw err;
+                    assert.deepEqual(result, new Buffer(expectedCommitRaw));
+                    done();
+                });
+            });
+        });
+    });
 });
