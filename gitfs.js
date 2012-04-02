@@ -102,6 +102,11 @@ var getTree = function () {
     return expectedTreeId;
 }
 
+var replaceTreeContents = function(targetTree, targetBlob){
+    return targetTree;
+}
+
+exports.replaceTreeContents = replaceTreeContents;
 exports.init = init;
 exports.createBlobRaw = createBlobRaw;
 exports.sha1sum = sha1sum;

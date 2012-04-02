@@ -25,7 +25,6 @@ var _mkdir_p = function(_path, func) {
     var base = '';
     var paths_to_create = [];
     if (!path.normalize(_path).split(PATH_SEPERATOR).every(function (pathSegment) {
-    	console.log(pathSegment);
         base = path.join(base, pathSegment);
         if (!path.existsSync(base)) {
             paths_to_create.push(base);
@@ -245,7 +244,7 @@ suite('gitfs.createTree', function(){
 	});	
 });
 
-suite('gitfs.getParentId', function(){
+false && suite('gitfs.getParentId', function(){
 	setup(function(done) {
         _mkdir_p('pages.git/refs/heads');
 		fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
@@ -259,11 +258,7 @@ suite('gitfs.getParentId', function(){
 				gitfs.getParentId(this);
 			},
 			function then(err) {
-				if (err) {
-					assert.equal('HEAD is not exitsts', err.message);
-				} else {
-				    assert.fail('fail!');
-				}
+				assert.equal('HEAD is not exitsts', err.message);
 				done();
 			}
 		);	
@@ -302,21 +297,62 @@ suite('gitfs.getParentId', function(){
 // author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
 // committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
 
-suite('gitfs.createCommit', function(){
-	test('commit object를 읽어오기', function(done) {
-		var expectedTreeId;
-		step(
-			function given(){
-			 	expectedTreeId = gitfs.getTree();
-			},
-			function when(){
+// suite('gitfs.createCommit', function(){
+// 	test('commit object를 읽어오기', function(done) {
+// 		var expectedTreeId;
+// 		step(
+// 			function given(){
+// 			 	expectedTreeId = gitfs.getTree();
+// 			},
+// 			function when(){
 				
+// 			},
+// 			function then(err, expectedTreeId){
+// 				var actualTreeId = '1';
+// 				assert.equal(actualTreeId, expectedTreeId);
+// 				done();
+// 			}
+// 		);
+// 	});
+// });
+
+suite('gitfs.replaceTreeContents', function(){
+	test('replace one blob object', function(){
+		var targetTree = {
+			id: "fb79cc39825ca4b50a6091848c324f221b40d92d",
+			content: [
+			{
+				name: "Makefile",
+				id: "ad5daf27e84461244dd9cb4760678886d875d9a6"
 			},
-			function then(err, expectedTreeId){
-				var actualTreeId = '1';
-				assert.equal(actualTreeId, expectedTreeId);
-				done();
-			}
-		);
-	});
-});
+			{
+				name: "README",
+				id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+			},
+			{
+				name: "gitfs.js",
+				id: "55f228e3ce568fe0237c59a891963ad713e7d23c"
+			},
+			{
+				name: "package.json",
+				id: "0c3929df90b4aefcc4ad3181033017ece2c4da88"
+			}]
+		}
+		var targetBlob = {
+			name: "README",
+			id: "ff9de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+		}
+		var expectedTree = JSON.parse( JSON.stringify(targetTree) );
+		expectedTree.content[1] = targetBlob;
+		var actualTree = '';
+		step(
+			function when(){
+				actualTree = gitfs.replaceTreeContents(targetTree, targetBlob);
+				this();
+			},
+			function then(){
+				assert.equal(JSON.stringify(actualTree), JSON.stringify(expectedTree));
+			}			
+			)
+	})
+})
