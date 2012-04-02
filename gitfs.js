@@ -103,7 +103,19 @@ var getTree = function () {
 }
 
 var replaceTreeContents = function(targetTree, targetBlob){
-    return targetTree;
+    var clone = _cloneJSON(targetTree);
+
+    for(var idx in clone.content){
+        if( (clone.content[idx]).name === targetBlob.name ) {
+            clone.content[idx] = targetBlob;
+        }
+    };
+
+    return clone;
+}
+
+_cloneJSON = function(target){
+    return JSON.parse( JSON.stringify(target) );
 }
 
 exports.replaceTreeContents = replaceTreeContents;
