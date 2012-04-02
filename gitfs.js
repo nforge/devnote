@@ -93,8 +93,17 @@ var getParentId = function (callback) {
 }
 
 var getTree = function () {
-    var expectedTreeId = '1';
-    return expectedTreeId;
+    var sha1sum = '635a6d85573c97658e6cd4511067f2e4f3fe48cb';
+    return sha1sum;
+}
+
+var createCommitRaw = function (commit) {
+    var raw = 'tree ' + commit.tree +'\n';
+        raw += 'parent ' + commit.parent + '\n';
+        raw += 'author ' + commit.author + '\n';
+        raw += 'committer ' + commit.committer + '\n\n';
+        raw += commit.logMessage;
+    return 'commit ' + raw.length + '\0' + raw;
 }
 
 exports.init = init;
@@ -107,3 +116,4 @@ exports.getParentId = getParentId;
 exports.createTree = createTree;
 exports.createObject = createObject;
 exports.getTree = getTree;
+exports.createCommitRaw = createCommitRaw;
