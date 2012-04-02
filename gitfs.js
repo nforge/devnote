@@ -83,15 +83,10 @@ var createTree = function (blobs, callback) {
 
 var getParentId = function (callback) {
     if(path.existsSync('pages.git/HEAD')) {
-        fs.readFile('pages.git/HEAD', function(err, data) {
+        var data = fs.readFileSync('pages.git/HEAD');
+        var id = fs.readFileSync(path.join('pages.git/', data.toString().substr(5)));
 
-            if (err) throw err;
-            fs.readFile(path.join('pages.git/', data.toString().substr(5)), function(err, data) {
-                if (err) throw err;
-
-                callback(err, data);
-            });
-        });
+        callback(null, id);
     } else {
         callback(new Error('HEAD is not exitsts'));
     }
