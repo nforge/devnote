@@ -342,16 +342,21 @@ suite('gitfs.replaceTreeContents', function(){
 			name: "README",
 			id: "ff9de29bb2d1d6434b8b29ae775ad8c2e48c5391",
 		}
-		var expectedTree = _cloneJSON(targetTree);
-		expectedTree.content[1] = targetBlob;
-		var actualTree = '';
+		var expectedTree ='', 
+			actualTree = '';
 		step(
+			function given(){
+				expectedTree = _cloneJSON(targetTree);
+				expectedTree.content[1] = targetBlob;
+				this();
+			},
 			function when(){
 				actualTree = gitfs.replaceTreeContents(targetTree, targetBlob);
 				this();
 			},
 			function then(){
 				assert.equal(JSON.stringify(actualTree), JSON.stringify(expectedTree));
+				assert.notEqual(expectedTree, targetTree);
 			}			
 			)
 	})
