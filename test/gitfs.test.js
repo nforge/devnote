@@ -18,10 +18,18 @@ var _ifExistsSync = function(file, func) {
     }
 }
 
+path.separator = function () {
+	if (require('os').type().substr(0, 7) == 'Windows') {
+		return '\\';
+	} else {
+		return '/';
+	}
+}
+
 var _mkdir_p = function(_path, func) {
     var base = '';
     var paths_to_create = [];
-    if (!path.normalize(_path).split('/').every(function (pathSegment) {
+    if (!path.normalize(_path).split(path.separator()).every(function (pathSegment) {
         base = path.join(base, pathSegment);
         if (!path.existsSync(base)) {
             paths_to_create.push(base);
