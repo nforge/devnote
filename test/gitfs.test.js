@@ -114,7 +114,7 @@ suite('gitfs.createBlob', function() {
         var blob;
         step(
             function when() {
-                blob=gitfs.createBlobRaw(content);
+                blob=gitfs.createBlob(content);
                 this();
             },
             function then(err) {
@@ -125,7 +125,7 @@ suite('gitfs.createBlob', function() {
         );
     });
     test('이 blob object에 대한 hexdigit sha1 해시값 계산', function(done) {
-        var blob = gitfs.createBlobRaw(content);
+        var blob = gitfs.createBlob(content);
         var sha1sum = crypto.createHash('sha1');
         sha1sum.update(blob);
         assert.equal(sha1sum.digest('hex'), gitfs.sha1sum(blob));
@@ -137,7 +137,7 @@ suite('gitfs.createBlob', function() {
         var bucketPath = 'pages.git/objects/f2';
         step(
             function given() {
-                var blob = gitfs.createBlobRaw(content);        
+                var blob = gitfs.createBlob(content);        
                 var sha1sum = crypto.createHash('sha1');
                 sha1sum.update(blob);
                 digest = sha1sum.digest('hex');            
@@ -174,14 +174,14 @@ suite('gitfs.createObject', function() {
         var content = 'wiki-content\n';
         step(
             function given() {
-                var raw = gitfs.createBlobRaw(content);
+                var raw = gitfs.createBlob(content);
                 var digest = gitfs.sha1sum(raw);
                 blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
                 this();
             },
             function when(err) {
                 if (err) throw err;
-                gitfs.createObject(gitfs.createBlobRaw(content), this);
+                gitfs.createObject(gitfs.createBlob(content), this);
             },
             function then(err) {
                 if (err) throw err;
@@ -201,7 +201,7 @@ suite('gitfs.createObject', function() {
 
 suite('gitfs.createTree', function(){
     var tree;
-    var expectedTreeRaw;
+    var expectedTree;
 
     setup(function (done) {
         _rm_rf('pages.git');
@@ -209,13 +209,13 @@ suite('gitfs.createTree', function(){
         var digest1 = crypto.createHash('sha1').update('content1').digest('binary')
         var digest2 = crypto.createHash('sha1').update('content2').digest('binary');
 
-        expectedTreeRaw = new Buffer(((7+5+1+20)*2)+5+2+1);
-        expectedTreeRaw.write("tree 66\0");
-        expectedTreeRaw.write("100644 page1\0", 5 + 2 + 1);
+        expectedTree = new Buffer(((7+5+1+20)*2)+5+2+1);
+        expectedTree.write("tree 66\0");
+        expectedTree.write("100644 page1\0", 5 + 2 + 1);
         new Buffer(
-        [0x10, 0x5e, 0x7a, 0x84, 0x4a, 0xc8, 0x96, 0xf6, 0x8e, 0x6f, 0x7d, 0xc0, 0xa9, 0x38, 0x9d, 0x3e, 0x9b, 0xe9, 0x5a, 0xbc]).copy(expectedTreeRaw, 21);
-        expectedTreeRaw.write("100644 page2\0", 21 + 20);
-        new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTreeRaw, 54);
+        [0x10, 0x5e, 0x7a, 0x84, 0x4a, 0xc8, 0x96, 0xf6, 0x8e, 0x6f, 0x7d, 0xc0, 0xa9, 0x38, 0x9d, 0x3e, 0x9b, 0xe9, 0x5a, 0xbc]).copy(expectedTree, 21);
+        expectedTree.write("100644 page2\0", 21 + 20);
+        new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTree, 54);
 
         tree = {'page1': digest1, 'page2': digest2};
 
@@ -224,20 +224,20 @@ suite('gitfs.createTree', function(){
 
     test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
         // when & then
-        assert.deepEqual(expectedTreeRaw, gitfs.createTreeRaw(tree));
+        assert.deepEqual(expectedTree, gitfs.createTree(tree));
         done();
     });
 
     test('생성된 tree object를 git object로 저장', function(done) {
         gitfs.init(function (err) {
             if (err) throw err;
-            var digest = crypto.createHash('sha1').update(expectedTreeRaw, 'binary').digest('hex');
+            var digest = crypto.createHash('sha1').update(expectedTree, 'binary').digest('hex');
             var treePath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs.createTree(tree, function (err) {
+            gitfs.createObject(gitfs.createTree(tree), function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(treePath), function(err, result) {
                     if (err) throw err;
-                    assert.deepEqual(result, expectedTreeRaw);
+                    assert.deepEqual(result, expectedTree);
                     done();
                 });
             });
@@ -287,7 +287,7 @@ suite('gitfs.getParentId', function(){
 
 suite('gitfs.createCommit', function(){
     var commit;
-    var expectedCommitRaw;
+    var expectedCommit;
     setup(function() {
         commit = {
             tree: '635a6d85573c97658e6cd4511067f2e4f3fe48cb',
@@ -297,27 +297,27 @@ suite('gitfs.createCommit', function(){
             logMessage: 'Remove duplication between gitfs.createTreeRaw() and its test.\n'
         };
 
-        expectedCommitRaw = 'commit 279' + '\0';
-        expectedCommitRaw += 'tree 635a6d85573c97658e6cd4511067f2e4f3fe48cb\n';
-        expectedCommitRaw += 'parent 0cc71c0002496eccbe919c2e5f4c0616f9f2e611\n';
-        expectedCommitRaw += 'author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n';
-        expectedCommitRaw += 'committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n\n';
-        expectedCommitRaw += 'Remove duplication between gitfs.createTreeRaw() and its test.\n';
+        expectedCommit = 'commit 279' + '\0';
+        expectedCommit += 'tree 635a6d85573c97658e6cd4511067f2e4f3fe48cb\n';
+        expectedCommit += 'parent 0cc71c0002496eccbe919c2e5f4c0616f9f2e611\n';
+        expectedCommit += 'author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n';
+        expectedCommit += 'committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900\n\n';
+        expectedCommit += 'Remove duplication between gitfs.createTreeRaw() and its test.\n';
     });
     test('commit object 생성', function() {
-        var actualCommit = gitfs.createCommitRaw(commit);                
-        assert.equal(actualCommit, expectedCommitRaw);
+        var actualCommit = gitfs.createCommit(commit);                
+        assert.equal(actualCommit, expectedCommit);
     });
     test('생성된 commit object를 압축해서 저장', function(done) {
         gitfs.init(function (err) {
             if (err) throw err;
-            var digest = crypto.createHash('sha1').update(expectedCommitRaw, 'binary').digest('hex');
+            var digest = crypto.createHash('sha1').update(expectedCommit, 'binary').digest('hex');
             var commitPath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs.createCommit(commit, function (err) {
+            gitfs.createObject(gitfs.createCommit(commit), function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(commitPath), function(err, result) {
                     if (err) throw err;
-                    assert.deepEqual(result, new Buffer(expectedCommitRaw));
+                    assert.deepEqual(result, new Buffer(expectedCommit));
                     done();
                 });
             });
@@ -327,3 +327,22 @@ suite('gitfs.createCommit', function(){
         _rm_rf('pages.git');
 	});
 });
+
+// 5. .git/refs/heads/master 를 생성한 commit object 의 id 로 갱신
+
+/*
+suite('gitfs.commit', function(){
+    var commit;
+    setup(function(){
+        commit = {
+            files: {'readme': 'first page'},
+            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            message: 'initial commit'
+            };
+    });
+    test('first page라는 내용을 갖는 readme 파일을 commit 한다.', function(){
+        gitfs.commit(commit);
+    });
+});
+*/

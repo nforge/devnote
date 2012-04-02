@@ -23,7 +23,7 @@ var init = function(callback) {
     });
 }
 
-var createBlobRaw = function(content) {
+var createBlob = function(content) {
     return 'blob ' + content.length + '\0' + content;
 }
 
@@ -50,7 +50,7 @@ var _getTreeContentLength = function(tree) {
     return length;
 }
 
-var createTreeRaw = function (tree) {
+var createTree = function (tree) {
     var offset = 0;
     var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
     var length = _getTreeContentLength(tree);
@@ -76,14 +76,10 @@ var createObject = function(raw, callback) {
         var deflatedObject = result;
         self.createObjectBucket(digest, function(err, bucketPath) {
             if (err) throw err;
-            var treePath = path.join(bucketPath, digest.substr(2));
-            fs.writeFile(treePath, deflatedObject, callback);
+            var objectPath = path.join(bucketPath, digest.substr(2));
+            fs.writeFile(objectPath, deflatedObject, callback);
         });
     });
-}
-
-var createTree = function (tree, callback) {
-    this.createObject(this.createTreeRaw(tree), callback);
 }
 
 var getParentId = function (callback) {
@@ -102,7 +98,7 @@ var getTree = function () {
     return sha1sum;
 }
 
-var createCommitRaw = function (commit) {
+var createCommit = function (commit) {
     var raw = 'tree ' + commit.tree +'\n';
         raw += 'parent ' + commit.parent + '\n';
         raw += 'author ' + commit.author + '\n';
@@ -111,18 +107,12 @@ var createCommitRaw = function (commit) {
     return 'commit ' + raw.length + '\0' + raw;
 }
 
-var createCommit = function(commit, callback) {
-    this.createObject(this.createCommitRaw(commit), callback);
-}
-
 exports.init = init;
-exports.createBlobRaw = createBlobRaw;
+exports.createBlob = createBlob;
 exports.sha1sum = sha1sum;
 exports.createObjectBucket = createObjectBucket;
-exports.createTreeRaw = createTreeRaw;
-exports.getParentId = getParentId;
 exports.createTree = createTree;
+exports.getParentId = getParentId;
 exports.createObject = createObject;
 exports.getTree = getTree;
-exports.createCommitRaw = createCommitRaw;
 exports.createCommit = createCommit;
