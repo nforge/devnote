@@ -84,6 +84,7 @@ var storeObject = function(raw, callback) {
     });
 }
 
+
 var getParentId = function (callback) {
     if(path.existsSync('pages.git/HEAD')) {
         var data = fs.readFileSync('pages.git/HEAD');
@@ -119,18 +120,30 @@ var createCommit = function (commit) {
     return 'commit ' + raw.length + '\0' + raw;
 }
 
+var storeCommitFiles = function(files, cb){
+    var gitfs = this;
+    var tree = {};
+    async.forEach(_.keys(files), function (filename, cb2) {
+        gitfs.storeObject(gitfs.createBlob(files[filename]), function (err, sha1sum) {
+            tree[filename] = sha1sum;
+            cb2(err);
+        });
+    }, function (err) {
+        cb(err, tree);
+    })
+}
+
 var commit = function(commit, callback) {
-    var tree = {}
+    var tree = {};
     var gitfs = this;
     var commitId;
+
     async.series([
         function(cb) {
-            async.forEach(_.keys(commit.files), function(filename, cb2) {
-                gitfs.storeObject(gitfs.createBlob(commit.files[filename]), function(err, sha1sum) {
-                    tree[filename] = sha1sum;
-                    cb2(err);
-                });
-            }, function(err) { if (err) throw err; cb(null); });
+           gitfs.storeCommitFiles(commit.files, function(err, data){
+               tree = data;
+               cb(err);
+           });
         },
         function(cb) {
             gitfs.storeObject(gitfs.createTree(tree), function(err, sha1sum) {
@@ -289,6 +302,7 @@ var getHistory = function(filename, callback){
    callback();
 }
 
+exports.storeCommitFiles = storeCommitFiles;
 exports.getHistory = getHistory;
 exports.getParentId = getParentId;
 exports.init = init;

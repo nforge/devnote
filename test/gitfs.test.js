@@ -472,20 +472,3 @@ suite('gitfs.log', function() {
         _rm_rf('pages.git');
 	});
 });
-
-suite('gitfs.getHistory', function () {
-    test('히스토리 읽어오기', function (done) {
-        var filename = "README";
-        step(
-            function when() {
-                gitfs.getHistory(filename, this);
-            },
-            function then(treeId) {
-                gitfs.readObject(treeId, function (tree) {
-                    assert.equal(tree[wikiname], undefined);
-                });
-            }
-        )
-    })
-})
-
