@@ -177,9 +177,12 @@ var parseCommitBody = function(buffer) {
     commit.message = parts[1];
 
     fieldPart.split('\n').forEach(function (line) {
-        // author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
-        // \____/ \_________________________________________________/
-        //   |                            |
+        // tree      635a6d85573c97658e6cd4511067f2e4f3fe48cb
+        // parent    0cc71c0002496eccbe919c2e5f4c0616f9f2e611
+        // author    Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
+        // committer Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
+        // \_______/ \_________________________________________________/
+        //     |                          |
         // category                      data
 
         var index = line.indexOf(' ');
