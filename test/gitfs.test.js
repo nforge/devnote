@@ -247,7 +247,7 @@ suite('gitfs.createTree', function(){
     });    
 });
 
-suite('gitfs.getParentId', function(){
+suite('gitfs.getRefId', function(){
     setup(function(done) {
         _mkdir_p('pages.git/refs/heads');
         fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
@@ -258,7 +258,7 @@ suite('gitfs.getParentId', function(){
         step(
             function when(){
                 _ifExistsSync('pages.git/HEAD', fs.unlinkSync);    
-                gitfs.getParentId(this);
+                gitfs.getRefId(this);
             },
             function then(err) {
                 assert.equal('HEAD is not exitsts', err.message);
@@ -269,7 +269,7 @@ suite('gitfs.getParentId', function(){
     test('HEAD 파일 참조 읽어오기', function(done) {
         step(
             function when() {
-                gitfs.getParentId(this);
+                gitfs.getRefId(this);
             },
             function then(err, parentId) {
                 assert.equal('f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f', parentId);
@@ -364,3 +364,41 @@ suite('gitfs.commit', function(){
         _rm_rf('pages.git');
 	});
 });
+
+suite('gitfs.getRefId', function(){
+    setup(function (done) {
+        _mkdir_p('pages.git/refs/heads');
+        fs.writeFileSync('pages.git/HEAD', 'ref: refs/heads/master');
+        fs.writeFileSync('pages.git/refs/heads/master', 'f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
+        done();
+    });
+    test('HEAD파일에서 ref로 지정된 commit 객체의 id를 읽어들인다. ', function(done){
+        step(
+            function when(){
+                gitfs.getRefId(this);
+            },
+            function then(data){
+                assert.equal(data.toString(), 'f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
+                done();
+            }
+        )
+
+    });
+});
+
+suite('gitfs.getHistory', function () {
+    test('위키 페이지 삭제', function (done) {
+        var filename = "README";
+        step(
+            function when() {
+                gitfs.getHistory(filename, this);
+            },
+            function then(treeId) {
+                gitfs.readObject(treeId, function (tree) {
+                    assert.equal(tree[wikiname], undefined);
+                });
+            }
+        )
+    })
+})
+
