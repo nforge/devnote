@@ -237,26 +237,10 @@ suite('gitfs.createTree', function(){
 
     test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
         // when & then
-        assert.deepEqual(expectedTree, gitfs.createTree(tree));
+        assert.equal(gitfs.createTree(tree).toString(), expectedTree.toString());
         done();
     });
 
-    test('생성된 tree object를 git object로 저장', function(done) {
-        gitfs.init(function (err) {
-            if (err) throw err;
-            var digest = crypto.createHash('sha1').update(expectedTree, 'binary').digest('hex');
-            var treePath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs.storeObject(gitfs.createTree(tree), function (err) {
-                if (err) throw err;
-                zlib.inflate(fs.readFileSync(treePath), function(err, result) {
-                    if (err) throw err;
-                    assert.deepEqual(result, expectedTree);
-                    done();
-                });
-            });
-        });
-    });
-    
     teardown(function(done) {
         _rm_rf('pages.git');
         done();
@@ -343,19 +327,40 @@ suite('gitfs.createCommit', function(){
 
 // 5. .git/refs/heads/master 를 생성한 commit object 의 id 로 갱신
 
-/*
 suite('gitfs.commit', function(){
-    var commit;
-    setup(function(){
-        commit = {
-            files: {'readme': 'first page'},
+    var givenCommit;
+    var expectedCommit;
+    setup(function(done){
+        givenCommit = {
+            files: {'FrontPage': 'Welcome to n4wiki'},
             author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
             committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
             message: 'initial commit'
             };
+        gitfs.init(done);
     });
-    test('first page라는 내용을 갖는 readme 파일을 commit 한다.', function(){
-        gitfs.commit(commit);
+    test('Welcome to n4wiki 라는 내용을 갖는 FrontPage 파일을 commit 한다.', function(done){
+        gitfs.commit(givenCommit, function(err, commitId) {
+            gitfs.readObject(commitId, function(err, commit) {
+                assert.equal(commit.author.name, givenCommit.author.name);
+                assert.equal(commit.author.mail, givenCommit.author.mail);
+                assert.equal(commit.author.timezone, givenCommit.author.timezone);
+
+                assert.equal(commit.committer.name, givenCommit.committer.name);
+                assert.equal(commit.committer.mail, givenCommit.committer.mail);
+                assert.equal(commit.committer.timezone, givenCommit.committer.timezone);
+
+                assert.equal(commit.message, givenCommit.message);
+                gitfs.readObject(commit.tree, function(err, tree) {
+                    gitfs.readObject(tree['FrontPage'], function(err, blob) {
+                        assert.equal(blob, givenCommit.files['FrontPage']);
+                        done();
+                    });
+                });
+            });
+        });
     });
+    teardown(function() {
+        _rm_rf('pages.git');
+	});
 });
-*/
