@@ -106,11 +106,16 @@ var getTree = function () {
 }
 
 var createCommit = function (commit) {
-    var raw = 'tree ' + commit.tree +'\n';
+    var raw = '';
+
+    raw += 'tree ' + commit.tree +'\n';
+    if (commit.parent) {
         raw += 'parent ' + commit.parent + '\n';
-        raw += 'author ' + commit.author + '\n';
-        raw += 'committer ' + commit.committer + '\n\n';
-        raw += commit.message;
+    }
+    raw += 'author ' + commit.author + '\n';
+    raw += 'committer ' + commit.committer + '\n\n';
+    raw += commit.message;
+
     return 'commit ' + raw.length + '\0' + raw;
 }
 
@@ -133,10 +138,12 @@ var commit = function(commit, callback) {
                     var unixtime = Math.round(new Date().getTime() / 1000);
                     var commitData = {
                         tree: sha1sum,
-                        parent: parentId,
                         author: commit.author.name + ' <' + commit.author.mail + '> ' + unixtime + ' ' + commit.author.timezone,
                         committer: commit.committer.name + ' <' + commit.committer.mail + '> ' + unixtime + ' ' + commit.committer.timezone,
                         message: commit.message
+                    }
+                    if (parentId) {
+                        commitData.parent = parentId;
                     }
                     gitfs.storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
                         commitId = sha1sum;
