@@ -218,6 +218,7 @@ var parseTreeBody = function(buffer) {
             var sha1sum = buffer.slice(i + 1, i + 1 + 20).toString('hex');
             tree[filename] = sha1sum;
             buffer = buffer.slice(i + 1 + 20);
+            i = 0;
         }
     }
     return tree;
