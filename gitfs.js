@@ -256,6 +256,32 @@ var show = function(filename, callback) {
     });
 }
 
+var log_from = function(filename, from, cb) {
+    var gitfs = this;
+
+    this.readObject(from, function(err, commit) {
+        gitfs.readObject(commit.tree, function(err, tree) {
+            var commits = tree[filename] ? [commit] : [];
+
+            if (commit.parent) {
+                gitfs.log_from(filename, commit.parent, function(err, nextCommits) {
+                    cb(err, commits.concat(nextCommits));
+                });
+            } else {
+                cb(err, commits);
+            }
+        });
+    });
+}
+
+var log = function(filename, callback) {
+    var gitfs = this;
+
+    this.getParentId(function(err, id) {
+        gitfs.log_from(filename, id.toString(), callback);
+    });
+}
+
 exports.init = init;
 exports.createBlob = createBlob;
 exports.sha1sum = sha1sum;
@@ -268,3 +294,5 @@ exports.createCommit = createCommit;
 exports.commit = commit;
 exports.readObject = readObject;
 exports.show = show;
+exports.log = log;
+exports.log_from = log_from;
