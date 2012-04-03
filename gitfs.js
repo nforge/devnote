@@ -84,7 +84,7 @@ var storeObject = function(raw, callback) {
     });
 }
 
-var getRefId = function (callback) {
+var getParentId = function (callback) {
     if(path.existsSync('pages.git/HEAD')) {
         var data = fs.readFileSync('pages.git/HEAD');
         var ref = path.join('pages.git/', data.toString().substr(5));
@@ -282,13 +282,17 @@ var log = function(filename, callback) {
     });
 }
 
-exports.getRefId = getRefId;
+var getHistory = function(filename, callback){
+   callback();
+}
+
+exports.getHistory = getHistory;
+exports.getParentId = getParentId;
 exports.init = init;
 exports.createBlob = createBlob;
 exports.sha1sum = sha1sum;
 exports.createObjectBucket = createObjectBucket;
 exports.createTree = createTree;
-exports.getRefId = getRefId;
 exports.storeObject = storeObject;
 exports.getTree = getTree;
 exports.createCommit = createCommit;
