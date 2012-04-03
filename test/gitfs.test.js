@@ -307,7 +307,7 @@ suite('gitfs.createCommit', function(){
             parent: '0cc71c0002496eccbe919c2e5f4c0616f9f2e611',
             author: 'Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900',
             committer: 'Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900',
-            logMessage: 'Remove duplication between gitfs.createTreeRaw() and its test.\n'
+            message: 'Remove duplication between gitfs.createTreeRaw() and its test.\n'
         };
 
         expectedCommit = 'commit 279' + '\0';

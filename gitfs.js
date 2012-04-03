@@ -103,7 +103,7 @@ var createCommit = function (commit) {
         raw += 'parent ' + commit.parent + '\n';
         raw += 'author ' + commit.author + '\n';
         raw += 'committer ' + commit.committer + '\n\n';
-        raw += commit.logMessage;
+        raw += commit.message;
     return 'commit ' + raw.length + '\0' + raw;
 }
 
