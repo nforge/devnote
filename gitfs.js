@@ -136,7 +136,6 @@ var storeCommitFiles = function(files, cb){
 var commit = function(commit, callback) {
     var tree = {};
     var gitfs = this;
-    var commitId;
     var unixtime = Math.round(new Date().getTime() / 1000);
     var commitData = {
         author: commit.author.name + ' <' + commit.author.mail + '> ' + unixtime + ' ' + commit.author.timezone,
