@@ -277,8 +277,9 @@ suite('gitfs.getRefId', function(){
             }
         );
     });
-    teardown(function() {
+    teardown(function(done) {
         _rm_rf('pages.git');
+        done();
     });
 });
 
@@ -320,8 +321,9 @@ suite('gitfs.createCommit', function(){
             });
         });
     });
-    teardown(function() {
+    teardown(function(done) {
         _rm_rf('pages.git');
+        done();
 	});
 });
 
@@ -353,6 +355,7 @@ suite('gitfs.commit', function(){
                 assert.equal(commit.message, givenCommit.message);
                 gitfs.readObject(commit.tree, function(err, tree) {
                     gitfs.readObject(tree['FrontPage'], function(err, blob) {
+                        if (err) throw err;
                         assert.equal(blob, givenCommit.files['FrontPage']);
                         done();
                     });
@@ -360,6 +363,111 @@ suite('gitfs.commit', function(){
             });
         });
     });
+
+    test('commit이 완료되면 HEAD가 가리키는 커밋 아이디가 갱신된다.', function(done){
+        gitfs.commit(givenCommit, function(err, commitId) {
+            gitfs.getParentId(function (err, id) {
+                if (err) throw err;
+                assert.equal(id, commitId);
+                done();
+            });
+        });
+    });
+
+    teardown(function(done) {
+        _rm_rf('pages.git');
+        done();
+	});
+});
+
+suite('gitfs.show', function() {
+    test('Welcome to n4wiki 라는 내용이 담긴 커밋된 FrontPage 파일을 읽음', function(done) {
+        var givenCommit = {
+            files: {'FrontPage': 'Welcome to n4wiki'},
+            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            message: 'initial commit'
+        };
+        gitfs.init(function (err) {
+            gitfs.commit(givenCommit, function(err) {
+                gitfs.show('FrontPage', function(err, actual) {
+                    assert.equal(actual, 'Welcome to n4wiki');
+                    done();
+                });
+            });
+        });
+    });
+
+    test('두 개의 파일을 커밋하고 내용을 읽음', function(done) {
+        var givenCommit = {
+            files: {
+                'FrontPage': 'Welcome to n4wiki',
+                'Index': 'List of all pages'
+            },
+            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            message: 'initial commit'
+        };
+        gitfs.init(function (err) {
+            gitfs.commit(givenCommit, function(err) {
+                gitfs.show('Index', function(err, actual) {
+                    assert.equal(actual, 'List of all pages');
+                    done();
+                });
+            });
+        });
+    });
+
+    teardown(function(done) {
+        _rm_rf('pages.git');
+        done();
+	});
+});
+
+suite('gitfs.log', function() {
+    var givenCommits;
+
+    setup(function(done){
+        givenCommits = [{
+            files: {'FrontPage': 'Welcome'},
+            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            message: 'the first commit'
+        }, {
+            files: {
+                'FrontPage': 'Welcome to n4wiki',
+                'Index': 'List of all pages'
+            },
+            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            message: 'the second commit'
+        }];
+        gitfs.init(function (err) {
+            async.forEachSeries(givenCommits, function(commit, cb) {
+                gitfs.commit(commit, cb);
+            }, done);
+        });
+    });
+
+    test('두 번 커밋된 FrontPage 페이지의 히스토리 가져오기', function(done) {
+        gitfs.log('FrontPage', function(err, actual) {
+            if (err) throw err;
+            assert.equal(actual.length, 2);
+            assert.equal(actual[0].message, givenCommits[1].message);
+            assert.equal(actual[1].message, givenCommits[0].message);
+            done();
+        });
+    });
+
+    test('한 번 커밋된 Index 페이지의 히스토리 가져오기', function(done) {
+        gitfs.log('Index', function(err, actual) {
+            if (err) throw err;
+            assert.equal(actual.length, 1);
+            assert.equal(actual[0].message, givenCommits[1].message);
+            done();
+        });
+    });
+
     teardown(function() {
         _rm_rf('pages.git');
 	});
