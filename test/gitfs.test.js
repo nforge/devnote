@@ -341,7 +341,7 @@ suite('gitfs.commit', function(){
             };
         gitfs.init(done);
     });
-    test('Welcome to n4wiki 라는 내용을 갖는 FrontPage 파일을 commit 한다.', function(done){
+    test('Welcome to n4wiki 라는 내용을 갖는 FrontPage 파일을 commit함', function(done){
         gitfs.commit(givenCommit, function(err, commitId) {
             gitfs.readObject(commitId, function(err, commit) {
                 assert.equal(commit.author.name, givenCommit.author.name);
@@ -364,7 +364,7 @@ suite('gitfs.commit', function(){
         });
     });
 
-    test('commit이 완료되면 HEAD가 가리키는 커밋 아이디가 갱신된다.', function(done){
+    test('commit이 완료되면 HEAD가 가리키는 커밋 아이디가 갱신됨', function(done){
         gitfs.commit(givenCommit, function(err, commitId) {
             gitfs.getParentId(function (err, id) {
                 if (err) throw err;
