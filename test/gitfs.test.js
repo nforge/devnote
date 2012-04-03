@@ -376,3 +376,24 @@ suite('gitfs.commit', function(){
         _rm_rf('pages.git');
 	});
 });
+
+suite('gitfs.show', function() {
+    setup(function(done){
+        var givenCommit = {
+            files: {'FrontPage': 'Welcome to n4wiki'},
+            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            message: 'initial commit'
+        };
+        gitfs.init(function (err) {
+            gitfs.commit(givenCommit, done);
+        });
+    });
+
+    test('Welcome to n4wiki 라는 내용이 담긴 커밋된 FrontPage 파일을 읽음', function(done) {
+        gitfs.show('FrontPage', function(err, expected) {
+            assert.equal('Welcome to n4wiki', expected);
+            done();
+        });
+    });
+});

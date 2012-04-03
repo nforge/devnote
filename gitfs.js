@@ -242,6 +242,19 @@ var readObject = function(id, callback) {
     });
 }
 
+var show = function(filename, callback) {
+    var gitfs = this;
+    this.getParentId(function(err, id) {
+        gitfs.readObject(id.toString(), function(err, commit) {
+            gitfs.readObject(commit.tree, function(err, tree) {
+                gitfs.readObject(tree[filename], function(err, content) {
+                    callback(err, content);
+                });
+            });
+        });
+    });
+}
+
 exports.init = init;
 exports.createBlob = createBlob;
 exports.sha1sum = sha1sum;
@@ -253,3 +266,4 @@ exports.getTree = getTree;
 exports.createCommit = createCommit;
 exports.commit = commit;
 exports.readObject = readObject;
+exports.show = show;
