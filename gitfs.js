@@ -137,39 +137,40 @@ var commit = function(commit, callback) {
     var tree = {};
     var gitfs = this;
     var commitId;
+    var unixtime = Math.round(new Date().getTime() / 1000);
+    var commitData = {
+        author: commit.author.name + ' <' + commit.author.mail + '> ' + unixtime + ' ' + commit.author.timezone,
+        committer: commit.committer.name + ' <' + commit.committer.mail + '> ' + unixtime + ' ' + commit.committer.timezone,
+        message: commit.message
+    }
 
-    async.series([
-        function(cb) {
+    async.series({
+        storeFiles: function(cb) {
            gitfs.storeCommitFiles(commit.files, function(err, data){
                tree = data;
                cb(err);
            });
         },
-        function(cb) {
+        storeCommit: function(cb) {
             gitfs.storeObject(gitfs.createTree(tree), function(err, sha1sum) {
                 gitfs.getParentId(function(err, parentId) {
-                    var unixtime = Math.round(new Date().getTime() / 1000);
-                    var commitData = {
-                        tree: sha1sum,
-                        author: commit.author.name + ' <' + commit.author.mail + '> ' + unixtime + ' ' + commit.author.timezone,
-                        committer: commit.committer.name + ' <' + commit.committer.mail + '> ' + unixtime + ' ' + commit.committer.timezone,
-                        message: commit.message
-                    }
+                    console.log(err);   //  ToDo: Error 처리
+                    commitData.tree = sha1sum;
                     if (parentId) {
                         commitData.parent = parentId;
                     }
                     gitfs.storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
-                        commitId = sha1sum;
                         fs.mkdir('pages.git/refs/heads', function(err) {
-                            fs.writeFile('pages.git/refs/heads/master', commitId, function(err) {
-                                cb(err);
+                            console.log(err); //ToDo: Error 처리
+                            fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
+                                cb(err, sha1sum);
                             });
                         });
                     });
                 });
             });
         }
-    ], function(err) { callback(err, commitId); } );
+    }, function(err, result) { callback(err, result.storeCommit); } );
 }
 
 var getObjectPath = function(id) {
