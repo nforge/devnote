@@ -277,8 +277,9 @@ suite('gitfs.getParentId', function(){
             }
         );
     });
-    teardown(function() {
+    teardown(function(done) {
         _rm_rf('pages.git');
+        done();
     });
 });
 
@@ -320,8 +321,9 @@ suite('gitfs.createCommit', function(){
             });
         });
     });
-    teardown(function() {
+    teardown(function(done) {
         _rm_rf('pages.git');
+        done();
 	});
 });
 
@@ -372,8 +374,9 @@ suite('gitfs.commit', function(){
         });
     });
 
-    teardown(function() {
+    teardown(function(done) {
         _rm_rf('pages.git');
+        done();
 	});
 });
 
