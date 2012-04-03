@@ -1,0 +1,17 @@
+{
+	tree: "b68ede06ed5238716ade5f9e4446ce297227a3f5",
+	parent: "2bc24f8ba43970fddc0baf19c762833f372725e9",
+	author: {
+		name: "doortts",
+		email: "doortts@gmail.com",
+		unixtime: "1333375492",
+		timezone: "+0900"
+	},
+	commiter: {
+		name: "doortts",
+		email: "doortts@gmail.com",
+		unixtime: "1333375492",
+		timezone: "+0900"
+	},
+	message: "Merge branch 'master' of https://dev.naver.com/git/n4wiki"
+}

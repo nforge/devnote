@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 9784cca3e2e3a329e1c7d2358844babc56fd6a25 doortts <doortts@gmail.com> 1333456579 +0900	commit (initial): git init & day 1 log
+9784cca3e2e3a329e1c7d2358844babc56fd6a25 f600496a48ac8496d14b13789bab613fc79b3f40 doortts <doortts@gmail.com> 1333456672 +0900	commit: Remove garbage file
+f600496a48ac8496d14b13789bab613fc79b3f40 81b38fca775cd60d0a898ebc29a3c3736d01be9e doortts <doortts@gmail.com> 1333456778 +0900	commit: day 2 log
+81b38fca775cd60d0a898ebc29a3c3736d01be9e 1c89d9c722120fccda7d2445cdef41a185423a0d doortts <doortts@gmail.com> 1333456898 +0900	commit: day 3 log & 'hello world.md' file added
+1c89d9c722120fccda7d2445cdef41a185423a0d 7cc693e2b51a3af3f197dc4faa074f54a232f552 doortts <doortts@gmail.com> 1333456938 +0900	commit: day 4 log
+7cc693e2b51a3af3f197dc4faa074f54a232f552 6b78c761254f6eae9d632746af425bda7f202f89 doortts <doortts@gmail.com> 1333457034 +0900	commit: day 5 log, TGIF!

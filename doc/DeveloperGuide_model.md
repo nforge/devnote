@@ -34,3 +34,31 @@ N4WIKI Models
                 message: "Added test"
     };
 
+- object history는 파일 이름과 해당 파일의 이력을 갖는다.
+
+    var history = {
+        filename: "README",
+        history: [
+            {
+                id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+                commitId: "635a6d85573c97658e6cd4511067f2e4f3fe48cb",
+                author: {
+                    name: "SW.CHAE",
+                    email: "doortts@gmail.com",
+                    unixtime: "1333091710",
+                    timezone: "+0900"
+                }
+            },
+            {
+                id: "0c3929df90b4aefcc4ad3181033017ece2c4da88",
+                commitId: "87a6d85573c97658e6cd4511067f2e4f3fe48cb",
+                author: {
+                    name: "SW.CHAE",
+                    email: "doortts@gmail.com",
+                    unixtime: "1333091842",
+                    timezone: "+0900"
+                }
+            },
+            ...
+        ]
+    }
