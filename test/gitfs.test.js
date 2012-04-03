@@ -353,6 +353,7 @@ suite('gitfs.commit', function(){
                 assert.equal(commit.message, givenCommit.message);
                 gitfs.readObject(commit.tree, function(err, tree) {
                     gitfs.readObject(tree['FrontPage'], function(err, blob) {
+                        if (err) throw err;
                         assert.equal(blob, givenCommit.files['FrontPage']);
                         done();
                     });
@@ -360,6 +361,17 @@ suite('gitfs.commit', function(){
             });
         });
     });
+
+    test('commit이 완료되면 HEAD가 가리키는 커밋 아이디가 갱신된다.', function(done){
+        gitfs.commit(givenCommit, function(err, commitId) {
+            gitfs.getParentId(function (err, id) {
+                if (err) throw err;
+                assert.equal(id, commitId);
+                done();
+            });
+        });
+    });
+
     teardown(function() {
         _rm_rf('pages.git');
 	});

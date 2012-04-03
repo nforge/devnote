@@ -147,7 +147,11 @@ var commit = function(commit, callback) {
                     }
                     gitfs.storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
                         commitId = sha1sum;
-                        cb(err);
+                        fs.mkdir('pages.git/refs/heads', function(err) {
+                            fs.writeFile('pages.git/refs/heads/master', commitId, function(err) {
+                                cb(err);
+                            });
+                        });
                     });
                 });
             });
