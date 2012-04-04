@@ -237,7 +237,6 @@ var readObject = function(id, callback) {
         var body = result.slice(header.length + 1);
         var headerFields = header.split(' ');
         var type = headerFields[0];
-        var length = headerFields[1];
         var object;
         if (type == 'commit') {
                 object = _parseCommitBody(body);
