@@ -428,20 +428,24 @@ suite('gitfs.log', function() {
     var givenCommits;
 
     setup(function(done){
-        givenCommits = [{
-            files: {'FrontPage': 'Welcome'},
-            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            message: 'the first commit'
-        }, {
+        var firstCommit = {
+            files:{'FrontPage':'Welcome'},
+            author:{name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            committer:{name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            message:'the first commit'
+        }
+
+        var secondCommit = {
             files: {
-                'FrontPage': 'Welcome to n4wiki',
-                'Index': 'List of all pages'
+                'FrontPage':'Welcome to n4wiki',
+                'Index':'List of all pages'
             },
-            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            author: {name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            committer: {name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
             message: 'the second commit'
-        }];
+        }
+
+        givenCommits = [firstCommit, secondCommit];
         gitfs.init(function (err) {
             async.forEachSeries(givenCommits, function(commit, cb) {
                 gitfs.commit(commit, cb);
@@ -468,8 +472,59 @@ suite('gitfs.log', function() {
         });
     });
 
+    test('새로운 사람에 의해 세 번째 커밋이 일어났을 때 히스토리 가져오기', function(done){
+        var writer = {name: 'doortts', mail: 'doortts@gmail.com', timezone: '+0900'};
+        step(
+            function given() {
+                var thirdCommit = {
+                    files:{
+                        'FrontPage':'Welcome to n4wiki',
+                        'Index':'List of all pages',
+                        'README':'License agreements'
+                    },
+                    author: writer,
+                    committer: writer,
+                    message:'Added license message'
+                }
+                gitfs.commit(thirdCommit, this);
+            },
+            function when() {
+                gitfs.log('README', this);
+            },
+            function then(err, actual) {
+                if (err) throw err;
+                assert.equal(actual.length, 1);
+                assert.equal(actual[0].author.name, 'doortts');
+                done();
+            }
+        )
+    });
+
     teardown(function() {
         _rm_rf('pages.git');
 	});
+
+});
+
+suite('assert.json.equal', function() {
+   test('두 json이 서로 일치할 때', function() {
+       var expected = {name: "John", email: "john@gamail.com"};
+//       var actual = {name: "Jane", email: "jane@gamail.com"};
+       var actual = "name";
+
+       assert.json = {};
+       assert.json.equal = function(actual, expected) {
+           try{
+               JSON.stringify(actual);
+           } catch(e){
+                throw new assert.AssertionError({
+                    message: actual + 'is Not Json',
+                    actual: actual,
+                    expected: expected
+                  });
+           }
+       };
+       assert.json.equal(actual, expected);
+   })
 });
 
