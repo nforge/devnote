@@ -1,5 +1,7 @@
 # Git Filesystem
 
+Git과 호환되는 기반의 파일 시스템.
+
 ### init(callback)
 
 Git 저장소를 생성한다.
