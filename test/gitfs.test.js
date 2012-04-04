@@ -472,3 +472,4 @@ suite('gitfs.log', function() {
         _rm_rf('pages.git');
 	});
 });
+

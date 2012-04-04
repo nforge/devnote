@@ -69,12 +69,13 @@ var createTree = function (tree) {
     return content;
 }
 
-var storeObject = function(raw, callback) {
+
+var storeObject = function (raw, callback) {
     var digest = this.sha1sum(raw);
     var self = this;
-    zlib.deflate(raw, function(err, result) {
+    zlib.deflate(raw, function (err, result) {
         var deflatedObject = result;
-        self.createObjectBucket(digest, function(err, bucketPath) {
+        self.createObjectBucket(digest, function (err, bucketPath) {
             if (err) throw err;
             var objectPath = path.join(bucketPath, digest.substr(2));
             fs.writeFile(objectPath, deflatedObject, function (err) {
