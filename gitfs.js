@@ -23,15 +23,15 @@ var init = function(callback) {
     });
 }
 
-var createBlob = function(content) {
+var _createBlob = function(content) {
     return 'blob ' + content.length + '\0' + content;
 }
 
-var sha1sum = function(data) {
+var _sha1sum = function(data) {
     return crypto.createHash('sha1').update(data, 'binary').digest('hex');
 }
 
-var createObjectBucket = function(digest, callback) {
+var _createObjectBucket = function(digest, callback) {
     var bucketPath = 'pages.git/objects/' + digest.substr(0,2);
     fs.mkdir(bucketPath, function(err) {
         callback(err, bucketPath);
@@ -50,7 +50,7 @@ var _getTreeContentLength = function(tree) {
     return length;
 }
 
-var createTree = function (tree) {
+var _createTree = function (tree) {
     var offset = 0;
     var SHA1SUM_DIGEST_BINARY_LENGTH = 20;
     var length = _getTreeContentLength(tree);
@@ -69,12 +69,12 @@ var createTree = function (tree) {
     return content;
 }
 
-var storeObject = function(raw, callback) {
-    var digest = this.sha1sum(raw);
+var _storeObject = function(raw, callback) {
+    var digest = this._sha1sum(raw);
     var self = this;
     zlib.deflate(raw, function(err, result) {
         var deflatedObject = result;
-        self.createObjectBucket(digest, function(err, bucketPath) {
+        self._createObjectBucket(digest, function(err, bucketPath) {
             if (err) throw err;
             var objectPath = path.join(bucketPath, digest.substr(2));
             fs.writeFile(objectPath, deflatedObject, function (err) {
@@ -85,7 +85,7 @@ var storeObject = function(raw, callback) {
 }
 
 
-var getParentId = function (callback) {
+var _getCommitIdFromHEAD = function (callback) {
     if(path.existsSync('pages.git/HEAD')) {
         var data = fs.readFileSync('pages.git/HEAD');
         var ref = path.join('pages.git/', data.toString().substr(5));
@@ -119,7 +119,7 @@ var _storeCommitFiles = function(files, callback){
     var gitfs = this;
     var tree = {};
     async.forEach(_.keys(files), function (filename, cb) {
-        gitfs.storeObject(gitfs.createBlob(files[filename]), function (err, sha1sum) {
+        gitfs._storeObject(gitfs._createBlob(files[filename]), function (err, sha1sum) {
             tree[filename] = sha1sum;
             cb(err);
         });
@@ -146,14 +146,14 @@ var commit = function(commit, callback) {
            });
         },
         storeCommit: function(cb) {
-            gitfs.storeObject(gitfs.createTree(tree), function(err, sha1sum) {
-                gitfs.getParentId(function(err, parentId) {
+            gitfs._storeObject(gitfs._createTree(tree), function(err, sha1sum) {
+                gitfs._getCommitIdFromHEAD(function(err, parentId) {
                     console.log(err);   //  ToDo: Error 처리
                     commitData.tree = sha1sum;
                     if (parentId) {
                         commitData.parent = parentId;
                     }
-                    gitfs.storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
+                    gitfs._storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
                         fs.mkdir('pages.git/refs/heads', function(err) {
                             console.log(err); //ToDo: Error 처리
                             fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
@@ -167,11 +167,11 @@ var commit = function(commit, callback) {
     }, function(err, result) { callback(err, result.storeCommit); } );
 }
 
-var getObjectPath = function(id) {
+var _getObjectPath = function(id) {
     return path.join('pages.git', 'objects', id.substr(0, 2), id.substr(2));
 }
 
-var parseCommitBody = function(buffer) {
+var _parseCommitBody = function(buffer) {
     //             /tree 635a6d85573c97658e6cd4511067f2e4f3fe48cb
     // fieldPart --|parent 0cc71c0002496eccbe919c2e5f4c0616f9f2e611
     //             |author Yi, EungJun <semtlenori@gmail.com> 1333091842 +0900
@@ -217,7 +217,7 @@ var parseCommitBody = function(buffer) {
     return commit;
 }
 
-var parseTreeBody = function(buffer) {
+var _parseTreeBody = function(buffer) {
     // tree = {
     //     <filename>: <sha1sum>,
     //     ...
@@ -236,7 +236,7 @@ var parseTreeBody = function(buffer) {
 }
 
 var readObject = function(id, callback) {
-    zlib.inflate(fs.readFileSync(getObjectPath(id)), function(err, result) {
+    zlib.inflate(fs.readFileSync(_getObjectPath(id)), function(err, result) {
         var header = result.toString().split('\0', 1)[0];
         var body = result.slice(header.length + 1);
         var headerFields = header.split(' ');
@@ -244,9 +244,9 @@ var readObject = function(id, callback) {
         var length = headerFields[1];
         var object;
         if (type == 'commit') {
-                object = parseCommitBody(body);
+                object = _parseCommitBody(body);
         } else if (type == 'tree') {
-                object = parseTreeBody(body);
+                object = _parseTreeBody(body);
         } else {
                 object = body;
         }
@@ -256,7 +256,7 @@ var readObject = function(id, callback) {
 
 var show = function(filename, callback) {
     var gitfs = this;
-    this.getParentId(function(err, id) {
+    this._getCommitIdFromHEAD(function(err, id) {
         gitfs.readObject(id.toString(), function(err, commit) {
             gitfs.readObject(commit.tree, function(err, tree) {
                 gitfs.readObject(tree[filename], function(err, content) {
@@ -288,19 +288,19 @@ var log_from = function(filename, from, callback) {
 var log = function(filename, callback) {
     var gitfs = this;
 
-    this.getParentId(function(err, id) {
+    this._getCommitIdFromHEAD(function(err, id) {
         gitfs.log_from(filename, id.toString(), callback);
     });
 }
 
 exports._storeCommitFiles = _storeCommitFiles;
-exports.getParentId = getParentId;
+exports._getCommitIdFromHEAD = _getCommitIdFromHEAD;
 exports.init = init;
-exports.createBlob = createBlob;
-exports.sha1sum = sha1sum;
-exports.createObjectBucket = createObjectBucket;
-exports.createTree = createTree;
-exports.storeObject = storeObject;
+exports._createBlob = _createBlob;
+exports._sha1sum = _sha1sum;
+exports._createObjectBucket = _createObjectBucket;
+exports._createTree = _createTree;
+exports._storeObject = _storeObject;
 exports.createCommit = createCommit;
 exports.commit = commit;
 exports.readObject = readObject;
