@@ -6,13 +6,12 @@ var step = require('step');
 var crypto = require('crypto');
 var path = require('path');
 var zlib = require('zlib');
+var fileutils = require('../fileutils');
 
 //  $ mkdir -p ./pages.git/objects
 //     $ mkdir -p ./pages.git/refs
 //     $ echo 'ref: refs/heads/master' > ./pages.git/HEAD
 //     - 확인: 폴더 정상적으로 생성되었는지 여부
-
-var PATH_SEPERATOR = PATH_SEPERATOR || (process.platform == 'win32' ? '\\' : '/');
 
 var _ifExistsSync = function(file, func) {
     if (path.existsSync(file)) {
@@ -20,44 +19,9 @@ var _ifExistsSync = function(file, func) {
     }
 }
 
-var _mkdir_p = function(_path, func) {
-    var base = '';
-    var paths_to_create = [];
-    if (!path.normalize(_path).split(PATH_SEPERATOR).every(function (pathSegment) {
-        base = path.join(base, pathSegment);
-        if (!path.existsSync(base)) {
-            paths_to_create.push(base);
-            return true;
-        }
-        return fs.statSync(base).isDirectory();
-    })) {
-        return false;
-    }
-
-    paths_to_create.forEach(function (pathSegment) { 
-        fs.mkdirSync(pathSegment); 
-    });
-}
-
-var _rm_rf = function(_path, func) {
-    if (!path.existsSync(_path)) {
-        return;
-    }
-
-    if (fs.statSync(_path).isDirectory()) {
-        var filenames = fs.readdirSync(_path);
-        filenames.forEach(function (filename) {
-            _rm_rf(path.join(_path, filename));
-        });
-        fs.rmdirSync(_path);
-    } else {
-        fs.unlinkSync(_path);
-    }
-}
-
 suite('gitfs.init', function(){
     setup(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });
     test('필요한 디렉터리와 파일이 생성되어야 함', function(done){
@@ -93,7 +57,7 @@ suite('gitfs.init', function(){
         );    
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });
 });
@@ -153,7 +117,7 @@ suite('gitfs._createBlob', function() {
         );
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });    
 });
@@ -192,7 +156,7 @@ suite('gitfs._storeObject', function() {
         );
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });    
 });
@@ -202,7 +166,7 @@ suite('gitfs._createTree', function(){
     var expectedTree;
 
     setup(function (done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
 
         var digest1 = crypto.createHash('sha1').update('content1').digest('hex');
         var digest2 = crypto.createHash('sha1').update('content2').digest('hex');
@@ -240,14 +204,14 @@ suite('gitfs._createTree', function(){
     });
 
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });    
 });
 
 suite('gitfs._getCommitIdFromHEAD', function(){
     setup(function(done) {
-        _mkdir_p('pages.git/refs/heads');
+        fileutils.mkdir_p('pages.git/refs/heads');
         fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
         fs.writeFileSync('pages.git/refs/heads/master','f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
         done();
@@ -276,7 +240,7 @@ suite('gitfs._getCommitIdFromHEAD', function(){
         );
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });
 });
@@ -320,7 +284,7 @@ suite('gitfs.createCommit', function(){
         });
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
 	});
 });
@@ -373,7 +337,7 @@ suite('gitfs.commit', function(){
     });
 
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
 	});
 });
@@ -417,7 +381,7 @@ suite('gitfs.show', function() {
     });
 
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
 	});
 });
@@ -474,6 +438,6 @@ suite('gitfs.log', function() {
     });
 
     teardown(function() {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
 	});
 });
