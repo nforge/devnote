@@ -149,7 +149,6 @@ var commit = function(commit, callback) {
         storeCommit: function(cb) {
             gitfs._storeObject(gitfs._createTree(tree), function(err, sha1sum) {
                 gitfs._getCommitIdFromHEAD(function(err, parentId) {
-                    console.log(err);   //  ToDo: Error 처리
                     commitData.tree = sha1sum;
                     if (parentId) {
                         commitData.parent = parentId;
