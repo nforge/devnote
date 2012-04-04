@@ -14,8 +14,9 @@ var init = function(callback) {
                 throw err;
             }
         } else {
-            async.parallel([
+            async.series([
                 async.apply(async.map, ['pages.git/objects', 'pages.git/refs'],fs.mkdir),
+                async.apply(fs.mkdir, 'pages.git/refs/heads'),
                 async.apply(fs.writeFile, 'pages.git/HEAD','ref: refs/heads/master'),
             ], callback
             );
@@ -154,11 +155,8 @@ var commit = function(commit, callback) {
                         commitData.parent = parentId;
                     }
                     gitfs._storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
-                        fs.mkdir('pages.git/refs/heads', function(err) {
-                            console.log(err); //ToDo: Error 처리
-                            fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
-                                cb(err, sha1sum);
-                            });
+                        fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
+                            cb(err, sha1sum);
                         });
                     });
                 });
