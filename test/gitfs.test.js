@@ -439,6 +439,13 @@ suite('gitfs.log', function() {
             author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
             committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
             message: 'the second commit'
+        }, {
+            files: {
+                'FrontPage': 'Welcome to n4wiki'
+            },
+            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            message: 'the second commit'
         }];
         gitfs.init(function (err) {
             async.forEachSeries(givenCommits, function(commit, cb) {
@@ -457,7 +464,7 @@ suite('gitfs.log', function() {
         });
     });
 
-    test('한 번 커밋된 Index 페이지의 히스토리 가져오기', function(done) {
+    test('커밋된 후 삭제된 Index 페이지의 히스토리 가져오기', function(done) {
         gitfs.log('Index', function(err, actual) {
             if (err) throw err;
             assert.equal(actual.length, 1);

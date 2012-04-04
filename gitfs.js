@@ -263,15 +263,22 @@ var show = function(filename, callback) {
     });
 }
 
-var log_from = function(filename, from, callback) {
+var log_from = function(filename, from, previousBlobId, callback) {
     var gitfs = this;
 
     this.readObject(from, function(err, commit) {
         gitfs.readObject(commit.tree, function(err, tree) {
-            var commits = tree[filename] ? [commit] : [];
+            var commits;
+
+            if (tree[filename] && previousBlobId != tree[filename]) {
+                commits = [commit];
+                previousBlobId = tree[filename];
+            } else {
+                commits = [];
+            }
 
             if (commit.parent) {
-                gitfs.log_from(filename, commit.parent, function(err, nextCommits) {
+                gitfs.log_from(filename, commit.parent, previousBlobId, function(err, nextCommits) {
                     callback(err, commits.concat(nextCommits));
                 });
             } else {
@@ -285,7 +292,7 @@ var log = function(filename, callback) {
     var gitfs = this;
 
     this._getCommitIdFromHEAD(function(err, id) {
-        gitfs.log_from(filename, id.toString(), callback);
+        gitfs.log_from(filename, id.toString(), null, callback);
     });
 }
 
