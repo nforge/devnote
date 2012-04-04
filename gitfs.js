@@ -76,7 +76,6 @@ var _storeObject = function(raw, callback) {
     zlib.deflate(raw, function(err, result) {
         var deflatedObject = result;
         self._createObjectBucket(digest, function(err, bucketPath) {
-            if (err) throw err;
             var objectPath = path.join(bucketPath, digest.substr(2));
             fs.writeFile(objectPath, deflatedObject, function (err) {
                 callback(err, digest);
