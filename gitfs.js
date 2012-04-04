@@ -115,7 +115,7 @@ var createCommit = function (commit) {
     return 'commit ' + raw.length + '\0' + raw;
 }
 
-var storeCommitFiles = function(files, cb){
+var _storeCommitFiles = function(files, cb){
     var gitfs = this;
     var tree = {};
     async.forEach(_.keys(files), function (filename, cb2) {
@@ -140,7 +140,7 @@ var commit = function(commit, callback) {
 
     async.series({
         storeFiles: function(cb) {
-           gitfs.storeCommitFiles(commit.files, function(err, data){
+           gitfs._storeCommitFiles(commit.files, function(err, data){
                tree = data;
                cb(err);
            });
@@ -293,7 +293,7 @@ var log = function(filename, callback) {
     });
 }
 
-exports.storeCommitFiles = storeCommitFiles;
+exports._storeCommitFiles = _storeCommitFiles;
 exports.getParentId = getParentId;
 exports.init = init;
 exports.createBlob = createBlob;
