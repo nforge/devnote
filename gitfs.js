@@ -73,7 +73,7 @@ var _createTree = function (tree) {
 var _storeObject = function(raw, callback) {
     var digest = this._sha1sum(raw);
     var self = this;
-    zlib.deflate(raw, function(err, result) {
+    zlib.deflate(raw, function (err, result) {
         var deflatedObject = result;
         self._createObjectBucket(digest, function(err, bucketPath) {
             var objectPath = path.join(bucketPath, digest.substr(2));
@@ -237,7 +237,6 @@ var readObject = function(id, callback) {
         var body = result.slice(header.length + 1);
         var headerFields = header.split(' ');
         var type = headerFields[0];
-        var length = headerFields[1];
         var object;
         if (type == 'commit') {
                 object = _parseCommitBody(body);
