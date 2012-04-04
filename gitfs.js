@@ -101,11 +101,6 @@ var getParentId = function (callback) {
     }
 }
 
-var getTree = function () {
-    var sha1sum = '635a6d85573c97658e6cd4511067f2e4f3fe48cb';
-    return sha1sum;
-}
-
 var createCommit = function (commit) {
     var raw = '';
 
@@ -298,12 +293,7 @@ var log = function(filename, callback) {
     });
 }
 
-var getHistory = function(filename, callback){
-   callback();
-}
-
 exports.storeCommitFiles = storeCommitFiles;
-exports.getHistory = getHistory;
 exports.getParentId = getParentId;
 exports.init = init;
 exports.createBlob = createBlob;
@@ -311,7 +301,6 @@ exports.sha1sum = sha1sum;
 exports.createObjectBucket = createObjectBucket;
 exports.createTree = createTree;
 exports.storeObject = storeObject;
-exports.getTree = getTree;
 exports.createCommit = createCommit;
 exports.commit = commit;
 exports.readObject = readObject;
