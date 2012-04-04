@@ -12,7 +12,6 @@ var zlib = require('zlib');
 //     $ echo 'ref: refs/heads/master' > ./pages.git/HEAD
 //     - 확인: 폴더 정상적으로 생성되었는지 여부
 
-
 var PATH_SEPERATOR = PATH_SEPERATOR || (process.platform == 'win32' ? '\\' : '/');
 
 var _ifExistsSync = function(file, func) {
@@ -34,7 +33,6 @@ var _mkdir_p = function(_path, func) {
     })) {
         return false;
     }
-
 
     paths_to_create.forEach(function (pathSegment) { 
         fs.mkdirSync(pathSegment); 
