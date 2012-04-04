@@ -100,7 +100,7 @@ suite('gitfs.init', function(){
     });
 });
 
-suite('gitfs.createBlob', function() {
+suite('gitfs._createBlob', function() {
     var content;
     setup(function(done) {
         content = 'wiki-content';
@@ -114,7 +114,7 @@ suite('gitfs.createBlob', function() {
         var blob;
         step(
             function when() {
-                blob=gitfs.createBlob(content);
+                blob=gitfs._createBlob(content);
                 this();
             },
             function then(err) {
@@ -125,10 +125,10 @@ suite('gitfs.createBlob', function() {
         );
     });
     test('이 blob object에 대한 hexdigit sha1 해시값 계산', function(done) {
-        var blob = gitfs.createBlob(content);
+        var blob = gitfs._createBlob(content);
         var sha1sum = crypto.createHash('sha1');
         sha1sum.update(blob);
-        assert.equal(sha1sum.digest('hex'), gitfs.sha1sum(blob));
+        assert.equal(sha1sum.digest('hex'), gitfs._sha1sum(blob));
         done();
     });
 
@@ -137,7 +137,7 @@ suite('gitfs.createBlob', function() {
         var bucketPath = 'pages.git/objects/f2';
         step(
             function given() {
-                var blob = gitfs.createBlob(content);        
+                var blob = gitfs._createBlob(content);        
                 var sha1sum = crypto.createHash('sha1');
                 sha1sum.update(blob);
                 digest = sha1sum.digest('hex');            
@@ -145,7 +145,7 @@ suite('gitfs.createBlob', function() {
             },
             function when(err) {
                 if (err) throw err;
-                gitfs.createObjectBucket(digest, this);
+                gitfs._createObjectBucket(digest, this);
             },
             function then(err) {
                 if (err) throw err;
@@ -160,7 +160,7 @@ suite('gitfs.createBlob', function() {
     });    
 });
 
-suite('gitfs.storeObject', function() {
+suite('gitfs._storeObject', function() {
     setup(function(done) {
 
         gitfs.init(function (err) {
@@ -174,14 +174,14 @@ suite('gitfs.storeObject', function() {
         var content = 'wiki-content\n';
         step(
             function given() {
-                var raw = gitfs.createBlob(content);
-                var digest = gitfs.sha1sum(raw);
+                var raw = gitfs._createBlob(content);
+                var digest = gitfs._sha1sum(raw);
                 blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
                 this();
             },
             function when(err) {
                 if (err) throw err;
-                gitfs.storeObject(gitfs.createBlob(content), this);
+                gitfs._storeObject(gitfs._createBlob(content), this);
             },
             function then(err) {
                 if (err) throw err;
@@ -199,7 +199,7 @@ suite('gitfs.storeObject', function() {
     });    
 });
 
-suite('gitfs.createTree', function(){
+suite('gitfs._createTree', function(){
     var tree;
     var expectedTree;
 
@@ -237,7 +237,7 @@ suite('gitfs.createTree', function(){
 
     test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
         // when & then
-        assert.equal(gitfs.createTree(tree).toString(), expectedTree.toString());
+        assert.equal(gitfs._createTree(tree).toString(), expectedTree.toString());
         done();
     });
 
@@ -247,7 +247,7 @@ suite('gitfs.createTree', function(){
     });    
 });
 
-suite('gitfs.getParentId', function(){
+suite('gitfs._getCommitIdFromHEAD', function(){
     setup(function(done) {
         _mkdir_p('pages.git/refs/heads');
         fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
@@ -258,7 +258,7 @@ suite('gitfs.getParentId', function(){
         step(
             function when(){
                 _ifExistsSync('pages.git/HEAD', fs.unlinkSync);    
-                gitfs.getParentId(this);
+                gitfs._getCommitIdFromHEAD(this);
             },
             function then(err) {
                 assert.equal('HEAD is not exitsts', err.message);
@@ -269,7 +269,7 @@ suite('gitfs.getParentId', function(){
     test('HEAD 파일 참조 읽어오기', function(done) {
         step(
             function when() {
-                gitfs.getParentId(this);
+                gitfs._getCommitIdFromHEAD(this);
             },
             function then(err, parentId) {
                 assert.equal('f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f', parentId);
@@ -311,7 +311,7 @@ suite('gitfs.createCommit', function(){
             if (err) throw err;
             var digest = crypto.createHash('sha1').update(expectedCommit, 'binary').digest('hex');
             var commitPath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs.storeObject(gitfs.createCommit(commit), function (err) {
+            gitfs._storeObject(gitfs.createCommit(commit), function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(commitPath), function(err, result) {
                     if (err) throw err;
@@ -366,7 +366,7 @@ suite('gitfs.commit', function(){
 
     test('commit이 완료되면 HEAD가 가리키는 커밋 아이디가 갱신됨', function(done){
         gitfs.commit(givenCommit, function(err, commitId) {
-            gitfs.getParentId(function (err, id) {
+            gitfs._getCommitIdFromHEAD(function (err, id) {
                 if (err) throw err;
                 assert.equal(id, commitId);
                 done();
