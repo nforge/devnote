@@ -14,8 +14,9 @@ var init = function(callback) {
                 throw err;
             }
         } else {
-            async.parallel([
+            async.series([
                 async.apply(async.map, ['pages.git/objects', 'pages.git/refs'],fs.mkdir),
+                async.apply(fs.mkdir, 'pages.git/refs/heads'),
                 async.apply(fs.writeFile, 'pages.git/HEAD','ref: refs/heads/master'),
             ], callback
             );
@@ -75,7 +76,6 @@ var _storeObject = function(raw, callback) {
     zlib.deflate(raw, function (err, result) {
         var deflatedObject = result;
         self._createObjectBucket(digest, function(err, bucketPath) {
-            if (err) throw err;
             var objectPath = path.join(bucketPath, digest.substr(2));
             fs.writeFile(objectPath, deflatedObject, function (err) {
                 callback(err, digest);
@@ -148,17 +148,13 @@ var commit = function(commit, callback) {
         storeCommit: function(cb) {
             gitfs._storeObject(gitfs._createTree(tree), function(err, sha1sum) {
                 gitfs._getCommitIdFromHEAD(function(err, parentId) {
-                    console.log(err);   //  ToDo: Error 처리
                     commitData.tree = sha1sum;
                     if (parentId) {
                         commitData.parent = parentId;
                     }
                     gitfs._storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
-                        fs.mkdir('pages.git/refs/heads', function(err) {
-                            console.log(err); //ToDo: Error 처리
-                            fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
-                                cb(err, sha1sum);
-                            });
+                        fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
+                            cb(err, sha1sum);
                         });
                     });
                 });
