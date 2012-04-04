@@ -115,16 +115,16 @@ var createCommit = function (commit) {
     return 'commit ' + raw.length + '\0' + raw;
 }
 
-var _storeCommitFiles = function(files, cb){
+var _storeCommitFiles = function(files, callback){
     var gitfs = this;
     var tree = {};
-    async.forEach(_.keys(files), function (filename, cb2) {
+    async.forEach(_.keys(files), function (filename, cb) {
         gitfs.storeObject(gitfs.createBlob(files[filename]), function (err, sha1sum) {
             tree[filename] = sha1sum;
-            cb2(err);
+            cb(err);
         });
     }, function (err) {
-        cb(err, tree);
+        callback(err, tree);
     })
 }
 
@@ -267,7 +267,7 @@ var show = function(filename, callback) {
     });
 }
 
-var log_from = function(filename, from, cb) {
+var log_from = function(filename, from, callback) {
     var gitfs = this;
 
     this.readObject(from, function(err, commit) {
@@ -276,10 +276,10 @@ var log_from = function(filename, from, cb) {
 
             if (commit.parent) {
                 gitfs.log_from(filename, commit.parent, function(err, nextCommits) {
-                    cb(err, commits.concat(nextCommits));
+                    callback(err, commits.concat(nextCommits));
                 });
             } else {
-                cb(err, commits);
+                callback(err, commits);
             }
         });
     });
