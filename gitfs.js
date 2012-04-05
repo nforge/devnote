@@ -245,6 +245,9 @@ var _parseTreeBody = function(buffer) {
 }
 
 var readObject = function(id, callback) {
+    if (!id) {
+        throw new Error("object id is empty: " + id);
+    }
     zlib.inflate(fs.readFileSync(_getObjectPath(id)), function(err, result) {
         var header = result.toString().split('\0', 1)[0];
         var body = result.slice(header.length + 1);
@@ -267,9 +270,13 @@ var show = function(filename, callback) {
     this._getCommitIdFromHEAD(function(err, id) {
         gitfs.readObject(id.toString(), function(err, commit) {
             gitfs.readObject(commit.tree, function(err, tree) {
-                gitfs.readObject(tree[filename], function(err, content) {
-                    callback(err, content);
-                });
+                if (tree[filename]) {
+                    gitfs.readObject(tree[filename], function(err, content) {
+                        callback(err, content);
+                    });
+                } else {
+                    callback(new Error("'" + filename + "' not found in the commit " + id.toString()));
+                }
             });
         });
     });
