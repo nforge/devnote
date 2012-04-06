@@ -1,12 +1,12 @@
 var assert = require('assert');
-var gitfs = require('../gitfs');
+var gitfs = require('../lib/gitfs');
 var async = require('async');
 var fs = require('fs');
 var step = require('step');
 var crypto = require('crypto');
 var path = require('path');
 var zlib = require('zlib');
-var fileutils = require('../fileutils');
+var fileutils = require('../lib/fileutils');
 
 //  $ mkdir -p ./pages.git/objects
 //     $ mkdir -p ./pages.git/refs

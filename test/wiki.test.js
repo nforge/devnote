@@ -1,6 +1,6 @@
 var assert = require('assert');
-var wiki = require('../wiki');
-var fileutils = require('../fileutils');
+var wiki = require('../lib/wiki');
+var fileutils = require('../lib/fileutils');
 
 suite('wiki', function() {
     setup(function(done) {

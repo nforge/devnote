@@ -1,6 +1,6 @@
 var Browser = require('zombie');
 var assert = require('assert');
-var app = require('../app.js');
+var app = require('../app');
 
 suite('웹 인터페이스', function() {
     test('새 페이지 등록하기 - /wikis/note/new', function(done) {

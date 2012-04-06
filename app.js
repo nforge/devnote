@@ -6,7 +6,7 @@ var util = require('util');
 
 var express = require('express')
   , routes = require('./routes')
-  , wiki = require('./wiki');
+  , wiki = require('./lib/wiki');
 
 var app = module.exports = express.createServer();
 
@@ -31,6 +31,10 @@ app.configure('production', function(){
 
 // Routes
 app.get('/', routes.index);
+
+app.error(function(err, req, res, next) {
+    res.render('404.jade', { title: "404 Not Found", error: err.message, status: 404 });
+});
 
 // get a wikipage
 app.get('/wikis/note/pages/:name', function(req, res) {
