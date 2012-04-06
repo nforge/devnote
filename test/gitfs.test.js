@@ -223,7 +223,7 @@ suite('gitfs._getCommitIdFromHEAD', function(){
                 gitfs._getCommitIdFromHEAD(this);
             },
             function then(err) {
-                assert.equal('HEAD is not exitsts', err.message);
+                assert.equal('HEAD does not exist', err.message);
                 done();
             }
         );    
