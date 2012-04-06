@@ -1,19 +1,17 @@
 var assert = require('assert');
-var gitfs = require('../gitfs');
+var gitfs = require('../lib/gitfs');
 var async = require('async');
 var fs = require('fs');
 var step = require('step');
 var crypto = require('crypto');
 var path = require('path');
 var zlib = require('zlib');
+var fileutils = require('../lib/fileutils');
 
 //  $ mkdir -p ./pages.git/objects
 //     $ mkdir -p ./pages.git/refs
 //     $ echo 'ref: refs/heads/master' > ./pages.git/HEAD
 //     - 확인: 폴더 정상적으로 생성되었는지 여부
-
-
-var PATH_SEPERATOR = PATH_SEPERATOR || (process.platform == 'win32' ? '\\' : '/');
 
 var _ifExistsSync = function(file, func) {
     if (path.existsSync(file)) {
@@ -21,45 +19,9 @@ var _ifExistsSync = function(file, func) {
     }
 }
 
-var _mkdir_p = function(_path, func) {
-    var base = '';
-    var paths_to_create = [];
-    if (!path.normalize(_path).split(PATH_SEPERATOR).every(function (pathSegment) {
-        base = path.join(base, pathSegment);
-        if (!path.existsSync(base)) {
-            paths_to_create.push(base);
-            return true;
-        }
-        return fs.statSync(base).isDirectory();
-    })) {
-        return false;
-    }
-
-
-    paths_to_create.forEach(function (pathSegment) { 
-        fs.mkdirSync(pathSegment); 
-    });
-}
-
-var _rm_rf = function(_path, func) {
-    if (!path.existsSync(_path)) {
-        return;
-    }
-
-    if (fs.statSync(_path).isDirectory()) {
-        var filenames = fs.readdirSync(_path);
-        filenames.forEach(function (filename) {
-            _rm_rf(path.join(_path, filename));
-        });
-        fs.rmdirSync(_path);
-    } else {
-        fs.unlinkSync(_path);
-    }
-}
-
 suite('gitfs.init', function(){
     setup(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });
     test('필요한 디렉터리와 파일이 생성되어야 함', function(done){
@@ -95,7 +57,7 @@ suite('gitfs.init', function(){
         );    
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });
 });
@@ -155,7 +117,7 @@ suite('gitfs._createBlob', function() {
         );
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });    
 });
@@ -194,7 +156,7 @@ suite('gitfs._storeObject', function() {
         );
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });    
 });
@@ -204,7 +166,7 @@ suite('gitfs._createTree', function(){
     var expectedTree;
 
     setup(function (done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
 
         var digest1 = crypto.createHash('sha1').update('content1').digest('hex');
         var digest2 = crypto.createHash('sha1').update('content2').digest('hex');
@@ -242,14 +204,14 @@ suite('gitfs._createTree', function(){
     });
 
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });    
 });
 
 suite('gitfs._getCommitIdFromHEAD', function(){
     setup(function(done) {
-        _mkdir_p('pages.git/refs/heads');
+        fileutils.mkdir_p('pages.git/refs/heads');
         fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
         fs.writeFileSync('pages.git/refs/heads/master','f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
         done();
@@ -278,7 +240,7 @@ suite('gitfs._getCommitIdFromHEAD', function(){
         );
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
     });
 });
@@ -322,7 +284,7 @@ suite('gitfs.createCommit', function(){
         });
     });
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
 	});
 });
@@ -375,7 +337,7 @@ suite('gitfs.commit', function(){
     });
 
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
 	});
 });
@@ -419,7 +381,7 @@ suite('gitfs.show', function() {
     });
 
     teardown(function(done) {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
         done();
 	});
 });
@@ -428,20 +390,33 @@ suite('gitfs.log', function() {
     var givenCommits;
 
     setup(function(done){
-        givenCommits = [{
-            files: {'FrontPage': 'Welcome'},
-            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            message: 'the first commit'
-        }, {
+        var firstCommit = {
+            files:{'FrontPage':'Welcome'},
+            author:{name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            committer:{name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            message:'the first commit'
+        }
+
+        var secondCommit = {
             files: {
-                'FrontPage': 'Welcome to n4wiki',
-                'Index': 'List of all pages'
+                'FrontPage':'Welcome to n4wiki',
+                'Index':'List of all pages'
+            },
+            author: {name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            committer: {name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            message: 'the second commit'
+        }
+
+        var thirdCommit = {
+            files: {
+                'FrontPage': 'Welcome to n4wiki'
             },
             author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
             committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
             message: 'the second commit'
-        }];
+        }
+
+        givenCommits = [firstCommit, secondCommit, thirdCommit];
         gitfs.init(function (err) {
             async.forEachSeries(givenCommits, function(commit, cb) {
                 gitfs.commit(commit, cb);
@@ -459,7 +434,7 @@ suite('gitfs.log', function() {
         });
     });
 
-    test('한 번 커밋된 Index 페이지의 히스토리 가져오기', function(done) {
+    test('커밋된 후 삭제된 Index 페이지의 히스토리 가져오기', function(done) {
         gitfs.log('Index', function(err, actual) {
             if (err) throw err;
             assert.equal(actual.length, 1);
@@ -468,7 +443,59 @@ suite('gitfs.log', function() {
         });
     });
 
+    test('새로운 사람에 의해 세 번째 커밋이 일어났을 때 히스토리 가져오기', function(done){
+        var writer = {name: 'doortts', mail: 'doortts@gmail.com', timezone: '+0900'};
+        step(
+            function given() {
+                var thirdCommit = {
+                    files:{
+                        'FrontPage':'Welcome to n4wiki',
+                        'Index':'List of all pages',
+                        'README':'License agreements'
+                    },
+                    author: writer,
+                    committer: writer,
+                    message:'Added license message'
+                }
+                gitfs.commit(thirdCommit, this);
+            },
+            function when() {
+                gitfs.log('README', this);
+            },
+            function then(err, actual) {
+                if (err) throw err;
+                assert.equal(actual.length, 1);
+                assert.equal(actual[0].author.name, 'doortts');
+                done();
+            }
+        )
+    });
+
     teardown(function() {
-        _rm_rf('pages.git');
+        fileutils.rm_rf('pages.git');
 	});
+
 });
+
+suite('assert.json.equal', function() {
+   test('두 json이 서로 일치할 때', function() {
+       var expected = {name: "John", email: "john@gamail.com"};
+//       var actual = {name: "Jane", email: "jane@gamail.com"};
+       var actual = "name";
+
+       assert.json = {};
+       assert.json.equal = function(actual, expected) {
+           try{
+               JSON.stringify(actual);
+           } catch(e){
+                throw new assert.AssertionError({
+                    message: actual + 'is Not Json',
+                    actual: actual,
+                    expected: expected
+                  });
+           }
+       };
+       assert.json.equal(actual, expected);
+   })
+});
+
