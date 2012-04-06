@@ -47,10 +47,22 @@ app.get('/wikis/note/pages/:name', function(req, res) {
     });
 });
 
-// get a form to post new wiipage
+// get a form to post new wikipage
 app.get('/wikis/note/new', function(req, res) {
     res.render('new', {
         title: 'New Page',
+    });
+});
+
+// get a form to edit a wikipage
+app.get('/wikis/note/edit/:name', function(req, res) {
+    wiki.getPage(req.params.name, function(err, content) {
+        if (err) throw err;
+        res.render('edit', {
+            title: 'Edit Page',
+            name: req.params.name,
+            content: content
+        });
     });
 });
 
