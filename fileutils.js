@@ -22,7 +22,7 @@ var mkdir_p = function(_path, func) {
     });
 }
 
-var rm_rf = function(_path, func) {
+var rm_rf = function(_path) {
     if (!path.existsSync(_path)) {
         return;
     }
@@ -38,5 +38,17 @@ var rm_rf = function(_path, func) {
     }
 }
 
+var cp_dir = function(target, destination, callback){
+    if (!path.existsSync(destination)) {
+        callback(new Error("destination already exists"));
+        return;
+    }
+
+    if (fs.statSync(_path).isDirectory()) {
+        callbck(err);
+    }
+}
+
+exports.cp_dir = cp_dir;
 exports.mkdir_p = mkdir_p;
 exports.rm_rf = rm_rf;
