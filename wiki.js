@@ -1,6 +1,28 @@
-/**
- * Created by SW.CHAE.
- * User: doortts (blog.doortts.com)
- * Date: 12. 4. 5
- * Time: 오후 3:30
- */
+var gitfs = require('./gitfs');
+
+function init(callback) {
+    gitfs.init(callback);
+}
+
+function writePage(name, content, callback) {
+    var files = {};
+
+    files[name] = content;
+
+    var commit = {
+        files: files,
+        author: {name: 'Guest', mail: 'guest@n4wiki.com', timezone: '+0900'},
+        committer: {name: 'Guest', mail: 'guest@n4wiki.com', timezone: '+0900'},
+        message: 'Edit ' + name
+    };
+
+    gitfs.commit(commit, callback);
+}
+
+function getPage(name, callback) {
+    gitfs.show(name, callback);
+}
+
+exports.writePage = writePage;
+exports.getPage = getPage;
+exports.init = init;

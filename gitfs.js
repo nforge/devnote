@@ -128,6 +128,19 @@ var _storeCommitFiles = function(files, callback){
     })
 }
 
+var _createCommitFromTree = function(commitData, tree, callback) {
+    var gitfs = this;
+
+    gitfs._storeObject(gitfs._createTree(tree), function(err, sha1sum) {
+        commitData.tree = sha1sum;
+        gitfs._storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
+            fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
+                callback(err, sha1sum);
+            });
+        });
+    });
+}
+
 var commit = function(commit, callback) {
     var tree = {};
     var gitfs = this;
@@ -146,18 +159,18 @@ var commit = function(commit, callback) {
            });
         },
         storeCommit: function(cb) {
-            gitfs._storeObject(gitfs._createTree(tree), function(err, sha1sum) {
-                gitfs._getCommitIdFromHEAD(function(err, parentId) {
-                    commitData.tree = sha1sum;
-                    if (parentId) {
-                        commitData.parent = parentId;
-                    }
-                    gitfs._storeObject(gitfs.createCommit(commitData), function(err, sha1sum) {
-                        fs.writeFile('pages.git/refs/heads/master', sha1sum, function(err) {
-                            cb(err, sha1sum);
+            gitfs._getCommitIdFromHEAD(function(err, parentId) {
+                if (parentId) {
+                    commitData.parent = parentId;
+                    gitfs.readObject(parentId.toString(), function(err, parentCommit) {
+                        gitfs.readObject(parentCommit.tree, function(err, parentTree) {
+                            tree = _.extend(parentTree, tree);
+                            gitfs._createCommitFromTree(commitData, tree, cb);
                         });
                     });
-                });
+                } else {
+                    gitfs._createCommitFromTree(commitData, tree, cb);
+                }
             });
         }
     }, function(err, result) { callback(err, result.storeCommit); } );
@@ -232,6 +245,9 @@ var _parseTreeBody = function(buffer) {
 }
 
 var readObject = function(id, callback) {
+    if (!id) {
+        throw new Error("object id is empty: " + id);
+    }
     zlib.inflate(fs.readFileSync(_getObjectPath(id)), function(err, result) {
         var header = result.toString().split('\0', 1)[0];
         var body = result.slice(header.length + 1);
@@ -254,9 +270,13 @@ var show = function(filename, callback) {
     this._getCommitIdFromHEAD(function(err, id) {
         gitfs.readObject(id.toString(), function(err, commit) {
             gitfs.readObject(commit.tree, function(err, tree) {
-                gitfs.readObject(tree[filename], function(err, content) {
-                    callback(err, content);
-                });
+                if (tree[filename]) {
+                    gitfs.readObject(tree[filename], function(err, content) {
+                        callback(err, content);
+                    });
+                } else {
+                    callback(new Error("'" + filename + "' not found in the commit " + id.toString()));
+                }
             });
         });
     });
@@ -303,6 +323,7 @@ exports._sha1sum = _sha1sum;
 exports._createObjectBucket = _createObjectBucket;
 exports._createTree = _createTree;
 exports._storeObject = _storeObject;
+exports._createCommitFromTree = _createCommitFromTree;
 exports.createCommit = createCommit;
 exports.commit = commit;
 exports.readObject = readObject;
