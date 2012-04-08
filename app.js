@@ -6,7 +6,7 @@ var util = require('util');
 
 var express = require('express')
   , routes = require('./routes')
-  , wiki = require('./wiki');
+  , wiki = require('./lib/wiki');
 
 var app = module.exports = express.createServer();
 
@@ -32,6 +32,10 @@ app.configure('production', function(){
 // Routes
 app.get('/', routes.index);
 
+app.error(function(err, req, res, next) {
+    res.render('404.jade', { title: "404 Not Found", error: err.message, status: 404 });
+});
+
 // get a wikipage
 app.get('/wikis/note/pages/:name', function(req, res) {
     wiki.getPage(req.params.name, function(err, content) {
@@ -43,10 +47,22 @@ app.get('/wikis/note/pages/:name', function(req, res) {
     });
 });
 
-// get a form to post new wiipage
+// get a form to post new wikipage
 app.get('/wikis/note/new', function(req, res) {
     res.render('new', {
         title: 'New Page',
+    });
+});
+
+// get a form to edit a wikipage
+app.get('/wikis/note/edit/:name', function(req, res) {
+    wiki.getPage(req.params.name, function(err, content) {
+        if (err) throw err;
+        res.render('edit', {
+            title: 'Edit Page',
+            name: req.params.name,
+            content: content
+        });
     });
 });
 

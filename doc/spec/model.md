@@ -32,3 +32,20 @@ N4WIKI Models
                 },
                 message: "Added test"
     };
+
+    var commitRequest = {
+                files: {},
+                author: {
+                    name: "Yi, EungJun",
+                    email: "semtlenori@gmail.com",
+                    unixtime: "1333091842",
+                    timezone: "+0900"
+                },
+                commiter: {
+                    name: "Yi, EungJun",
+                    email: "semtlenori@gmail.com",
+                    unixtime: "1333091842",
+                    timezone: "+0900"
+                },
+                message: "Added test"
+    };
