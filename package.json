@@ -30,6 +30,7 @@
 	"express": "2.5.8",
     "jade": ">= 0.0.1",
     "zombie": ">= 0.12.15",
+    "jake": ">= 0.2.32"
   },
   "noAnalyze": true,
   "contributors": [ 
@@ -52,8 +53,8 @@
     "node": ">=0.6"
   },
   "scripts": {
-    "test"  : "mocha -u tdd -R spec",
+    "test"  : "jake test",
     "build" : "uglify mycode.js",
-    "start" : "node ./bin/n4wiki"
+    "start" : "jake start"
   }
 }
