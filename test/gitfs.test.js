@@ -54,7 +54,7 @@ suite('gitfs.init', function(){
                     assert.fail('fail!');
                 }
             }
-        );    
+        );
     });
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
@@ -119,7 +119,7 @@ suite('gitfs._serializeBlob', function() {
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
         done();
-    });    
+    });
 });
 
 suite('gitfs._storeObject', function() {
@@ -158,7 +158,7 @@ suite('gitfs._storeObject', function() {
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
         done();
-    });    
+    });
 });
 
 suite('gitfs._serializeTree', function(){
@@ -206,7 +206,7 @@ suite('gitfs._serializeTree', function(){
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
         done();
-    });    
+    });
 });
 
 suite('gitfs._getCommitIdFromHEAD', function(){
@@ -219,14 +219,14 @@ suite('gitfs._getCommitIdFromHEAD', function(){
     test('HEAD 파일이 존재하지 않을 때 예외처리', function(done) {
         step(
             function when(){
-                _ifExistsSync('pages.git/HEAD', fs.unlinkSync);    
+                _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
                 gitfs._getCommitIdFromHEAD(this);
             },
             function then(err) {
                 assert.equal('HEAD does not exist', err.message);
                 done();
             }
-        );    
+        );
     });
     test('HEAD 파일 참조 읽어오기', function(done) {
         step(
@@ -265,7 +265,7 @@ suite('gitfs._serializeCommit', function(){
         expectedCommit += 'Remove duplication between gitfs.createTreeRaw() and its test.\n';
     });
     test('commit object 생성', function() {
-        var actualCommit = gitfs._serializeCommit(commit);                
+        var actualCommit = gitfs._serializeCommit(commit);
         assert.equal(actualCommit, expectedCommit);
     });
     test('생성된 commit object를 압축해서 저장', function(done) {
