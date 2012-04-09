@@ -6,7 +6,8 @@ var util = require('util');
 
 var express = require('express')
   , routes = require('./routes')
-  , wiki = require('./lib/wiki');
+  , wiki = require('./lib/wiki')
+  , md = require('markdown-js');
 
 var app = express.createServer();
 
@@ -42,7 +43,7 @@ app.get('/wikis/note/pages/:name', function(req, res) {
         if (err) throw err;
         res.render('page', {
             title: req.params.name,
-            content: content
+            content: md.parse(content)
         });
     });
 });
@@ -72,7 +73,7 @@ app.post('/wikis/note/pages', function(req, res) {
         wiki.getPage(req.body.name, function(err, content) {
             res.render('page', {
                 title: req.body.name,
-                content: content
+                content: md.parse(content)
             });
         });
     });
@@ -84,7 +85,7 @@ app.delete('/wikis/note/pages/:name', function (req, res) {
         wiki.getPage(req.body.name, function (err, content) {
             res.render('page', {
                 title: req.body.name,
-                content: content
+                content: md.parse(content)
             });
         });
     });
