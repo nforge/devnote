@@ -62,7 +62,7 @@ suite('gitfs.init', function(){
     });
 });
 
-suite('gitfs._createBlob', function() {
+suite('gitfs._serializeBlob', function() {
     var content;
     setup(function(done) {
         content = 'wiki-content';
@@ -76,7 +76,7 @@ suite('gitfs._createBlob', function() {
         var blob;
         step(
             function when() {
-                blob=gitfs._createBlob(content);
+                blob=gitfs._serializeBlob(content);
                 this();
             },
             function then(err) {
@@ -87,7 +87,7 @@ suite('gitfs._createBlob', function() {
         );
     });
     test('이 blob object에 대한 hexdigit sha1 해시값 계산', function(done) {
-        var blob = gitfs._createBlob(content);
+        var blob = gitfs._serializeBlob(content);
         var sha1sum = crypto.createHash('sha1');
         sha1sum.update(blob);
         assert.equal(sha1sum.digest('hex'), gitfs._sha1sum(blob));
@@ -99,7 +99,7 @@ suite('gitfs._createBlob', function() {
         var bucketPath = 'pages.git/objects/f2';
         step(
             function given() {
-                var blob = gitfs._createBlob(content);        
+                var blob = gitfs._serializeBlob(content);        
                 var sha1sum = crypto.createHash('sha1');
                 sha1sum.update(blob);
                 digest = sha1sum.digest('hex');            
@@ -136,14 +136,14 @@ suite('gitfs._storeObject', function() {
         var content = 'wiki-content\n';
         step(
             function given() {
-                var raw = gitfs._createBlob(content);
+                var raw = gitfs._serializeBlob(content);
                 var digest = gitfs._sha1sum(raw);
                 blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
                 this();
             },
             function when(err) {
                 if (err) throw err;
-                gitfs._storeObject(gitfs._createBlob(content), this);
+                gitfs._storeObject(gitfs._serializeBlob(content), this);
             },
             function then(err) {
                 if (err) throw err;
@@ -161,7 +161,7 @@ suite('gitfs._storeObject', function() {
     });    
 });
 
-suite('gitfs._createTree', function(){
+suite('gitfs._serializeTree', function(){
     var tree;
     var expectedTree;
 
@@ -199,7 +199,7 @@ suite('gitfs._createTree', function(){
 
     test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
         // when & then
-        assert.equal(gitfs._createTree(tree).toString(), expectedTree.toString());
+        assert.equal(gitfs._serializeTree(tree).toString(), expectedTree.toString());
         done();
     });
 
@@ -245,7 +245,7 @@ suite('gitfs._getCommitIdFromHEAD', function(){
     });
 });
 
-suite('gitfs.createCommit', function(){
+suite('gitfs._serializeCommit', function(){
     var commit;
     var expectedCommit;
     setup(function() {
@@ -265,7 +265,7 @@ suite('gitfs.createCommit', function(){
         expectedCommit += 'Remove duplication between gitfs.createTreeRaw() and its test.\n';
     });
     test('commit object 생성', function() {
-        var actualCommit = gitfs.createCommit(commit);                
+        var actualCommit = gitfs._serializeCommit(commit);                
         assert.equal(actualCommit, expectedCommit);
     });
     test('생성된 commit object를 압축해서 저장', function(done) {
@@ -273,7 +273,7 @@ suite('gitfs.createCommit', function(){
             if (err) throw err;
             var digest = crypto.createHash('sha1').update(expectedCommit, 'binary').digest('hex');
             var commitPath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
-            gitfs._storeObject(gitfs.createCommit(commit), function (err) {
+            gitfs._storeObject(gitfs._serializeCommit(commit), function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(commitPath), function(err, result) {
                     if (err) throw err;
