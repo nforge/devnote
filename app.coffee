@@ -21,10 +21,9 @@ app.configure ->
   app.use express.static __dirname + '/public'
 
 app.configure 'development', ->
-  app.use express.errorHandler {
+  app.use express.errorHandler
       dumpExceptions: true,
       showStack: true,
-  }
 
 app.configure 'production', ->
   app.use express.errorHandler()
@@ -33,20 +32,18 @@ app.configure 'production', ->
 app.get '/', routes.index
 
 app.error (err, req, res, next) ->
-    res.render '404.jade', {
+    res.render '404.jade',
         title: "404 Not Found",
         error: err.message,
         status: 404,
-    }
 
 # get a wikipage
 app.get '/wikis/note/pages/:name', (req, res) ->
     wiki.getPage req.params.name, (err, content) ->
         if err then throw err
-        res.render 'page', {
+        res.render 'page',
             title: req.params.name,
             content: content,
-        }
 
 # get a form to post new wikipage
 app.get '/wikis/note/new', (req, res) ->
@@ -56,20 +53,18 @@ app.get '/wikis/note/new', (req, res) ->
 app.get '/wikis/note/edit/:name', (req, res) ->
     wiki.getPage req.params.name, (err, content) ->
         if err then throw err
-        res.render 'edit', {
+        res.render 'edit',
             title: 'Edit Page',
             name: req.params.name,
             content: content,
-        }
 
 # post new wikipage
 app.post '/wikis/note/pages', (req, res) ->
     wiki.writePage req.body.name, req.body.body, (err) ->
         wiki.getPage req.body.name, (err, content) ->
-            res.render 'page', {
+            res.render 'page',
                 title: req.body.name,
                 content: content,
-            }
 
 exports.start = (port, callback) ->
     wiki.init (err) ->
