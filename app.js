@@ -8,7 +8,7 @@ var express = require('express')
   , routes = require('./routes')
   , wiki = require('./lib/wiki');
 
-var app = module.exports = express.createServer();
+var app = express.createServer();
 
 // Configuration
 
@@ -90,7 +90,19 @@ app.delete('/wikis/note/pages/:name', function (req, res) {
     });
 
 });
-wiki.init(function (err) {
-    app.listen(3000);
-    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-});
+
+exports.start = function(port, callback) {
+    wiki.init(function (err) {
+        app.listen(port);
+        console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+        if (callback) callback();
+    });
+}
+
+exports.stop = function() {
+    app.close();
+}
+
+if (!module.parent) {
+    exports.start(3000);
+}
