@@ -22,21 +22,6 @@ suite('wiki', function() {
         });
     });
 
-    test('사용자는 위키 페이지를 삭제할 수 있다.', function(done){
-        var name = 'my diary';
-        var content = 'It\'s a very busy today';
-
-        wiki.writePage(name, content, function (err) {
-            if (err) throw err;
-            wiki.deletePage(name, function (err, actual) {
-                if (err) throw err;
-                wiki.getPage(name, function (err, actual) {
-                    assert.equal(actual, "");
-                    done();
-                });
-            });
-        });
-    });
 
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
