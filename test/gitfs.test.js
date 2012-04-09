@@ -88,9 +88,9 @@ suite('gitfs._serializeBlob', function() {
     });
     test('이 blob object에 대한 hexdigit sha1 해시값 계산', function(done) {
         var blob = gitfs._serializeBlob(content);
-        var sha1sum = crypto.createHash('sha1');
-        sha1sum.update(blob);
-        assert.equal(sha1sum.digest('hex'), gitfs._sha1sum(blob));
+        var id = crypto.createHash('sha1');
+        id.update(blob);
+        assert.equal(id.digest('hex'), gitfs._hash(blob));
         done();
     });
 
@@ -99,10 +99,10 @@ suite('gitfs._serializeBlob', function() {
         var bucketPath = 'pages.git/objects/f2';
         step(
             function given() {
-                var blob = gitfs._serializeBlob(content);        
-                var sha1sum = crypto.createHash('sha1');
-                sha1sum.update(blob);
-                digest = sha1sum.digest('hex');            
+                var blob = gitfs._serializeBlob(content);
+                var id = crypto.createHash('sha1');
+                id.update(blob);
+                digest = id.digest('hex');
                 this();
             },
             function when(err) {
@@ -137,7 +137,7 @@ suite('gitfs._storeObject', function() {
         step(
             function given() {
                 var raw = gitfs._serializeBlob(content);
-                var digest = gitfs._sha1sum(raw);
+                var digest = gitfs._hash(raw);
                 blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
                 this();
             },
