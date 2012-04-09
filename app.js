@@ -78,6 +78,19 @@ app.post('/wikis/note/pages', function(req, res) {
     });
 });
 
+// delete wikipage
+app.delete('/wikis/note/pages/:name', function (req, res) {
+    wiki.writePage(req.body.name, req.body.body, function (err) {
+        wiki.getPage(req.body.name, function (err, content) {
+            res.render('page', {
+                title: req.body.name,
+                content: content
+            });
+        });
+    });
+
+});
+
 exports.start = function(port, callback) {
     wiki.init(function (err) {
         app.listen(port);

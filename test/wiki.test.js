@@ -2,6 +2,8 @@ var assert = require('assert');
 var wiki = require('../lib/wiki');
 var fileutils = require('../lib/fileutils');
 
+var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
+
 suite('wiki', function() {
     setup(function(done) {
         wiki.init(done);
@@ -20,8 +22,10 @@ suite('wiki', function() {
         });
     });
 
+
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
         done();
     });
 });
+
