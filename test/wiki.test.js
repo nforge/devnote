@@ -4,7 +4,7 @@ var fileutils = require('../lib/fileutils');
 
 var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
 
-!ZOMBIE_TEST_ON_WINDOWS && suite('wiki', function() {
+suite('wiki', function() {
     setup(function(done) {
         wiki.init(done);
     });

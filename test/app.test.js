@@ -2,10 +2,10 @@ var Browser = require('zombie');
 var assert = require('assert');
 var app = require('../app');
 
-var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
+var SKIP_ON_WINDOWS_OS = SKIP_ON_WINDOWS_OS || (process.platform == 'win32' ? true : false);
 var port = 3000;
 
-!ZOMBIE_TEST_ON_WINDOWS && suite('웹 인터페이스', function() {
+SKIP_ON_WINDOWS_OS || suite('웹 인터페이스', function() {
     suiteSetup(function(done) {
         app.start(port, done);
     });
@@ -87,6 +87,7 @@ var port = 3000;
                     });
                 });
         });
+    });
 
     suiteTeardown(function(done) {
         app.stop();
