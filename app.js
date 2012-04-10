@@ -80,16 +80,14 @@ app.post('/wikis/note/pages', function(req, res) {
 });
 
 // delete wikipage
-app.delete('/wikis/note/pages/:name', function (req, res) {
-    wiki.writePage(req.body.name, req.body.body, function (err) {
-        wiki.getPage(req.body.name, function (err, content) {
-            res.render('page', {
-                title: req.body.name,
-                content: md.parse(content)
-            });
+app.post('/wikis/note/delete/:name', function (req, res) {
+    wiki.deletePage(req.params.name, function (err) {
+        res.render('deleted', {
+            title: req.body.name,
+            message: req.params.name,
+            content: 'Page deleted'
         });
     });
-
 });
 
 exports.start = function(port, callback) {

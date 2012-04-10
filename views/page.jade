@@ -1,2 +1,4 @@
 h1= title
 div!= content
+form(method="post", action="/wikis/note/delete/"+title)
+    input(type="submit", value="delete", name="submit")

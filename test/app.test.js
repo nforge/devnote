@@ -44,6 +44,24 @@ SKIP_ON_WINDOWS_OS || suite('웹 인터페이스', function() {
         });
     });
 
+    test('등록하지 않은 페이지 열어보기 - /wikis/note/pages/:name', function(done) {
+        var browser = new Browser();
+        browser.visit('http://localhost:' + port + '/wikis/note/new', function() {
+        assert.ok(browser.success);
+        browser.
+            fill('name', 'FrontPage').
+            fill('body', 'Welcome to n4wiki!').
+            pressButton('submit', function() {
+                browser.visit('http://localhost:' + port + '/wikis/note/pages/FrontPage2',  
+                    { debug: true, runScripts: false }, 
+                    function (e, browser, status) {
+                        assert.equal(status, 404);
+                        done();
+                    });
+            });
+        });
+    });
+
     test('등록한 페이지 편집하기 - /wikis/note/edit/:name', function(done) {
         var browser = new Browser();
         browser.visit('http://localhost:' + port + '/wikis/note/new', function() {
@@ -76,9 +94,9 @@ SKIP_ON_WINDOWS_OS || suite('웹 인터페이스', function() {
                 fill('name', 'FrontPage').
                 fill('body', 'Welcome to n4wiki!').
                 pressButton('submit', function () {
-                    browser.visit('http://localhost:3000/wikis/note/FrontPage', function () {
-                            pressButton('delete', function () {
-                                Browser.visit("http://localhost:3000/wikis/note/pages/FrontPage", { debug: true, runScripts: false },
+                    browser.visit('http://localhost:3000/wikis/note/pages/FrontPage', function () {
+                            browser.pressButton('submit', function () {
+                                browser.visit("http://localhost:3000/wikis/note/pages/FrontPage", { debug: true, runScripts: false },
                                     function (e, browser, status) {
                                         assert.equal(status, 404);
                                         done();
