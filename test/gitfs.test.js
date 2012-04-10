@@ -407,16 +407,7 @@ suite('gitfs.log', function() {
             message: 'the second commit'
         }
 
-        var thirdCommit = {
-            files: {
-                'FrontPage': 'Welcome to n4wiki'
-            },
-            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            message: 'the second commit'
-        }
-
-        givenCommits = [firstCommit, secondCommit, thirdCommit];
+        givenCommits = [firstCommit, secondCommit];
         gitfs.init(function (err) {
             async.forEachSeries(givenCommits, function(commit, cb) {
                 gitfs.commit(commit, cb);
@@ -475,6 +466,54 @@ suite('gitfs.log', function() {
         fileutils.rm_rf('pages.git');
 	});
 
+});
+
+suite('gitfs.getHeadTree', function(){
+    var givenCommits;
+
+    setup(function (done) {
+        var firstCommit = {
+            files: {'My Diary': 'I have a busy day!'},
+            author: {name: 'SW.CHAE', mail: 'doortts@gmail.com', timezone: '+0900'},
+            committer: {name: 'SW.CHAE', mail: 'doortts@gmail.com', timezone: '+0900'},
+            message: 'diary added'
+        }
+
+        givenCommits = [firstCommit];
+        gitfs.init(function (err) {
+            async.forEachSeries(givenCommits, function (commit, cb) {
+                gitfs.commit(commit, cb);
+            }, done);
+        });
+    });
+    test('HEAD commit 가져오기',function(done) {
+        var writer = {name: 'doortts', mail: 'doortts@gmail.com', timezone: '+0900'};
+        var expectedtree = {"My Diary": "f0088144f8ddcebcaef23def5467d45c2adcdb63", "README": "6a1fea92897468a77a436724ae3306891f19b60c"};
+        step(
+            function given() {
+                var commit = {
+                    files: {
+                        'README': 'License agreements'
+                    },
+                    author: writer,
+                    committer: writer,
+                    message: 'Added license message'
+                }
+                gitfs.commit(commit, this);
+            },
+            function when(err, commitId){
+                gitfs.getHeadTree(this);
+            },
+            function then(err, tree) {
+                assert.deepEqual(tree, expectedtree);
+                done();
+            }
+        )
+    });
+    teardown(function (done) {
+        fileutils.rm_rf('pages.git');
+        done();
+    });
 });
 
 suite('assert.json.equal', function() {

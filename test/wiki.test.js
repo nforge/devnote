@@ -10,8 +10,8 @@ suite('wiki', function() {
     });
 
     test('사용자는 위키 페이지를 등록하고 열람할 수 있다.', function(done) {
-        var name = 'FrontPage';
-        var content = 'Welcome to n4wiki';
+        var name = 'SecondPage';
+        var content = 'n4wiki details';
 
         wiki.writePage(name, content, function(err) {
             if (err) throw err;
@@ -28,12 +28,10 @@ suite('wiki', function() {
 
         wiki.writePage(name, content, function (err) {
             if (err) throw err;
-            wiki.deletePage(name, function (err, actual) {
+            wiki.deletePage(name, function (err, tree) {
                 if (err) throw err;
-                wiki.getPage(name, function (err, actual) {
-                    assert.equal(actual, "");
-                    done();
-                });
+                assert.deepEqual(tree[name], undefined);
+                done();
             });
         });
     });
