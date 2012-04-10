@@ -1,6 +1,6 @@
 crypto = require 'crypto'
 
-gfm = (text) ->
+parse = (text) ->
     # Extract pre blocks
     extractions = {}
     text = text.replace /<pre>(\n|.)*?<\/pre>/gm, (match) ->
@@ -20,4 +20,4 @@ gfm = (text) ->
     text = text.replace /\{gfm-extraction-([0-9a-f]{32})\}/gm, (x, p1) ->
         "\n\n" + extractions[p1]
 
-exports.gfm = gfm
+exports.parse = parse
