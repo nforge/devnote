@@ -7,6 +7,8 @@ Module dependencies.
 express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
+md = require 'markdown-js'
+gfm = require './lib/gfm'
 
 app = express.createServer()
 
@@ -41,9 +43,10 @@ app.error (err, req, res, next) ->
 app.get '/wikis/note/pages/:name', (req, res) ->
     wiki.getPage req.params.name, (err, content) ->
         if err then throw err
+        console.log gfm.parse content
         res.render 'page',
             title: req.params.name,
-            content: content,
+            content: md.parse gfm.parse content,
 
 # get a form to post new wikipage
 app.get '/wikis/note/new', (req, res) ->
@@ -64,7 +67,7 @@ app.post '/wikis/note/pages', (req, res) ->
         wiki.getPage req.body.name, (err, content) ->
             res.render 'page',
                 title: req.body.name,
-                content: content,
+                content: md.parse gfm.parse content,
 
 exports.start = (port, callback) ->
     wiki.init (err) ->
