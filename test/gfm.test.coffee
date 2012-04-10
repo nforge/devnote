@@ -1,5 +1,5 @@
 assert = require 'assert'
-gfm = (require '../gfm').gfm
+gfm = (require '../lib/gfm').gfm
 
 suite 'GFMTest', () ->
     test "not touch single underscores inside words", () ->
