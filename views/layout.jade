@@ -3,5 +3,10 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel='stylesheet', href='/stylesheets/github.css')
+    link(rel='stylesheet', href='/stylesheets/syntax.css')
+    script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+    script(type="text/javascript", src="/scripts/showdown.js")
+    script(type="text/javascript")
+      var module = {}; // avoid an error while importing highlight.js.
+    script(type="text/javascript", src="/scripts/highlight.js")
   body!= body
