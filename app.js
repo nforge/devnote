@@ -6,7 +6,8 @@ var util = require('util');
 
 var express = require('express')
   , routes = require('./routes')
-  , wiki = require('./lib/wiki');
+  , wiki = require('./lib/wiki')
+  , md = require('markdown-js');
 
 var app = express.createServer();
 
@@ -42,7 +43,7 @@ app.get('/wikis/note/pages/:name', function(req, res) {
         if (err) throw err;
         res.render('page', {
             title: req.params.name,
-            content: content
+            content: md.parse(content)
         });
     });
 });
@@ -72,23 +73,32 @@ app.post('/wikis/note/pages', function(req, res) {
         wiki.getPage(req.body.name, function(err, content) {
             res.render('page', {
                 title: req.body.name,
-                content: content
+                content: md.parse(content)
             });
         });
     });
 });
 
 // delete wikipage
-app.delete('/wikis/note/pages/:name', function (req, res) {
-    wiki.writePage(req.body.name, req.body.body, function (err) {
-        wiki.getPage(req.body.name, function (err, content) {
-            res.render('page', {
-                title: req.body.name,
-                content: content
-            });
+app.post('/wikis/note/delete/:name', function (req, res) {
+    wiki.deletePage(req.params.name, function (err) {
+        res.render('deleted', {
+            title: req.body.name,
+            message: req.params.name,
+            content: 'Page deleted'
         });
     });
+});
 
+app.get('/wikis/note/pages', function(req, res) {
+    wiki.getPages(function (err, content) {
+        if (err) throw err;
+        res.render('pages', {
+            title: 'Pages',
+            content: content
+        });
+    });
+    // res.render('index', { title: 'Express' });
 });
 
 exports.start = function(port, callback) {
