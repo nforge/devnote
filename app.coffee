@@ -63,7 +63,7 @@ app.post '/wikis/note/pages', (req, res) ->
     wiki.writePage req.body.name, req.body.body, (err) ->
         wiki.getPage req.body.name, (err, content) ->
             res.render 'page',
-                title: req.params.name,
+                title: req.body.name,
                 content: wiki.render content,
 
 # delete wikipage
