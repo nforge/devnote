@@ -90,6 +90,17 @@ app.post('/wikis/note/delete/:name', function (req, res) {
     });
 });
 
+app.get('/wikis/note/pages', function(req, res) {
+    wiki.getPages(function (err, content) {
+        if (err) throw err;
+        res.render('pages', {
+            title: 'Pages',
+            content: content
+        });
+    });
+    // res.render('index', { title: 'Express' });
+});
+
 exports.start = function(port, callback) {
     wiki.init(function (err) {
         app.listen(port);
