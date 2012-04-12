@@ -66,6 +66,14 @@ app.post '/wikis/note/pages', (req, res) ->
                 title: req.params.name,
                 content: wiki.render content,
 
+# delete wikipage
+app.post '/wikis/note/delete/:name', (req, res) ->
+    wiki.deletePage req.params.name, (err) ->
+        res.render 'deleted',
+            title: req.body.name,
+            message: req.params.name,
+            content: 'Page deleted',
+
 exports.start = (port, callback) ->
     wiki.init (err) ->
         app.listen port
