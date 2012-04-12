@@ -4,6 +4,9 @@ form(method="post", action="/wikis/note/pages")
     input(name="name", value=name)
     br
     label(name="body") body
-    textarea(name="body")= content
+    textarea(id="body", name="body")= content
     br
     input(type="submit", name="submit")
+div(id="preview")
+
+script(type="text/javascript", src="/scripts/preview.js")
