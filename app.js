@@ -90,22 +90,24 @@ app.post('/wikis/note/delete/:name', function (req, res) {
     });
 });
 
-app.get('/wikis/note/pages', function(req, res) {
+// get a wikipage list
+app.get('/wikis/note/pages', function (req, res) {
     wiki.getPages(function (err, content) {
         if (err) throw err;
         res.render('pages', {
             title: 'Pages',
-            content: content
-        });
+            content: 'content'
+         });
     });
-    // res.render('index', { title: 'Express' });
 });
 
 exports.start = function(port, callback) {
-    wiki.init(function (err) {
-        app.listen(port);
-        console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-        if (callback) callback();
+    wiki.init(function (err) {        
+        wiki.writePage('frontpage', 'welcome to n4wiki', function (err) {
+            app.listen(port);
+            console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+            if (callback) callback();
+        });            
     });
 }
 
