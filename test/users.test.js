@@ -27,8 +27,8 @@ suite("users", function(){
     });
 
     suite("remove", function(){
-        setup(function function_name (argument) {
-            // body...
+        setup(function() {
+            users.removeAll();
         })
         test("사용자 삭제", function(){
             //Given
@@ -51,7 +51,7 @@ suite("users", function(){
             users.remove(userB);
 
             //Then
-            assert.notOk(users.findUserById("semtlenori@gmail.com"));
+            assert.equal(users.findUserById("semtlenori@gmail.com"), undefined);
         })
     });
 })
