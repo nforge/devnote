@@ -93,10 +93,10 @@ app.post('/wikis/note/delete/:name', function (req, res) {
 // get a wikipage list
 app.get('/wikis/note/pages', function (req, res) {
     wiki.getPages(function (err, content) {
-        if (err) throw err;
+        if (err) throw err;        
         res.render('pages', {
             title: 'Pages',
-            content: 'content'
+            content: content
          });
     });
 });
