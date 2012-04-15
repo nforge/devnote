@@ -51,6 +51,7 @@ suite("users", function(){
             users.remove(userB);
 
             //Then
+            assert.equal(users.getTotal(), 1);
             assert.equal(users.findUserById("semtlenori@gmail.com"), undefined);
         })
     });
