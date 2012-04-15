@@ -2,27 +2,22 @@ var assert = require('assert');
 var gitfs = require('../lib/users');
 var async = require('async');
 var step = require('step');
-
-var users = require('../lib/users')
-
+var users = require('../lib/users').users;
 
 suite("users", function(){
     suite("add", function(){
-        test("사용자 추가", function(done){
+        test("사용자 추가", function(){
             //Given
             var userA = {
                 name: "nekure",
                 nick: "racoon",
                 email: "nekure@gmail.com"
             }
-
             //When
             users.add(userA);
-
             //Then
             assert.equal(users.getTotal(), 1);
             assert.equal(users.findUserById("nekure@gmail.com"), userA);
-            done();
         })
     });
 
@@ -56,3 +51,4 @@ suite("users", function(){
         })
     });
 })
+
