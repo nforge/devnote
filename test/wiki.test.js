@@ -28,7 +28,7 @@ suite('wiki', function() {
 
     test('사용자는 소스코드가 포함된 위키페이지를 구문강조된 HTML 페이지로 볼 수 있다.', function() {
         var actual = wiki.render("```python\ndef foo():\n  print 'bar'\n```");
-        var expected = '<pre><code>\n<span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span>\n  <span class="keyword">print</span> <span class="string">\'bar\'</span></code></pre>'
+        var expected = '<pre><code class="python">\n<span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span>\n  <span class="keyword">print</span> <span class="string">\'bar\'</span></code></pre>'
         assert.equal(actual, expected)
     });
 
