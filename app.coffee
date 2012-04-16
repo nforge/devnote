@@ -62,6 +62,16 @@ app.get '/wikis/note/edit/:name', (req, res) ->
                 name: req.params.name,
                 content: content,
 
+# get the history of the given wikipage
+app.get '/wikis/note/history/:name', (req, res) ->
+    wiki.getHistory req.params.name, (err, content) ->
+        if err
+            error404 err, req, res
+        else
+            res.render 'history',
+                title: req.params.name,
+                content: content,
+
 # post new wikipage
 app.post '/wikis/note/pages', (req, res) ->
     wiki.writePage req.body.name, req.body.body, (err) ->
