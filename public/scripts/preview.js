@@ -4,7 +4,11 @@ var preview = function() {
     var text = $("#body").val();
 
     text = text.replace(/```(\w+)((\r|\n|.)*?)(\r|\n)```/gm, function(match, p1, p2) {
-        return '<pre lang="' + p1 + '"><code>' + hljs(p2, p1).value + '</code></pre>';
+        try {
+            return '<pre><code class="' + p1 + '">' + hljs(p2, p1).value + '</code></pre>';
+        } catch(e) {
+            return '<pre><code>' + hljs(p2).value + '</code></pre>';
+        }
     });
 
     if (last_text != text) {
