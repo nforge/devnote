@@ -1,5 +1,11 @@
 h1= title
 div!= content
-form(method="post", action="/wikis/note/delete/"+title)
+ul
+  li
+    a(href="/wikis/note/pages/"+title) View
+  li
     a(href="/wikis/note/edit/"+title) Edit
+  li
+    a(href="/wikis/note/history/"+title) History
+form(method="post", action="/wikis/note/delete/"+title)
     input(type="submit", value="delete", name="submit")

@@ -7,6 +7,17 @@ form(method="post", action="/wikis/note/pages")
     textarea(id="body", name="body")= content
     br
     input(type="submit", name="submit")
+
+ul
+  li
+    a(href="/wikis/note/pages/"+name) View
+  li
+    a(href="/wikis/note/edit/"+name) Edit
+  li
+    a(href="/wikis/note/history/"+name) History
+form(method="post", action="/wikis/note/delete/"+title)
+    input(type="submit", value="delete", name="submit")
+
 div(id="preview")
 
 script(type="text/javascript", src="/scripts/preview.js")
