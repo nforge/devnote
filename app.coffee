@@ -64,13 +64,24 @@ app.get '/wikis/note/edit/:name', (req, res) ->
 
 # get the history of the given wikipage
 app.get '/wikis/note/history/:name', (req, res) ->
-    wiki.getHistory req.params.name, (err, content) ->
+    wiki.getHistory req.params.name, (err, commits) ->
         if err
             error404 err, req, res
         else
             res.render 'history',
                 title: req.params.name,
-                content: content,
+                commits: commits,
+
+# rollback
+app.post '/wikis/note/rollback/:name', (req, res) ->
+    wiki.rollback req.body.name, req.body.id, (err) ->
+        wiki.getHistory req.body.name, (err, commits) ->
+            if err
+                error404 err, req, res
+            else
+                res.render 'history',
+                    title: req.body.name,
+                    commits: commits,
 
 # post new wikipage
 app.post '/wikis/note/pages', (req, res) ->
