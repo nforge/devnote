@@ -6,7 +6,12 @@ var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win
 
 suite('wiki', function() {
     setup(function(done) {
-        wiki.init(done);
+        wiki.init(function (err) {
+            wiki.writePage('frontpage', 'welcome to n4wiki', function (err) {
+                if (err) throw err;
+                done();
+            });
+        });
     });
 
     test('사용자는 위키 페이지를 등록하고 열람할 수 있다.', function(done) {
@@ -43,6 +48,15 @@ suite('wiki', function() {
                 assert.deepEqual(tree[name], undefined);
                 done();
             });
+        });
+    });
+
+    test('사용자는 모든 위키 페이지 목록을 볼 수 있다.', function(done){
+        wiki.getPages(function (err, pages) {
+            if (err) throw err;
+            assert.equal(pages.length, 1);
+            assert.equal(pages[0], 'frontpage');
+            done();
         });
     });
 
