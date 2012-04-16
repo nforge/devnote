@@ -31,19 +31,21 @@ app.configure 'production', ->
 # Routes
 app.get '/', routes.index
 
-app.error (err, req, res, next) ->
+error404 = (err, req, res, next) ->
     res.render '404.jade',
-        title: "404 Not Found",
-        error: err.message,
-        status: 404,
+    title: "404 Not Found",
+    error: err.message,
+    status: 404,
 
 # get a wikipage
 app.get '/wikis/note/pages/:name', (req, res) ->
     wiki.getPage req.params.name, (err, content) ->
-        if err then throw err
-        res.render 'page',
-            title: req.params.name,
-            content: wiki.render content,
+        if err
+            error404 err, req, res
+        else
+            res.render 'page',
+                title: req.params.name,
+                content: wiki.render content,
 
 # get a form to post new wikipage
 app.get '/wikis/note/new', (req, res) ->
@@ -52,11 +54,13 @@ app.get '/wikis/note/new', (req, res) ->
 # get a form to edit a wikipage
 app.get '/wikis/note/edit/:name', (req, res) ->
     wiki.getPage req.params.name, (err, content) ->
-        if err then throw err
-        res.render 'edit',
-            title: 'Edit Page',
-            name: req.params.name,
-            content: content,
+        if err
+            error404 err, req, res
+        else
+            res.render 'edit',
+                title: 'Edit Page',
+                name: req.params.name,
+                content: content,
 
 # post new wikipage
 app.post '/wikis/note/pages', (req, res) ->
