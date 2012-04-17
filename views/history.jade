@@ -4,16 +4,16 @@ table
     td= "Author"
     td= "Date"
     td= "Message"
-  - Object.keys(commits).forEach(function(id) {
-  - var date = new Date(commits[id].author.unixtime * 1000)
+  - commits.forEach(function(commit, index) {
+  - var date = new Date(commit.author.unixtime * 1000)
     tr
-      td= commits[id].author.name
+      td= commit.author.name
       td= date
-      td= commits[id].message
+      td= commit.message
       td
         form(method="post", action="/wikis/note/rollback/"+title)
           input(type="hidden", value=title, name="name")
-          input(type="hidden", value=id, name="id")
+          input(type="hidden", value=commits.ids[index], name="id")
           input(type="submit", value="Rollback", name="submit")
   - });
 ul

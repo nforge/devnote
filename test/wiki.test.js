@@ -70,7 +70,7 @@ suite('wiki', function() {
             wiki.writePage(name, content, function(err) {
                 if (err) throw err;
                 wiki.getHistory(name, function(err, commits) {
-                    wiki.rollback(name, Object.keys(commits)[1], function(err) {
+                    wiki.rollback(name, commits.ids[1], function(err) {
                         wiki.getPage(name, function(err, actual) {
                             assert.equal('hello', actual);
                             done();

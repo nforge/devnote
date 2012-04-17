@@ -418,10 +418,9 @@ suite('gitfs.log', function() {
     test('두 번 커밋된 FrontPage 페이지의 히스토리 가져오기', function(done) {
         gitfs.log('FrontPage', function(err, actual) {
             if (err) throw err;
-            var commitIds = Object.keys(actual);
-            assert.equal(commitIds.length, 2);
-            assert.equal(actual[commitIds[0]].message, givenCommits[1].message);
-            assert.equal(actual[commitIds[1]].message, givenCommits[0].message);
+            assert.equal(actual.length, 2);
+            assert.equal(actual[0].message, givenCommits[1].message);
+            assert.equal(actual[1].message, givenCommits[0].message);
             done();
         });
     });
@@ -429,9 +428,8 @@ suite('gitfs.log', function() {
     test('커밋된 후 삭제된 Index 페이지의 히스토리 가져오기', function(done) {
         gitfs.log('Index', function(err, actual) {
             if (err) throw err;
-            var commitIds = Object.keys(actual);
-            assert.equal(commitIds.length, 1);
-            assert.equal(actual[commitIds[0]].message, givenCommits[1].message);
+            assert.equal(actual.length, 1);
+            assert.equal(actual[0].message, givenCommits[1].message);
             done();
         });
     });
@@ -457,9 +455,8 @@ suite('gitfs.log', function() {
             },
             function then(err, actual) {
                 if (err) throw err;
-                var commitIds = Object.keys(actual);
-                assert.equal(commitIds.length, 1);
-                assert.equal(actual[commitIds[0]].author.name, 'doortts');
+                assert.equal(actual.length, 1);
+                assert.equal(actual[0].author.name, 'doortts');
                 done();
             }
         )
