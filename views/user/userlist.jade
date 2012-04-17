@@ -1,0 +1,9 @@
+h1= title
+p= content
+
+each user in users
+    div.
+    p 이름: #{user.name}
+    p 이메일: #{user.email}
+    p 아이디: #{user.id}
+    p #salted Password: #{user.password}

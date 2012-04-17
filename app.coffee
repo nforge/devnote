@@ -124,6 +124,14 @@ app.get '/wikis/note/users/:id', (req, res) ->
         content: "사용자 정보",
         user: user
 
+# get userlist
+app.get '/wikis/note/userlist', (req, res) ->
+    users = users.findAll()
+    console.log users
+    res.render 'user/userlist',
+        title: 'User List',
+        content: "등록된 사용자 목록",
+        users: users
 
 exports.start = (port, callback) ->
     wiki.init (err) ->
