@@ -1,9 +1,23 @@
 h1= title
 p= content
 
-each user in users
-    div.
-    p 이름: #{user.name}
-    p 이메일: #{user.email}
-    p 아이디: #{user.id}
-    p #salted Password: #{user.password}
+div
+    table.table.table-bordered
+        thead
+            tr
+                th 이름
+                th 이메일
+                th 아이디
+                th #Salted Password
+                th 삭제
+        tbody
+            each user in userlist
+                tr
+                    td #{user.name}
+                    td #{user.email}
+                    td #{user.id}
+                    td #{user.password}
+                    th 
+                        form(method="post", action="/wikis/note/dropuser")
+                            input(name='id', type='hidden', value='#{user.id}')
+                            input(type="submit", name="submit", value="삭제").btn-danger

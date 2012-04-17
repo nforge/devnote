@@ -126,12 +126,17 @@ app.get '/wikis/note/users/:id', (req, res) ->
 
 # get userlist
 app.get '/wikis/note/userlist', (req, res) ->
-    users = users.findAll()
-    console.log users
+    userlist = users.findAll()
     res.render 'user/userlist',
         title: 'User List',
-        content: "등록된 사용자 목록",
-        users: users
+        content: "등록된 사용자 " + Object.keys(userlist).length + "명",
+        userlist: userlist
+
+# drop user
+app.post '/wikis/note/dropuser', (req, res) ->
+    user = users.findUserById req.body.id
+    users.remove({id: req.body.id}) if user
+    res.redirect '/wikis/note/userlist'
 
 exports.start = (port, callback) ->
     wiki.init (err) ->

@@ -23,12 +23,6 @@ suite("users", function(){
             assert.equal(users.getTotal(), 1);
             assert.equal(users.findUserById("racoon"), userA);
         })
-    });
-
-    suite("remove", function(){
-        setup(function() {
-            users.removeAll();
-        })
         test("사용자 삭제", function(){
             //Given
             var userA = {
