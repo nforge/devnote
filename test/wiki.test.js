@@ -60,6 +60,27 @@ suite('wiki', function() {
         });
     });
 
+    test('rollback', function(done) {
+        var name = 'SecondPage';
+        var content = 'hello';
+
+        wiki.writePage(name, content, function(err) {
+            if (err) throw err;
+            var content = 'hello, world';
+            wiki.writePage(name, content, function(err) {
+                if (err) throw err;
+                wiki.getHistory(name, function(err, commits) {
+                    wiki.rollback(name, commits.ids[1], function(err) {
+                        wiki.getPage(name, function(err, actual) {
+                            assert.equal('hello', actual);
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
         done();
