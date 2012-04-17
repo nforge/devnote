@@ -54,7 +54,7 @@ suite("file changed detect", function(){
             }
             );
     })
-
+    
     test("findModifiedFiles: new file added", function(done){
         // file = {
         //     README : mtime,
@@ -64,7 +64,7 @@ suite("file changed detect", function(){
 
         step(
             function given(){
-                watcher.getFiles(testDir, this);        
+                watcher.getFiles(testDir, this);
             },
             function when(files){
                 prevFiles = files;
