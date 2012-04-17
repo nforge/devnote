@@ -21,7 +21,8 @@
     "underscore" : ">= 1.3.1",
     "express": "2.5.8",
     "jade": ">= 0.0.1",
-    "markdown-js": "*"
+    "markdown-js": "*",
+    "jshashes": ">= 0.1.3b"
   },
   "devDependencies": {
     "mocha"      : "1.0.x",
@@ -34,7 +35,8 @@
     "zombie": ">= 0.12.15",
     "jake": ">= 0.2.32",
     "github-flavored-markdown": ">= 1.0.1",
-    "hljs": ">= 6.1.3"
+    "hljs": ">= 6.1.3",
+    "jshashes": ">= 0.1.3b"
   },
   "noAnalyze": true,
   "contributors": [ 
