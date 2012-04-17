@@ -74,14 +74,13 @@ app.get '/wikis/note/history/:name', (req, res) ->
 
 # rollback
 app.post '/wikis/note/rollback/:name', (req, res) ->
-    wiki.rollback req.body.name, req.body.id, (err) ->
-        wiki.getHistory req.body.name, (err, commits) ->
+    wiki.rollback req.params.name, req.body.id, (err) ->
+        wiki.getHistory req.params.name, (err, commits) ->
             if err
                 error404 err, req, res
             else
-                res.render 'history',
-                    title: req.body.name,
-                    commits: commits,
+                res.contentType 'json'
+                res.send {commits: commits, name: req.params.name, ids: commits.ids}
 
 # post new wikipage
 app.post '/wikis/note/pages', (req, res) ->
