@@ -6,18 +6,22 @@ var users = require('../lib/users').users;
 
 suite("users", function(){
     suite("add", function(){
+        setup(function() {
+            users.removeAll();
+        })
         test("사용자 추가", function(){
             //Given
             var userA = {
-                name: "nekure",
-                nick: "racoon",
-                email: "nekure@gmail.com"
+                name    : "nekure",
+                id      : "racoon",
+                email   : "nekure@gmail.com",
+                password: "rrrr"
             }
             //When
             users.add(userA);
             //Then
             assert.equal(users.getTotal(), 1);
-            assert.equal(users.findUserById("nekure@gmail.com"), userA);
+            assert.equal(users.findUserById("racoon"), userA);
         })
     });
 
@@ -28,15 +32,17 @@ suite("users", function(){
         test("사용자 삭제", function(){
             //Given
             var userA = {
-                name: "nekure",
-                nick: "racoon",
-                email: "nekure@gmail.com"
+                name    : "nekure",
+                id      : "racoon",
+                email   : "nekure@gmail.com",
+                password: "rrrr"
             }
 
             var userB = {
-                name: "semtlenori",
-                nick: "lori",
-                email: "semtlenori@gmail.com"
+                name    : "semtlenori",
+                id      : "lori",
+                email   : "semtlenori@gmail.com",
+                password: "nori"
             }
             users.add(userA);
             users.add(userB);
