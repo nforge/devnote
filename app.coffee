@@ -108,8 +108,6 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             message: req.params.name,
             content: 'Page deleted',
 
-
-
 # post new user
 app.post '/wikis/note/users', (req, res) ->
     users.add 
