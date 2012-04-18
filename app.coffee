@@ -74,16 +74,23 @@ app.get '/wikis/note/history/:name', (req, res) ->
                 title: req.params.name,
                 commits: commits,
 
+# get the diff between given revisions
+app.get '/wikis/note/diff/:name', (req, res) ->
+    wiki.diff req.params.name, req.query.a, req.query.b, (err, diff) ->
+        res.render 'diff',
+            title: 'Diff',
+            name: req.params.name,
+            diff: wiki.renderDiff(diff),
+
 # rollback
 app.post '/wikis/note/rollback/:name', (req, res) ->
-    wiki.rollback req.body.name, req.body.id, (err) ->
-        wiki.getHistory req.body.name, (err, commits) ->
+    wiki.rollback req.params.name, req.body.id, (err) ->
+        wiki.getHistory req.params.name, (err, commits) ->
             if err
                 error404 err, req, res
             else
-                res.render 'history',
-                    title: req.body.name,
-                    commits: commits,
+                res.contentType 'json'
+                res.send {commits: commits, name: req.params.name, ids: commits.ids}
 
 # post new wikipage
 app.post '/wikis/note/pages', (req, res) ->
@@ -142,6 +149,7 @@ exports.start = (port, callback) ->
     wiki.init (err, port) ->
         wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
           app.listen port
+          throw err if err
           console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
           callback() if callback
 

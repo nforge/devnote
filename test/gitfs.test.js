@@ -352,9 +352,11 @@ suite('gitfs.show', function() {
         };
         gitfs.init(function (err) {
             gitfs.commit(givenCommit, function(err) {
-                gitfs.show('FrontPage', function(err, actual) {
-                    assert.equal(actual, 'Welcome to n4wiki');
-                    done();
+                gitfs._getCommitIdFromHEAD(function(err, commitId) {
+                    gitfs.show('FrontPage', commitId, function(err, actual) {
+                        assert.equal(actual, 'Welcome to n4wiki');
+                        done();
+                    });
                 });
             });
         });
@@ -372,9 +374,11 @@ suite('gitfs.show', function() {
         };
         gitfs.init(function (err) {
             gitfs.commit(givenCommit, function(err) {
-                gitfs.show('Index', function(err, actual) {
-                    assert.equal(actual, 'List of all pages');
-                    done();
+                gitfs._getCommitIdFromHEAD(function(err, commitId) {
+                    gitfs.show('Index', commitId, function(err, actual) {
+                        assert.equal(actual, 'List of all pages');
+                        done();
+                    });
                 });
             });
         });

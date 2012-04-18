@@ -1,21 +1,26 @@
 h1= title
-table
-  tr
-    td= "Author"
-    td= "Date"
-    td= "Message"
-  - commits.forEach(function(commit, index) {
-  - var date = new Date(commit.author.unixtime * 1000)
-    tr
-      td= commit.author.name
-      td= date
-      td= commit.message
-      td
-        form(method="post", action="/wikis/note/rollback/"+title)
-          input(type="hidden", value=title, name="name")
-          input(type="hidden", value=commits.ids[index], name="id")
-          input(type="submit", value="Rollback", name="submit")
-  - });
+form(method="get", action="/wikis/note/diff/"+title)
+  table
+    thead
+      tr
+        td Author
+        td Date
+        td
+          input(type="submit", value="diff", name="action")
+        td Message
+    tbody(id="commits")
+      - commits.forEach(function(commit, index) {
+      - var date = new Date(commit.author.unixtime * 1000)
+        tr
+          td= commit.author.name
+          td= date
+          td
+            input(type="radio", value=commits.ids[index], name="a")
+            input(type="radio", value=commits.ids[index], name="b")
+          td= commit.message
+          td
+            a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
+      - });
 ul
   li
     a(href="/wikis/note/pages/"+title) View
@@ -25,3 +30,5 @@ ul
     a(href="/wikis/note/history/"+title) History
 form(method="post", action="/wikis/note/delete/"+title)
     input(type="submit", value="delete", name="submit")
+
+script(type="text/javascript", src="/scripts/rollback.js")
