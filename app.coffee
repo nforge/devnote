@@ -108,8 +108,6 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             message: req.params.name,
             content: 'Page deleted',
 
-
-
 # post new user
 app.post '/wikis/note/users', (req, res) ->
     users.add 
@@ -146,12 +144,12 @@ app.post '/wikis/note/dropuser', (req, res) ->
     res.redirect '/wikis/note/userlist'
 
 exports.start = (port, callback) ->
-    wiki.init (err, port) ->
+    wiki.init (err) ->
         wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
-          app.listen port
-          throw err if err
-          console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
-          callback() if callback
+          app.listen port, null, (err) ->
+            throw err if err
+            console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+            callback() if callback
 
 exports.stop = -> app.close
 
