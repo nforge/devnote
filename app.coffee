@@ -48,7 +48,6 @@ view = (name, req, res) ->
                 title: name,
                 content: wiki.render content,
 
-edit = (name, req, res) ->
     wiki.getPage req.params.name, (err, content) ->
         if err
             error404 err, req, res
@@ -76,6 +75,16 @@ diff = (name, req, res) ->
                 title: 'Diff',
                 name: name,
                 diff: wiki.renderDiff(diff),
+
+# get wikipage list
+app.get '/wikis/note/pages', (req, res) ->
+    wiki.getPages (err, pages) ->
+        if err
+            error404 err, req, res
+        else
+            res.render 'pages',
+                title: 'Pages',
+                content: pages
 
 app.get '/wikis/note/pages/:name', (req, res) ->
     name = req.params.name
