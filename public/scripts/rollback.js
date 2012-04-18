@@ -12,6 +12,10 @@ var rollback_handler = function(e) {
                 tbody += '<tr>';
                 tbody += '<td>' + commits[i].author.name + '</td>';
                 tbody += '<td>' + date + '</td>';
+                tbody += '<td>';
+                tbody += '<input type="radio" name="a" value="' + ids[i] + '"/>';
+                tbody += '<input type="radio" name="b" value="' + ids[i] + '"/>';
+                tbody += '</td>';
                 tbody += '<td>' + commits[i].message + '</td>';
                 tbody += '<td><a href="#" class="rollback-button" name=' + name + ' id=' + ids[i] + '>Rollback</a></td>';
                 tbody += '</tr>';

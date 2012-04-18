@@ -1,20 +1,26 @@
 h1= title
-table
-  thead
-    tr
-      td= "Author"
-      td= "Date"
-      td= "Message"
-  tbody(id="commits")
-    - commits.forEach(function(commit, index) {
-    - var date = new Date(commit.author.unixtime * 1000)
+form(method="get", action="/wikis/note/diff/"+title)
+  table
+    thead
       tr
-        td= commit.author.name
-        td= date
-        td= commit.message
+        td Author
+        td Date
         td
-          a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
-    - });
+          input(type="submit", value="diff", name="action")
+        td Message
+    tbody(id="commits")
+      - commits.forEach(function(commit, index) {
+      - var date = new Date(commit.author.unixtime * 1000)
+        tr
+          td= commit.author.name
+          td= date
+          td
+            input(type="radio", value=commits.ids[index], name="a")
+            input(type="radio", value=commits.ids[index], name="b")
+          td= commit.message
+          td
+            a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
+      - });
 ul
   li
     a(href="/wikis/note/pages/"+title) View
