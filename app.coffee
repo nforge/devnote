@@ -108,9 +108,10 @@ app.post '/wikis/note/delete/:name', (req, res) ->
 
 exports.start = (port, callback) ->
     wiki.init (err) ->
-        app.listen port
-        console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
-        callback() if callback
+        app.listen port, null, (err) ->
+            throw err if err
+            console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+            callback() if callback
 
 exports.stop = -> app.close
 
