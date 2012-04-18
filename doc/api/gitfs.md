@@ -6,9 +6,9 @@ Git과 호환되는 기반의 파일 시스템.
 
 Git 저장소를 생성한다.
 
-### commit(commit, callback)
+### commit(request, callback)
 
-Git 저장소에 커밋한다. `commit` 은 다음의 프로퍼티를 갖는다.
+Git 저장소에 커밋한다. `request` 는 다음의 프로퍼티를 갖는다.
 
 * files: 커밋할 변경사항이 있는 모든 파일. 파일명을 프로퍼티 이름으로, 파일 내용을 프로퍼티 값으로 하는 오브젝트이다.
 * author, committer: 저자 혹은 커미터 정보. 각각 name, mail, timezone 프로퍼티를 갖는다.
@@ -19,7 +19,7 @@ Git 저장소에 커밋한다. `commit` 은 다음의 프로퍼티를 갖는다.
 
 예:
 
-    var commit = {
+    var request = {
         files: {
             'FrontPage': 'Welcome to n4wiki',
             'Index': 'List of all pages'
@@ -29,7 +29,7 @@ Git 저장소에 커밋한다. `commit` 은 다음의 프로퍼티를 갖는다.
         message: 'initial commit'
     };
 
-    gitfs.commit(commit, function(err) { if (err) throw err; });
+    gitfs.commit(request, function(err) { if (err) throw err; });
 
 ### readObject(id, callback)
 
