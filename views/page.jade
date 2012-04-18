@@ -2,10 +2,10 @@ h1= title
 div!= content
 ul
   li
-    a(href="/wikis/note/pages/"+title) View
+    a(href="?") View
   li
-    a(href="/wikis/note/edit/"+title) Edit
+    a(href="?action=edit") Edit
   li
-    a(href="/wikis/note/history/"+title) History
+    a(href="?action=history") History
 form(method="post", action="/wikis/note/delete/"+title)
     input(type="submit", value="delete", name="submit")
