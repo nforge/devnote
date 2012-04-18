@@ -33,3 +33,5 @@ edit    GET     /pages/:pagename?action=edit                            페이�
 diff    GET     /pages/:pagename?action=diff&a=:commitid1&b=:commitid2  페이지 비교
 history GET     /pages/:pagename?action=history                         페이지 역사
 new     GET     /new                                                    새 페이지
+get     GET     /wikis/note/users/:id                                   사용자 정보
+list    GET     /wikis/note/userlist                                    사용자 목록
