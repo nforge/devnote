@@ -49,6 +49,16 @@ app.get '/wikis/note/pages/:name', (req, res) ->
                 title: req.params.name,
                 content: wiki.render content,
 
+# get wikipage list
+app.get '/wikis/note/pages', (req, res) ->
+    wiki.getPages (err, pages) ->
+        if err
+            error404 err, req, res
+        else
+            res.render 'pages',
+                title: 'Pages',
+                content: pages
+
 # get a form to post new wikipage
 app.get '/wikis/note/new', (req, res) ->
     res.render 'new', title: 'New Page'
