@@ -139,10 +139,11 @@ app.post '/wikis/note/dropuser', (req, res) ->
     res.redirect '/wikis/note/userlist'
 
 exports.start = (port, callback) ->
-    wiki.init (err) ->
-        app.listen port
-        console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
-        callback() if callback
+    wiki.init (err, port) ->
+        wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
+          app.listen port
+          console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+          callback() if callback
 
 exports.stop = -> app.close
 
