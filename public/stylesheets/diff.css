@@ -1,0 +1,7 @@
+.diff .removed {
+    background-color: #FDD;
+}
+
+.diff .added {
+    background-color: #DFD;
+}
