@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		window.onload = function() {
+			App = Ember.Application.create();
+
+			App.model = Ember.Object.create({ // move data to model object
+				firstName:'Joe',
+				surname:'Bloggs'
+			});
+
+			App.AView = Ember.View.extend({ // make two named views
+				tagName:'span',
+				templateName:'first',
+				model:App.model
+			});
+			App.BView = Ember.View.extend({
+				templateName:'last',
+				model:App.model
+			});
+
+// append the views
+			$(function () {
+				App.AView.create().append();
+				App.BView.create().append();
+			});;
+		}
+	</script>
+</head>
+
+<body>
+
+<script type="text/x-handlebars" data-template-name="first">
+	{{model.firstName}}
+</script>
+<script type="text/x-handlebars" data-template-name="last">
+	{{model.surname}}
+</script>
+​
+
+<script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.5.js"></script>
+</body>
+</html>

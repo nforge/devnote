@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		window.onload = function () {
+			window.App = Em.Application.create();
+			App.PeopleView = Ember.View.extend({
+				people:[
+					{ name:'Yehuda' },
+					{ name:'Tom' }
+				],
+				templateName: "people"
+			});
+			view = App.PeopleView.create();
+			view.append();
+			setTimeout(function () {
+
+			}, 3000);
+		}
+	</script>
+</head>
+
+<body>
+<script type="text/x-handlebars" data-template-name="people">
+	<ul>
+		{{#each people}}
+		<li>Hello, {{name}}!</li>
+		{{/each}}
+	</ul>
+</script>
+
+<div id="foo"></div>
+<div id="bar"></div>
+<script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.5.js"></script>
+</body>
+</html>

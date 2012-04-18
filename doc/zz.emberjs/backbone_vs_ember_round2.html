@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Backbone Events vs. Ember Bindings: A Benchmark - jsFiddle demo by doortts</title>
+
+	<style type="text/css">
+		p {
+			font: 12px/16px Arial;
+			margin: 10px 10px 15px;
+		}
+
+		button {
+			font: bold 14px/14px Arial;
+			margin-left: 10px;
+		}
+
+		#grid {
+			margin: 10px;
+		}
+
+		.box-view {
+			width: 20px;
+			height: 20px;
+			float: left;
+			position: relative;
+			margin: 8px;
+		}
+
+		.box {
+			border-radius: 100px;
+			width: 20px;
+			height: 10px;
+			padding: 5px 0;
+			color: #fff;
+			font: 10px/10px Arial;
+			text-align: center;
+			position: absolute;
+		}
+
+		​
+	</style>
+
+	<script type='text/javascript' src='http://code.jquery.com/jquery-1.7.1.js'></script>
+
+	<script type='text/javascript'>//<![CDATA[
+	$(function () {
+// Change N to change the number of drawn circles.
+		var N = 100;
+
+// The Backbone implementation:
+		(function () {
+			var Box = Backbone.Model.extend({
+				defaults:{
+					top:0,
+					left:0,
+					color:0,
+					content:0
+				},
+				initialize:function () {
+					this.count = 0;
+				},
+				tick:function () {
+					var count = this.count += 1;
+					this.set({
+						top:Math.sin(count / 10) * 10,
+						left:Math.cos(count / 10) * 10,
+						color:(count) % 255,
+						content:count % 100
+					});
+				}
+
+			});
+
+
+			var BoxView = Backbone.View.extend({
+				className:'box-view',
+				template:_.template($('#underscore-template').html()),
+				initialize:function () {
+					this.model.bind('change', this.render, this);
+				},
+				render:function () {
+					this.$el.html(this.template(this.model.attributes));
+					return this;
+				}
+			});
+
+			var boxes;
+
+			var backboneInit = function () {
+				boxes = _.map(_.range(N), function (i) {
+					var box = new Box({
+						number:i
+					});
+					var view = new BoxView({
+						model:box
+					});
+					$('#grid').append(view.render().el);
+					return box;
+				});
+			};
+
+			var backboneAnimate = function () {
+				for (var i = 0, l = boxes.length; i < l; i++) {
+					boxes[i].tick();
+				}
+				window.timeout = _.defer(backboneAnimate);
+			};
+
+			window.runBackbone = function () {
+				reset();
+				backboneInit();
+				backboneAnimate();
+			};
+
+		})();
+
+// The Ember implementation:
+		(function () {
+			var Box = Ember.Object.extend({
+				top:0,
+				left:0,
+				content:0,
+				count:0,
+				tick:function () {
+					var count = this.count += 1;
+					this.setProperties({
+						top:Math.sin(count / 10) * 10,
+						left:Math.cos(count / 10) * 10,
+						color:(count) % 255,
+						content:count % 100
+					});
+				}
+			});
+
+			var BoxView = Ember.View.extend({
+				classNames:['box-view'],
+				template:_.template($('#underscore-template').html()),
+				contextDidChange:function () {
+					this.$().html(this.template(this.templateContext));
+				}.observes('templateContext.content')
+			});
+
+			var boxes;
+
+			var emberInit = function () {
+				boxes = _.map(_.range(N), function (i) {
+					var box = Box.create();
+					var view = BoxView.create({
+						templateContext:box
+					});
+					view.appendTo('#grid');
+					box.set('number', i);
+					return box;
+				});
+			};
+
+			var emberAnimate = function () {
+				Ember.run(function () {
+					for (var i = 0, l = boxes.length; i < l; i++) {
+						boxes[i].tick();
+					}
+				});
+				window.timeout = _.defer(emberAnimate);
+			};
+
+			window.runEmber = function () {
+				reset();
+				emberInit();
+				emberAnimate();
+			};
+
+		})();
+
+		window.timeout = null;
+		window.reset = function () {
+			$('#grid').empty();
+			clearTimeout(timeout);
+		};
+	});//]]>
+
+	</script>
+
+
+</head>
+<body>
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://backbonejs.org/backbone-min.js"></script>
+<script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.5.js"></script>
+
+<p>
+	Folks often ask about how the difference between Backbone and Ember's approaches to model/view binding play out in
+	web apps. This script uses the latest Backbone.js and Ember.js to animate 100 circles (or more -- change "N" in the
+	JavaScript), so that you can see the responsiveness after you click the button, and visualize the speed difference.
+	The Ember team is aware that in very performance-sensitive situations, like this example, its binding implementation
+	may be too much overhead. They have reviewed this example, and hope to be able to remove this difference in the
+	future. Note that this is just a simple benchmark: you wouldn't be doing this in an actual app.
+</p>
+
+<button onclick="runBackbone()">Animate with Backbone</button>
+<button onclick="runEmber()">Animate with Ember</button>
+
+<div id="grid"></div>
+
+<script type="x-template" id="underscore-template">
+	<div class="box" id="box-<%= number %>"
+	     style="top: <%= top %>px; left: <%= left %>px; background: rgb(0,0,<%= color %>);">
+		<%= content %>
+	</div>
+</script>
+
+<script type="text/x-handlebars" id="handlebars-template" data-template-name="box">
+	<div class="box"
+	{{bindAttr id="model.number" style="model.style"}}>
+	{{ model.content }}
+	</div>
+</script>
+
+</body>
+
+
+</html>
+

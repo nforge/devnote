@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		window.onload = function () {
+			App = Ember.Application.create();
+
+			App.AView = Ember.View.extend({
+				tagName:'span',
+				firstName:'Joe',
+				surname:'Bloggs'
+			});
+		}
+	</script>
+	<script src="events.tmpl.js"></script>
+</head>
+
+<body>
+
+<script type="text/x-handlebars">
+	{{#view App.AView}}{{firstName}}{{/view}}
+</script>
+<script type="text/x-handlebars" data-tag-name="span">
+	{{#view App.AView}}{{surname}}{{/view}}
+</script>
+​
+
+<script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.5.js"></script>
+</body>
+</html>

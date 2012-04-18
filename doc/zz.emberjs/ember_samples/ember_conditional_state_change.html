@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		window.onload = function() {
+			window.App = Ember.Application.create();
+
+			App.businessController = Ember.Object.create({
+				business:Ember.Object.create({
+					state:'test1'
+				})
+			});
+
+			App.StateView = Ember.View.extend({
+				isVisible:function () {
+					return this.get('stateName') === this.getPath('parentView.currentState');
+				}.property('parentView.currentState')
+			});
+
+			setTimeout(function () {
+				App.businessController.business.set("state", 'test2');
+			}, 3000);
+		}
+	</script>
+
+</head>
+
+<body>
+
+<script type="text/x-handlebars">
+	{{#view Ember.View currentStateBinding="App.businessController.business.state"}}
+	{{#view App.StateView stateName="test1"}}
+	<p>Test 1</p>
+	{{/view}}
+
+	{{#view App.StateView stateName="test2"}}
+	<p>Test 2</p>
+	{{/view}}
+	{{/view}}
+</script>
+
+<script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.5.js"></script>
+</body>
+</html>

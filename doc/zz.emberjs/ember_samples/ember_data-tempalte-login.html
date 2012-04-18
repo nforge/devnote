@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		window.onload = function() {
+			var App = Ember.Application.create();
+
+			App.LoginView = Ember.View.extend({
+				templateName:'login',
+				person:null,
+
+				didInsertElement:function () {
+
+					// appending click handler directly with jQuery
+					$('.login').click(function () {
+						alert("Hi there.");
+					});
+
+				}
+			});
+
+			$(function () {
+
+				App.loginView = App.LoginView.create();
+
+//				App.loginView.person = {
+//					firstName:'John',
+//					lastName:'Doe'
+//				};
+
+				App.loginView.append();
+
+				// at this point the view has not been appended
+				// to the DOM. hence using didInsertElement().
+				console.log($('.login'));
+
+			});
+		}
+	</script>
+
+</head>
+
+<body>
+
+<script type="text/x-handlebars" data-template-name="login">
+	{{#if person}}
+	Welcome back, <b>{{person.firstName}} {{person.lastName}}</b>!
+	{{else}}
+	Please <a class="login">log in</a>.
+	{{/if}}
+</script>
+​
+
+<script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.5.js"></script>
+</body>
+</html>

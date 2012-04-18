@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		window.onload = function() {
+			App = Em.Application.create();
+			App.Test = Em.View.extend({
+				content:{
+					description:'names',
+					names:[
+						{name:'bob'},
+						{name:'john'}
+					]
+				},
+				viewDetail:false,
+				toggleDetail:function () {
+					this.set('viewDetail', true);
+				}
+			})
+		}
+	</script>
+</head>
+
+<body>
+
+<script type="text/x-handlebars">
+	{{#view App.Test}}
+		{{#with content}}
+			{{description}}<br/>
+			{{#each names}}
+				{{name}}
+			{{/each}}
+			<br/>
+			<button {{action toggleDetail}}>toggle Detail</button> <!-- can access toggleDetail -->
+			{{#if ../viewDetail}} <!-- but can not access viewDetail... -->
+				…detail Description...
+			{{/if}}
+		{{/with}}
+	{{/view}}
+</script>
+​
+<div id="link"></div>
+<script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.5.js"></script>
+</body>
+</html>
