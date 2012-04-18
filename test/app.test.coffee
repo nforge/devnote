@@ -59,14 +59,14 @@ suite '웹 인터페이스', ->
                             assert.equal status, 404, 'ok 404'
                             done()
 
-    test '등록한 페이지 편집하기 - /wikis/note/edit/:name', (done) ->
+    test '등록한 페이지 편집하기 - /wikis/note/pages/:name?action=edit', (done) ->
         browser.visit getUrl('/wikis/note/new'), ->
             assert.ok browser.success
             browser.
                 fill('name', 'FrontPage').
                 fill('body', 'Welcome to n4wiki!').
                 pressButton 'submit', ->
-                    browser.visit getUrl('/wikis/note/edit/FrontPage'), ->
+                    browser.visit getUrl('/wikis/note/pages/FrontPage?action=edit'), ->
                         assert.ok browser.success
                         browser.
                             fill('name', 'FrontPage').

@@ -24,3 +24,12 @@ ids: 위키 페이지 id
 // id: 
 wiki.pageLists(id)
 
+VIEW URL
+--------
+Method  REST    URI(/wikis/{wiki_name} 의 하위 path임을 가정)       Description
+list    GET     /pages                                              전체 위키 페이지 목록 
+view    GET     /pages/{wikipage_name}                              페이지 읽기
+edit    GET     /pages/{wikipage_name}?action=edit                  페이지 편집
+diff    GET     /pages/{wikipage_name}?action=diff&a=<id>&b=<id>    페이지 비교
+history GET     /pages/{wikipage_name}?action=history               페이지 역사
+new     GET     /new                                                새 페이지

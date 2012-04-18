@@ -39,66 +39,72 @@ error404 = (err, req, res, next) ->
     error: err.message,
     status: 404,
 
-# get a wikipage
-app.get '/wikis/note/pages/:name', (req, res) ->
-    wiki.getPage req.params.name, (err, content) ->
+view = (name, req, res) ->
+    wiki.getPage name, (err, content) ->
         if err
             error404 err, req, res
         else
             res.render 'page',
-                title: req.params.name,
+                title: name,
                 content: wiki.render content,
 
-# get a form to post new wikipage
-app.get '/wikis/note/new', (req, res) ->
-    res.render 'new', title: 'New Page'
-
-# get a form to edit a wikipage
-app.get '/wikis/note/edit/:name', (req, res) ->
+edit = (name, req, res) ->
     wiki.getPage req.params.name, (err, content) ->
         if err
             error404 err, req, res
         else
             res.render 'edit',
                 title: 'Edit Page',
-                name: req.params.name,
+                name: name,
                 content: content,
 
-# get the history of the given wikipage
-app.get '/wikis/note/history/:name', (req, res) ->
-    wiki.getHistory req.params.name, (err, commits) ->
+history = (name, req, res) ->
+    wiki.getHistory name, (err, commits) ->
         if err
             error404 err, req, res
         else
             res.render 'history',
-                title: req.params.name,
+                title: name,
                 commits: commits,
 
-# get the diff between given revisions
-app.get '/wikis/note/diff/:name', (req, res) ->
-    wiki.diff req.params.name, req.query.a, req.query.b, (err, diff) ->
-        res.render 'diff',
-            title: 'Diff',
-            name: req.params.name,
-            diff: wiki.renderDiff(diff),
+diff = (name, req, res) ->
+    wiki.diff name, req.query.a, req.query.b, (err, diff) ->
+        if err
+            error404 err, req, res
+        else
+            res.render 'diff',
+                title: 'Diff',
+                name: name,
+                diff: wiki.renderDiff(diff),
+
+app.get '/wikis/note/pages/:name', (req, res) ->
+    name = req.params.name
+    switch req.query.action
+        when 'diff' then diff name, req, res
+        when 'history' then history name, req, res
+        when 'edit' then edit name, req, res
+        else view name, req, res
+
+# get a form to post new wikipage
+app.get '/wikis/note/new', (req, res) ->
+    res.render 'new', title: 'New Page'
 
 # rollback
-app.post '/wikis/note/rollback/:name', (req, res) ->
-    wiki.rollback req.params.name, req.body.id, (err) ->
-        wiki.getHistory req.params.name, (err, commits) ->
+app.post '/wikis/note/pages/:name', (req, res) ->
+    name = req.params.name
+    wiki.rollback name, req.body.id, (err) ->
+        wiki.getHistory name, (err, commits) ->
             if err
                 error404 err, req, res
             else
                 res.contentType 'json'
-                res.send {commits: commits, name: req.params.name, ids: commits.ids}
+                res.send {commits: commits, name: name, ids: commits.ids}
 
 # post new wikipage
 app.post '/wikis/note/pages', (req, res) ->
-    wiki.writePage req.body.name, req.body.body, (err) ->
-        wiki.getPage req.body.name, (err, content) ->
-            res.render 'page',
-                title: req.body.name,
-                content: wiki.render content,
+    name = req.body.name
+    wiki.writePage name, req.body.body, (err) ->
+        view name, req, res
 
 # delete wikipage
 app.post '/wikis/note/delete/:name', (req, res) ->
@@ -110,7 +116,7 @@ app.post '/wikis/note/delete/:name', (req, res) ->
 
 # post new user
 app.post '/wikis/note/users', (req, res) ->
-    users.add 
+    users.add
         id: req.body.id,
         name: req.body.name,
         email: req.body.email,

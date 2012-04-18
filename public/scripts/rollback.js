@@ -1,7 +1,7 @@
 var rollback_handler = function(e) {
     $.post(
-        '/wikis/note/rollback/' + this.name,
-        { id: this.id },
+        '/wikis/note/pages/' + this.name,
+        { id: this.id, action: 'rollback' },
         function(data) {
             var commits = data.commits;
             var ids = data.ids;
