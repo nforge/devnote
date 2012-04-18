@@ -48,7 +48,8 @@ view = (name, req, res) ->
                 title: name,
                 content: wiki.render content,
 
-    wiki.getPage req.params.name, (err, content) ->
+edit = (name, req, res) ->
+    wiki.getPage name, (err, content) ->
         if err
             error404 err, req, res
         else
