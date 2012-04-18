@@ -114,7 +114,7 @@ app.post '/wikis/note/pages/:name', (req, res) ->
 app.post '/wikis/note/pages', (req, res) ->
     name = req.body.name
     wiki.writePage name, req.body.body, (err) ->
-        view name, req, res
+        res.redirect '/wikis/note/pages/' + name
 
 # delete wikipage
 app.post '/wikis/note/delete/:name', (req, res) ->
