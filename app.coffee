@@ -148,10 +148,10 @@ app.post '/wikis/note/dropuser', (req, res) ->
 exports.start = (port, callback) ->
     wiki.init (err) ->
         wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
-          app.listen port
-          throw err if err
-          console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
-          callback() if callback
+          app.listen port, null, (err) ->
+            throw err if err
+            console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+            callback() if callback
 
 exports.stop = -> app.close
 
