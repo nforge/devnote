@@ -146,7 +146,7 @@ app.post '/wikis/note/dropuser', (req, res) ->
     res.redirect '/wikis/note/userlist'
 
 exports.start = (port, callback) ->
-    wiki.init (err, port) ->
+    wiki.init (err) ->
         wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
           app.listen port
           throw err if err
