@@ -41,13 +41,13 @@ Git 저장소에 커밋한다. `commit` 은 다음의 프로퍼티를 갖는다.
         console.log(content);
     });
     
-### show(filename, callback)
+### show(filename, commitId, callback)
 
-주어진 `filename`에 해당하는 파일의 HEAD 시점에서의 내용을 읽는다.
+주어진 `filename`에 해당하는 파일의 `commitId` 시점에서의 내용을 읽는다.
 
 예:
 
-    gitfs.show('README', function(err, content) {
+    gitfs.show('README', 'ab036b2aaa73e750da891bf16a02ce18088d671f', function(err, content) {
         console.log(content);
     });
 
