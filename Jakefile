@@ -9,7 +9,7 @@ task('default', function (params) {
 });
 
 task('test', function() {
-	var proc = spawn('mocha', ['-t','5000', '-R', 'spec', '-u', 'tdd'], { customFds: [0, 1, 2] });
+    var proc = spawn('mocha', ['-t','5000', '-R', 'spec', '-u', 'tdd', '--compilers', 'coffee:coffee-script'], { customFds: [0, 1, 2] });
     proc.on('exit', process.exit);
 });
 
