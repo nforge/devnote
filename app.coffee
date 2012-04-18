@@ -7,6 +7,7 @@ Module dependencies.
 express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
+users = require('./lib/users').users
 
 app = express.createServer()
 
@@ -30,6 +31,7 @@ app.configure 'production', ->
 
 # Routes
 app.get '/', routes.index
+app.get '/wikis/note/users', routes.addUserForm
 
 error404 = (err, req, res, next) ->
     res.render '404.jade',
@@ -105,6 +107,43 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             title: req.body.name,
             message: req.params.name,
             content: 'Page deleted',
+
+
+
+# post new user
+app.post '/wikis/note/users', (req, res) ->
+    users.add 
+        id: req.body.id,
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+    user = users.findUserById req.body.id
+    res.render 'user/user',
+        title: '사용자가 등록되었습니다.',
+        content: "사용자 정보",
+        user: user
+
+# get user
+app.get '/wikis/note/users/:id', (req, res) ->
+    user = users.findUserById req.params.id
+    res.render 'user/user',
+        title: 'User Info',
+        content: "사용자 정보",
+        user: user
+
+# get userlist
+app.get '/wikis/note/userlist', (req, res) ->
+    userlist = users.findAll()
+    res.render 'user/userlist',
+        title: 'User List',
+        content: "등록된 사용자 " + Object.keys(userlist).length + "명",
+        userlist: userlist
+
+# drop user
+app.post '/wikis/note/dropuser', (req, res) ->
+    user = users.findUserById req.body.id
+    users.remove({id: req.body.id}) if user
+    res.redirect '/wikis/note/userlist'
 
 exports.start = (port, callback) ->
     wiki.init (err) ->
