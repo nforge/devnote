@@ -17,5 +17,8 @@ var preview = function() {
         last_text = text;
     }
 }
-$("#body").keyup(preview);
-preview();
+
+window.addEventListener('load', function init() {
+    $("#body").keyup(preview);
+    preview();
+});

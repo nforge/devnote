@@ -22,7 +22,7 @@
     "express": "2.5.8",
     "jade": ">= 0.0.1",
     "markdown-js": "*",
-    "jshashes": ">= 0.1.3b"
+    "jshashes": ">= 0.1.3b",
     "github-flavored-markdown": ">= 1.0.1",
     "hljs": ">= 6.1.3",
     "diff": ">= 1.0.3"

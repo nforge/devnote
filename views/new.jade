@@ -9,4 +9,9 @@ form(method="post", action="/wikis/note/pages")
     input(type="submit", name="submit")
 div(id="preview")
 
+script(type="text/javascript")
+  var module = {};
+script(type="text/javascript", src="/scripts/highlight.js")
+script(type="text/javascript", src="/scripts/highlight-c.js")
+script(type="text/javascript", src="/scripts/showdown.js")
 script(type="text/javascript", src="/scripts/preview.js")
