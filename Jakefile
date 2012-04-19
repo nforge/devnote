@@ -1,12 +1,33 @@
 #!/usr/bin/env jake
-
 var spawn = require('child_process').spawn;
 var exec  = require('child_process').exec;
 var Mocha = require('mocha');
+var fs = require('fs');
+var util = require('util');
 
 task('default', function (params) {
   console.log('This is the default task.');
 });
+
+var cp_async = function(src, dst, callback) {
+    var is = fs.createReadStream(src);
+    var os = fs.createWriteStream(dst);
+    util.pump(is, os, callback);
+}
+
+task('build', function() {
+    cp_async(
+        'node_modules/hljs/highlight.js',
+        'public/scripts/highlight.js',
+        function(err) {
+            cp_async(
+                'node_modules/github-flavored-markdown/scripts/showdown.js',
+                'public/scripts/showdown.js',
+                complete
+            );
+        }
+    );
+}, true);
 
 task('test', function() {
     var proc = spawn('mocha', ['-t','5000', '-R', 'spec', '-u', 'tdd', '--compilers', 'coffee:coffee-script'], { customFds: [0, 1, 2] });

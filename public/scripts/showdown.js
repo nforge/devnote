@@ -1,1 +1,0 @@
-../../node_modules/github-flavored-markdown/scripts/showdown.js
