@@ -29,4 +29,6 @@ var rollback_handler = function(e) {
     );
 }
 
-$('.rollback-button').click(rollback_handler);
+window.addEventListener('load', function init() {
+    $('.rollback-button').click(rollback_handler);
+});
