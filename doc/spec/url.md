@@ -28,6 +28,7 @@ VIEW URL
 --------
 Method  REST    URI(/wikis/:wikiname 의 하위 path임을 가정)             Description
 list    GET     /pages                                                  전체 위키 페이지 목록 
+list    GET     /pages?action=search&keyword=:keyword                   페이지 검색 결과
 view    GET     /pages/:pagename                                        페이지 읽기
 edit    GET     /pages/:pagename?action=edit                            페이지 편집
 diff    GET     /pages/:pagename?action=diff&a=:commitid1&b=:commitid2  페이지 비교

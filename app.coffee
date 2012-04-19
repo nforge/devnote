@@ -77,8 +77,21 @@ diff = (name, req, res) ->
                 name: name,
                 diff: wiki.renderDiff(diff),
 
+search = (req, res) ->
+    keyword = req.query.keyword
+    if not keyword
+        res.render 'search',
+            title: 'Search'
+            pages: {}
+    else
+        wiki.search keyword, (err, pages) ->
+            throw err if err
+            res.render 'search',
+                title: 'Search'
+                pages: wiki.renderSearch(pages)
+
 # get wikipage list
-app.get '/wikis/note/pages', (req, res) ->
+list = (req, res) ->
     wiki.getPages (err, pages) ->
         if err
             error404 err, req, res
@@ -86,6 +99,11 @@ app.get '/wikis/note/pages', (req, res) ->
             res.render 'pages',
                 title: 'Pages',
                 content: pages
+
+app.get '/wikis/note/pages', (req, res) ->
+    switch req.query.action
+        when 'search' then search req, res
+        else list req, res
 
 app.get '/wikis/note/pages/:name', (req, res) ->
     name = req.params.name
@@ -100,7 +118,7 @@ app.get '/wikis/note/new', (req, res) ->
     res.render 'new', title: 'New Page'
 
 # rollback
-app.post '/wikis/note/pages/:name', (req, res) ->
+app.post '/api/note/pages/:name', (req, res) ->
     name = req.params.name
     wiki.rollback name, req.body.id, (err) ->
         wiki.getHistory name, (err, commits) ->
