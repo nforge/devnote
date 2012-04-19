@@ -100,7 +100,7 @@ app.get '/wikis/note/new', (req, res) ->
     res.render 'new', title: 'New Page'
 
 # rollback
-app.post '/wikis/note/pages/:name', (req, res) ->
+app.post '/api/note/pages/:name', (req, res) ->
     name = req.params.name
     wiki.rollback name, req.body.id, (err) ->
         wiki.getHistory name, (err, commits) ->
