@@ -79,13 +79,24 @@ diff = (name, req, res) ->
 
 # get wikipage list
 app.get '/wikis/note/pages', (req, res) ->
-    wiki.getPages (err, pages) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'pages',
-                title: 'Pages',
-                content: pages
+    keyword = req.query.keyword
+    if keyword
+        wiki.search keyword, (err, pages) ->
+            if err
+                error404 err, req, res
+            else
+                res.render 'search',
+                    title: 'Search'
+                    keyword: keyword,
+                    pages: wiki.renderSearch(pages)
+    else
+        wiki.getPages (err, pages) ->
+            if err
+                error404 err, req, res
+            else
+                res.render 'pages',
+                    title: 'Pages',
+                    content: pages
 
 app.get '/wikis/note/pages/:name', (req, res) ->
     name = req.params.name

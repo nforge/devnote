@@ -81,6 +81,37 @@ suite('wiki', function() {
         });
     });
 
+    test('사용자는 제목으로 위키 페이지를 검색할 수 있다.', function(done) {
+        var name = 'SecondPage';
+        var content = 'hello';
+
+        wiki.writePage(name, content, function(err) {
+            if (err) throw err;
+            wiki.search('SecondPage', function(err, result) {
+                assert.equal(Object.keys(result).length, 1);
+                assert.equal(Object.keys(result)[0], 'SecondPage');
+                done();
+            });
+        });
+    });
+
+    test('사용자는 본문 내용으로 위키 페이지를 검색할 수 있다.', function(done) {
+        var name = 'SecondPage';
+        var content = 'hello';
+
+        wiki.writePage(name, content, function(err) {
+            if (err) throw err;
+            wiki.search('ll', function(err, result) {
+                assert.equal(Object.keys(result).length, 1);
+                var expected = ['ll'];
+                expected.index = 2;
+                expected.input = 'hello';
+                assert.deepEqual(result['SecondPage'], expected);
+                done();
+            });
+        });
+    });
+
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
         done();
