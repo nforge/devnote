@@ -60,7 +60,7 @@ suite('wiki', function() {
         });
     });
 
-    test('rollback', function(done) {
+    test('사용자는 위키 페이지를 특정 시점으로 되돌릴 수 있다.', function(done) {
         var name = 'SecondPage';
         var content = 'hello';
 
