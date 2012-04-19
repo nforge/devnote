@@ -1,11 +1,15 @@
-h1= title
-div!= content
-ul
-  li
-    a(href="?") View
-  li
-    a(href="?action=edit") Edit
-  li
-    a(href="?action=history") History
-form(method="post", action="/wikis/note/delete/"+title)
-    input(type="submit", value="delete", name="submit")
+div.page-header
+  h1= title
+
+div.row
+  div.span12 
+    != content
+
+div.btn-group
+  a(href='/wikis/note/new').btn New
+  a(href="?").btn View
+  a(href="?action=edit").btn Edit
+  a(href="?action=history").btn History
+
+  form(method="post", action="/wikis/note/delete/"+title)
+    input(type="submit", value="delete", name="submit").btn

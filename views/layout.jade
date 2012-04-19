@@ -6,5 +6,8 @@ html
     link(rel='stylesheet', href='/stylesheets/syntax.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.css')
-  body!= body
+  body
+    div.container
+      != body
+      
     script(src='/bootstrap/js/bootstrap.js')
