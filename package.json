@@ -40,7 +40,8 @@
     "github-flavored-markdown": ">= 1.0.1",
     "hljs": ">= 6.1.3",
     "jshashes": ">= 0.1.3b",
-    "diff": ">= 1.0.3"
+    "diff": ">= 1.0.3",
+    "console-trace": "*"
   },
   "noAnalyze": true,
   "contributors": [ 
