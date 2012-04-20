@@ -4,6 +4,7 @@ var exec  = require('child_process').exec;
 var Mocha = require('mocha');
 var fs = require('fs');
 var util = require('util');
+var async = require('async');
 
 task('default', function (params) {
   console.log('This is the default task.');
@@ -16,17 +17,20 @@ var cp_async = function(src, dst, callback) {
 }
 
 task('build', function() {
-    cp_async(
-        'node_modules/hljs/highlight.js',
-        'public/scripts/highlight.js',
-        function(err) {
-            cp_async(
-                'node_modules/github-flavored-markdown/scripts/showdown.js',
-                'public/scripts/showdown.js',
-                complete
-            );
-        }
-    );
+    async.parallel([
+        async.apply(
+            cp_async,
+            'node_modules/hljs/highlight.js',
+            'public/scripts/highlight.js'),
+        async.apply(
+            cp_async, 
+            'node_modules/github-flavored-markdown/scripts/showdown.js',
+            'public/scripts/showdown.js'),
+        async.apply(
+            cp_async, 
+            'lib/highlight-c.js',
+            'public/scripts/highlight-c.js'),
+    ], complete);
 }, true);
 
 task('test', function() {
