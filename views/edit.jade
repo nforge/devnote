@@ -1,29 +1,26 @@
-h1= title
+
 form(method="post", action="/wikis/note/pages")
-    label(name="name") title
-    input(name="name", value=name)
-    br
-    label(name="body") body
-    textarea(id="body", name="body")= content
-    br
-    input(type="submit", name="submit")
+  div.page-header
+    input(name="name", value=name).input-xlarge
 
-ul
-  li
-    a(href="?") View
-  li
-    a(href="?action=edit") Edit
-  li
-    a(href="?action=history") History
-form(method="post", action="/wikis/note/delete/"+title)
-    input(type="submit", value="delete", name="submit")
+  textarea(id="body", name="body").input-xlarge
+    = content
+  br
+  input(type="submit", name="submit").btn-primary
 
+div.btn-group
+  a(href="?").btn View
+  form(method="post", action="/wikis/note/delete/"+title)
+    input(type="submit", value="delete", name="submit").btn
+br
+br
+br
 div(id="preview")
 
 script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
-script(type="text/javascript", src="/scripts/highlight.js")
-script(type="text/javascript", src="/scripts/highlight-c.js")
 script(type="text/javascript")
   var module = {};
+script(type="text/javascript", src="/scripts/highlight.js")
+script(type="text/javascript", src="/scripts/highlight-c.js")
 script(type="text/javascript", src="/scripts/showdown.js")
 script(type="text/javascript", src="/scripts/preview.js")
