@@ -1,12 +1,12 @@
-h1= title
+
 form(method="post", action="/wikis/note/pages")
-    label(name="name") title
-    input(name="name", value=name)
-    br
-    label(name="body") body
-    textarea(id="body", name="body")= content
-    br
-    input(type="submit", name="submit")
+  div.page-header
+    input(name="name", value=name).input-xlarge
+  br
+  label(name="body") body
+  textarea(id="body", name="body")= content
+  br
+  input(type="submit", name="submit")
 
 ul
   li
