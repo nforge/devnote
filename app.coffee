@@ -1,4 +1,5 @@
 util = require 'util'
+fs = require 'fs'
 
 ###
 Module dependencies.
@@ -8,15 +9,19 @@ express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
 users = require('./lib/users').users
+path = require 'path'
 
 app = express.createServer()
 
 # Configuration
 
+process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
+
 app.configure ->
   app.set 'views', __dirname + '/views'
   app.set 'view engine', 'jade'
-  app.use express.bodyParser()
+  app.use express.bodyParser 
+    uploadDir: uploadDir
   app.use express.methodOverride()
   app.use app.router
   app.use express.static __dirname + '/public'
@@ -32,6 +37,7 @@ app.configure 'production', ->
 # Routes
 app.get '/', routes.index
 app.get '/wikis/note/users', routes.addUserForm
+app.get '/wikis/note/pages/:name/attachment', routes.attachment
 
 error404 = (err, req, res, next) ->
     res.render '404.jade',
@@ -176,6 +182,24 @@ app.post '/wikis/note/dropuser', (req, res) ->
     user = users.findUserById req.body.id
     users.remove({id: req.body.id}) if user
     res.redirect '/wikis/note/userlist'
+
+# file attachment 
+app.post '/wikis/note/pages/:name/attachment', (req, res) ->
+    localUploadPath = path.dirname(req.files.attachment.path) + "/" + req.params.name
+    fs.mkdir localUploadPath, (err) ->
+        throw err if err && err.code != 'EEXIST'
+        fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
+            return if req.files.attachment.name isnt on
+            throw err if err
+    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
+
+# attachment file delete
+app.del '/wikis/note/pages/:name/attachment/:filename', (req, res) ->
+    filePath = path.join(uploadDir, req.params.name, req.params.filename)
+    fs.unlink filePath, (err) ->
+        throw err if err
+    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'    
+
 
 exports.start = (port, callback) ->
     wiki.init (err) ->
