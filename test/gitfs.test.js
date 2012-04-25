@@ -301,7 +301,10 @@ suite('gitfs.commit', function(){
             committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
             message: 'initial commit'
             };
-        gitfs.init(done);
+        gitfs.init(function (err) {
+            if (err) throw err;
+            done();
+        });
     });
     test('Welcome to n4wiki 라는 내용을 갖는 FrontPage 파일을 commit함', function(done){
         gitfs.commit(givenCommit, function(err, commitId) {
@@ -542,3 +545,58 @@ suite('assert.json.equal', function() {
    })
 });
 
+suite('gitfs.add', function(){
+    test('새로운 커밋대상을 추가하기',function(){
+        //Given
+        var target = {
+            path: "note",
+            name: "Welcome",
+            content: "Welcome to n4wiki"
+        };
+
+        var user = {
+            name: "채수원",
+            email: "dorrtts@gmail.com",
+            id: "doortts",
+            password: "1234"
+        };
+
+        //When
+        gitfs.add(user, target);
+
+        //Then
+        var status = gitfs.status(user);
+        assert.deepEqual(Object.keys(status), [target.path + ":" + target.name]);
+    });
+
+    test('여러 개의 커밋대상을 추가하기',function(){
+        //Given
+        var targetA = {
+            path: "note",
+            name: "Welcome",
+            content: "Welcome to n4wiki"
+        };
+
+        var targetB = {
+            path: "note",
+            name: "Diary",
+            content: "오늘은 매우 바뻤다.머리도 지끈."
+        };
+
+        var user = {
+            name: "채수원",
+            email: "dorrtts@gmail.com",
+            id: "doortts",
+            password: "1234"
+        };
+
+        //When
+        gitfs.add(user, targetA);
+        gitfs.add(user, targetB);
+
+        //Then
+        var status = gitfs.status(user);
+        assert.deepEqual(Object.keys(status), [targetA.path + ":" + targetA.name, targetB.path + ":" + targetB.name]);
+        assert.deepEqual(status[targetA.path + ":" + targetA.name], targetA);
+    })
+})
