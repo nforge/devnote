@@ -1,0 +1,23 @@
+style
+    form {margin: 0 0 0px}
+h1= title
+div.span4
+    form(method="post", enctype="multipart/form-data", action="/wikis/note/pages/#{pageName}/attachment")
+        label(for="attachment") 첨부할 파일을 선택해 주세요
+        input(type='file', name='attachment', id='attachment')
+        input(type="submit", name="submit", value="첨부").btn-primary
+
+div.span4
+    table.table.table-bordered.table-condensed
+        thead
+            tr
+                th(colspan=2) 파일이름
+        tbody
+            each filename in filelist
+                tr
+                    td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
+                    td 
+                        form(method="post", action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
+                            input(name='filename', type='hidden', value='#{filename}')
+                            input(type="hidden", name="_method", value="delete")
+                            input(type="submit", name="submit", value="삭제").btn-danger

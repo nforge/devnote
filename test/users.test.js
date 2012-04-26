@@ -3,6 +3,9 @@ var gitfs = require('../lib/users');
 var async = require('async');
 var step = require('step');
 var users = require('../lib/users').users;
+var users2 = require('../lib/users').users;
+var users3 = require('../lib/users').users;
+var util = require('util');
 
 suite("users", function(){
     suite("add", function(){
