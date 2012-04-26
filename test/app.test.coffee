@@ -54,7 +54,6 @@ suite '웹 인터페이스', ->
                 fill('body', 'Welcome to n4wiki!').
                 pressButton 'submit', ->
                     browser.visit getUrl('/wikis/note/pages/FrontPage2'),
-                        { debug: true, runScripts: false },
                         (e, browser, status) ->
                             assert.equal status, 404, 'ok 404'
                             done()
@@ -86,7 +85,7 @@ suite '웹 인터페이스', ->
                 pressButton 'submit', ->
                     browser.visit 'http://localhost:3000/wikis/note/pages/FrontPage', ->
                             browser.pressButton 'submit', ->
-                                browser.visit "http://localhost:3000/wikis/note/pages/FrontPage", { debug: true, runScripts: false },
+                                browser.visit "http://localhost:3000/wikis/note/pages/FrontPage",
                                     (e, browser, status) ->
                                         assert.equal status, 404
                                         done()

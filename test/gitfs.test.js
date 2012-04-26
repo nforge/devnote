@@ -7,6 +7,7 @@ var crypto = require('crypto');
 var path = require('path');
 var zlib = require('zlib');
 var fileutils = require('../lib/fileutils');
+var util = require('util');
 
 //  $ mkdir -p ./pages.git/objects
 //     $ mkdir -p ./pages.git/refs
@@ -132,7 +133,6 @@ suite('gitfs._storeObject', function() {
     });
     test('Git object를 sha1 해시값에서 앞 두글자를 제외한 38자리 이름의 파일을 deflate로 압축하여 저장', function(done) {
         var blobPath;
-        var expectedBlob;
         var content = 'wiki-content\n';
         step(
             function given() {
@@ -293,14 +293,21 @@ suite('gitfs._serializeCommit', function(){
 
 suite('gitfs.commit', function(){
     var givenCommit;
-    var expectedCommit;
+    var files, user;
     setup(function(done){
+        files = {'FrontPage': 'Welcome to n4wiki'};
+        user = {
+            name    : "nekure",
+            id      : "racoon",
+            email   : "nekure@gmail.com",
+            timezone: '+0900'
+        };
         givenCommit = {
-            files: {'FrontPage': 'Welcome to n4wiki'},
-            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            message: 'initial commit'
-            };
+            files: files,
+            user: user,
+            message: "initial commit"
+        };
+
         gitfs.init(function (err) {
             if (err) throw err;
             done();
@@ -309,13 +316,13 @@ suite('gitfs.commit', function(){
     test('Welcome to n4wiki 라는 내용을 갖는 FrontPage 파일을 commit함', function(done){
         gitfs.commit(givenCommit, function(err, commitId) {
             gitfs.readObject(commitId, function(err, commit) {
-                assert.equal(commit.author.name, givenCommit.author.name);
-                assert.equal(commit.author.mail, givenCommit.author.mail);
-                assert.equal(commit.author.timezone, givenCommit.author.timezone);
+                assert.equal(commit.author.name, givenCommit.user.name);
+                assert.equal(commit.author.email, givenCommit.user.email);
+                assert.equal(commit.author.timezone, givenCommit.user.timezone);
 
-                assert.equal(commit.committer.name, givenCommit.committer.name);
-                assert.equal(commit.committer.mail, givenCommit.committer.mail);
-                assert.equal(commit.committer.timezone, givenCommit.committer.timezone);
+                assert.equal(commit.committer.name, givenCommit.user.name);
+                assert.equal(commit.committer.email, givenCommit.user.email);
+                assert.equal(commit.committer.timezone, givenCommit.user.timezone);
 
                 assert.equal(commit.message, givenCommit.message);
                 gitfs.readObject(commit.tree, function(err, tree) {
@@ -347,16 +354,27 @@ suite('gitfs.commit', function(){
 
 suite('gitfs.show', function() {
     test('Welcome to n4wiki 라는 내용이 담긴 커밋된 FrontPage 파일을 읽음', function(done) {
+        //Given
+        var files = {'FrontPage': 'Welcome to n4wiki'};
+        var user = {
+            name    : "Yi, EungJun",
+            id      : "semtlenori",
+            email   : "semtlenori@gmail.com",
+            timezone: '+0900'
+        };
+
         var givenCommit = {
-            files: {'FrontPage': 'Welcome to n4wiki'},
-            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            files: files,
+            user: user,
             message: 'initial commit'
         };
+
+        //When
         gitfs.init(function (err) {
             gitfs.commit(givenCommit, function(err) {
                 gitfs._getCommitIdFromHEAD(function(err, commitId) {
                     gitfs.show('FrontPage', commitId, function(err, actual) {
+                        //Then
                         assert.equal(actual, 'Welcome to n4wiki');
                         done();
                     });
@@ -366,19 +384,28 @@ suite('gitfs.show', function() {
     });
 
     test('두 개의 파일을 커밋하고 내용을 읽음', function(done) {
+        //Given
+        var files = {
+            'FrontPage': 'Welcome to n4wiki',
+            'Index': 'List of all pages'
+        };
+        var user = {
+            name    : "Yi, EungJun",
+            id      : "semtlenori",
+            email   : "semtlenori@gmail.com",
+            timezone: '+0900'
+        };
+
         var givenCommit = {
-            files: {
-                'FrontPage': 'Welcome to n4wiki',
-                'Index': 'List of all pages'
-            },
-            author: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
-            committer: {name: 'Yi, EungJun', mail: 'semtlenori@gmail.com', timezone: '+0900'},
+            files: files,
+            user: user,
             message: 'initial commit'
         };
+
         gitfs.init(function (err) {
-            gitfs.commit(givenCommit, function(err) {
-                gitfs._getCommitIdFromHEAD(function(err, commitId) {
-                    gitfs.show('Index', commitId, function(err, actual) {
+            gitfs.commit(givenCommit, function (err) {
+                gitfs._getCommitIdFromHEAD(function (err, commitId) {
+                    gitfs.show('Index', commitId, function (err, actual) {
                         assert.equal(actual, 'List of all pages');
                         done();
                     });
@@ -386,7 +413,6 @@ suite('gitfs.show', function() {
             });
         });
     });
-
     teardown(function(done) {
         fileutils.rm_rf('pages.git');
         done();
@@ -397,22 +423,30 @@ suite('gitfs.log', function() {
     var givenCommits;
 
     setup(function(done){
+        var filesFor1stCommit = {'FrontPage':'Welcome'};
+        var filesFor2ndCommit = {
+            'FrontPage':'Welcome to n4wiki',
+                'Index':'List of all pages'
+        };
+
+        var user = {
+            name    : "Yi, EungJun",
+            id      : "semtlenori",
+            email   : "semtlenori@gmail.com",
+            timezone: '+0900'
+        };
+
         var firstCommit = {
-            files:{'FrontPage':'Welcome'},
-            author:{name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
-            committer:{name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
-            message:'the first commit'
-        }
+            files: filesFor1stCommit,
+            user: user,
+            message: 'the first commit'
+        };
 
         var secondCommit = {
-            files: {
-                'FrontPage':'Welcome to n4wiki',
-                'Index':'List of all pages'
-            },
-            author: {name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
-            committer: {name:'Yi, EungJun', mail:'semtlenori@gmail.com', timezone:'+0900'},
+            files: filesFor2ndCommit,
+            user: user,
             message: 'the second commit'
-        }
+        };
 
         givenCommits = [firstCommit, secondCommit];
         gitfs.init(function (err) {
@@ -442,7 +476,7 @@ suite('gitfs.log', function() {
     });
 
     test('새로운 사람에 의해 세 번째 커밋이 일어났을 때 히스토리 가져오기', function(done){
-        var writer = {name: 'doortts', mail: 'doortts@gmail.com', timezone: '+0900'};
+        var writer = {name: 'nFORGE', id: 'n4wiki', mail: 'n4wiki@nhn.com', timezone: '+0900'};
         step(
             function given() {
                 var thirdCommit = {
@@ -451,8 +485,7 @@ suite('gitfs.log', function() {
                         'Index':'List of all pages',
                         'README':'License agreements'
                     },
-                    author: writer,
-                    committer: writer,
+                    user: writer,
                     message:'Added license message'
                 }
                 gitfs.commit(thirdCommit, this);
@@ -463,7 +496,7 @@ suite('gitfs.log', function() {
             function then(err, actual) {
                 if (err) throw err;
                 assert.equal(actual.length, 1);
-                assert.equal(actual[0].author.name, 'doortts');
+                assert.equal(actual[0].author.name, writer.name);
                 done();
             }
         )
@@ -481,8 +514,7 @@ suite('gitfs.getHeadTree', function(){
     setup(function (done) {
         var firstCommit = {
             files: {'My Diary': 'I have a busy day!'},
-            author: {name: 'SW.CHAE', mail: 'doortts@gmail.com', timezone: '+0900'},
-            committer: {name: 'SW.CHAE', mail: 'doortts@gmail.com', timezone: '+0900'},
+            user: {name: 'CHAE.SW', id: 'doortts', mail: 'doortts@gmail.com', timezone: '+0900'},
             message: 'diary added'
         }
 
@@ -494,7 +526,7 @@ suite('gitfs.getHeadTree', function(){
         });
     });
     test('HEAD commit 가져오기',function(done) {
-        var writer = {name: 'doortts', mail: 'doortts@gmail.com', timezone: '+0900'};
+        var writer = {name: 'CHAE.SW', id: 'doortts', mail: 'doortts@gmail.com', timezone: '+0900'};
         var expectedtree = {"My Diary": "f0088144f8ddcebcaef23def5467d45c2adcdb63", "README": "6a1fea92897468a77a436724ae3306891f19b60c"};
         step(
             function given() {
@@ -502,8 +534,7 @@ suite('gitfs.getHeadTree', function(){
                     files: {
                         'README': 'License agreements'
                     },
-                    author: writer,
-                    committer: writer,
+                    user: writer,
                     message: 'Added license message'
                 }
                 gitfs.commit(commit, this);
@@ -599,4 +630,4 @@ suite('gitfs.add', function(){
         assert.deepEqual(Object.keys(status), [targetA.path + ":" + targetA.name, targetB.path + ":" + targetB.name]);
         assert.deepEqual(status[targetA.path + ":" + targetA.name], targetA);
     })
-})
+});
