@@ -85,18 +85,15 @@ suite("users", function(){
                 password: "rrrr"
             };
             var findUser = "";
-
             users.add(userA);
-            //When
-            users.changePassword = function (previousPassword, newPassword, user) {
-
-            };
-            users.changePassword('dddd', 'gggg', userA);
-
-            //Then
-            findUser = users.findUserById(userA.id);
-            assert.equal(findUser.id, "racoon");
-            assert.equal(findUser.password, "dKiPJB5RoVWXTniX+PjJWLmIxeYwBGfAmqOLoVHgneawFJGAGKuzl9ObtPw4fS+3pqmCTOYG9DrbVlQpUZ0SSQ==");
+            
+            try{
+                //When
+                users.changePassword('ffff', 'gggg', userA);    
+            } catch (e){
+                //Then
+                assert.equal(e.message, "Entered previous password is incorrect!");
+            }
         });
     })
 });
