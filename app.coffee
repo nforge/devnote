@@ -36,7 +36,6 @@ app.configure 'production', ->
 
 # Routes
 app.get '/', routes.index
-# app.get '/wikis/note/users', routes.addUserForm
 app.get '/wikis/note/pages/:name/attachment', routes.attachment
 
 error404 = (err, req, res, next) ->
@@ -180,12 +179,33 @@ app.post '/wikis/note/users/new', (req, res) ->
         email: req.body.email,
         password: req.body.password
     userInfo = user.findUserById req.body.id
-#    res.redirect '/wikis/note/users'
 
     res.render 'user/user',
         title: '사용자가 등록되었습니다.',
         content: "사용자 정보",
         userInfo: userInfo
+
+# show user information
+app.get '/wikis/note/user/:id', (req, res) ->
+    userInfo = user.findUserById req.params.id
+    res.render 'user/edit',
+        title: 'User information',
+        content: "사용자 정보",
+        user: userInfo
+
+# change user information (password change)
+app.post '/wikis/note/user/:id', (req, res) ->
+    targetUser = user.findUserById req.params.id
+    isValid = user.changePassword req.body.previousPassword, req.body.newPassword, targetUser
+    targetUser.email = req.body.email if isValid
+    user.save targetUser if isValid
+
+    userInfo = user.findUserById req.params.id
+    res.render 'user/user',
+        title: '사용자 정보가 변경되었습니다.',
+        content: "사용자 정보",
+        userInfo: userInfo    
+
 
 # drop user
 app.post '/wikis/note/dropuser', (req, res) ->

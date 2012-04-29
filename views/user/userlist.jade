@@ -15,7 +15,7 @@ div
                 tr
                     td #{user.name}
                     td #{user.email}
-                    td #{user.id}
+                    td: a(href='/wikis/note/user/#{user.id}') #{user.id}
                     td #{user.password}
                     th 
                         form(method="post", action="/wikis/note/dropuser")
