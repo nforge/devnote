@@ -8,7 +8,7 @@ Module dependencies.
 express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
-users = require('./lib/users').users
+user = require('./lib/users').users
 path = require 'path'
 
 app = express.createServer()
@@ -36,7 +36,7 @@ app.configure 'production', ->
 
 # Routes
 app.get '/', routes.index
-app.get '/wikis/note/users', routes.addUserForm
+# app.get '/wikis/note/users', routes.addUserForm
 app.get '/wikis/note/pages/:name/attachment', routes.attachment
 
 error404 = (err, req, res, next) ->
@@ -148,39 +148,49 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             message: req.params.name,
             content: 'Page deleted',
 
-# post new user
-app.post '/wikis/note/users', (req, res) ->
-    users.add
-        id: req.body.id,
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    user = users.findUserById req.body.id
-    res.render 'user/user',
-        title: '사용자가 등록되었습니다.',
-        content: "사용자 정보",
-        user: user
-
 # get user
-app.get '/wikis/note/users/:id', (req, res) ->
-    user = users.findUserById req.params.id
-    res.render 'user/user',
-        title: 'User Info',
-        content: "사용자 정보",
-        user: user
+app.get '/wikis/note/users', (req, res) ->
+    switch req.query.action
+        when 'login' then login req, res
+        else users req, res
+
+login = (req, res) ->
+    res.render 'user/login'
+        title: 'login'
+        content: 'login'
 
 # get userlist
-app.get '/wikis/note/userlist', (req, res) ->
-    userlist = users.findAll()
+users = (req, res) ->
+    userlist = user.findAll()
     res.render 'user/userlist',
         title: 'User List',
         content: "등록된 사용자 " + Object.keys(userlist).length + "명",
         userlist: userlist
 
+# get new user
+app.get '/wikis/note/users/new', (req, res) ->
+    res.render 'user/new'
+        title: 'new user'
+
+# post new user
+app.post '/wikis/note/users/new', (req, res) ->
+    user.add
+        id: req.body.id,
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+    userInfo = user.findUserById req.body.id
+#    res.redirect '/wikis/note/users'
+
+    res.render 'user/user',
+        title: '사용자가 등록되었습니다.',
+        content: "사용자 정보",
+        userInfo: userInfo
+
 # drop user
 app.post '/wikis/note/dropuser', (req, res) ->
-    user = users.findUserById req.body.id
-    users.remove({id: req.body.id}) if user
+    user = user.findUserById req.body.id
+    user.remove({id: req.body.id}) if user
     res.redirect '/wikis/note/userlist'
 
 # file attachment 
@@ -208,6 +218,7 @@ exports.start = (port, callback) ->
             throw err if err
             console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
             callback() if callback
+
 
 exports.stop = -> app.close
 
