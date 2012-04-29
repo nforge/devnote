@@ -28,7 +28,7 @@ suite("users", function(){
         });
     });
     suite("remove", function () {
-        test("두 명 중 한명을 삭제 할 경우", function () {
+        test("두 명 중 한 명을 삭제 할 경우", function () {
             //Given
             var userA = {
                 name: "nekure",
