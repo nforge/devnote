@@ -31,11 +31,24 @@ task('build', function() {
             'lib/highlight-c.js',
             'public/scripts/highlight-c.js'),
     ], complete);
-    jake.Task['test'].invoke();
+    if ( process.platform !== 'win32' ){
+        var proc = exec('npm install zombie');
+        proc.on('exit', function(){
+            console.log('end~~~~~~~~~~~~')
+            jake.Task['test'].invoke();
+            process.exit();
+        });
+        proc.stdout.on('data', function(data){
+        console.log(data);
+        })
+        proc.stderr.on('data', function(data){
+            console.log(data)
+        })
+    }
 }, true);
 
 task('test', function() {
-    if( process.platform == 'win32' ) {
+    if( process.platform === 'win32' ) {
         jake.Task['testWin'].invoke();
     } else{
         jake.Task['testAll'].invoke();
@@ -58,6 +71,30 @@ task('testAll', function(){
     })
 }, {async: true})
 
+desc("mocha test in *nix os - run with node")
+task('testnix', function(){
+    var options = {}; 
+    options.timeout = 5000;
+    var mocha = new Mocha(options);
+    mocha.reporter('spec').ui('tdd');
+
+    var files = fs.readdirSync('./test')
+    for(var i=0, length = files.length; i< length; i += 1){
+        if ( files[i].lastIndexOf('test') !== -1 ) {
+            mocha.addFile('./test/'+files[i]);
+        }
+    }
+
+    var runner = mocha.run(function(){
+      console.log('finished');
+    });
+
+    runner.on('pass', function(test){
+    });
+
+    runner.on('fail', function(test){
+    });
+})
 
 desc("mocha test in windows - run with node")
 task('testWin', function(){
