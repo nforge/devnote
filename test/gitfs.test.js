@@ -472,6 +472,32 @@ suite('gitfs.log', function() {
 
 });
 
+suite('gitfs.log (pack)', function() {
+    var gitRoot = 'test/resources/pack.git_fixture/.git';
+    var originalGitRoot;
+
+    setup(function() {
+        originalGitRoot = gitfs.getRepoPath();
+        gitfs.setRepoPath(gitRoot);
+    });
+
+    test('커밋 로그를 에러없이 가져온다.', function(done) {
+        step(
+            function when() {
+                gitfs.log('test', this);
+            },
+            function then(err, logs) {
+                if (err) throw err;
+                assert.equal(logs.length, 30);
+                done();
+            }
+        );
+    });
+
+    teardown(function() {
+        gitfs.setRepoPath(originalGitRoot);
+    });
+});
 suite('gitfs.getHeadTree', function(){
     var givenCommits;
 
@@ -541,4 +567,3 @@ suite('assert.json.equal', function() {
        assert.json.equal(actual, expected);
    })
 });
-
