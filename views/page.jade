@@ -2,14 +2,14 @@ div.page-header
   h1= title
 
 div.row
-  div.span12 
+  div.span12
     != content
 
 a(href="?action=edit").btn Edit
 br
 br
 div.btn-group
-  a(href='/wikis/note/new').btn New  
-  a(href="?action=history").btn History
-
-
+  form(method="post", action="/wikis/note/delete/"+title)
+      a(href='/wikis/note/new').btn New
+      a(href="?action=history").btn History
+      input(type="submit", value="delete", name="submit").btn

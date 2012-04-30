@@ -1,4 +1,5 @@
 util = require 'util'
+fs = require 'fs'
 
 ###
 Module dependencies.
@@ -7,16 +8,20 @@ Module dependencies.
 express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
-users = require('./lib/users').users
+user = require('./lib/users').users
+path = require 'path'
 
 app = express.createServer()
 
 # Configuration
 
+process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
+
 app.configure ->
   app.set 'views', __dirname + '/views'
   app.set 'view engine', 'jade'
-  app.use express.bodyParser()
+  app.use express.bodyParser 
+    uploadDir: uploadDir
   app.use express.methodOverride()
   app.use app.router
   app.use express.static __dirname + '/public'
@@ -31,7 +36,7 @@ app.configure 'production', ->
 
 # Routes
 app.get '/', routes.index
-app.get '/wikis/note/users', routes.addUserForm
+app.get '/wikis/note/pages/:name/attachment', routes.attachment
 
 error404 = (err, req, res, next) ->
     res.render '404.jade',
@@ -142,40 +147,89 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             message: req.params.name,
             content: 'Page deleted',
 
-# post new user
-app.post '/wikis/note/users', (req, res) ->
-    users.add
-        id: req.body.id,
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    user = users.findUserById req.body.id
-    res.render 'user/user',
-        title: '사용자가 등록되었습니다.',
-        content: "사용자 정보",
-        user: user
-
 # get user
-app.get '/wikis/note/users/:id', (req, res) ->
-    user = users.findUserById req.params.id
-    res.render 'user/user',
-        title: 'User Info',
-        content: "사용자 정보",
-        user: user
+app.get '/wikis/note/users', (req, res) ->
+    switch req.query.action
+        when 'login' then login req, res
+        else users req, res
+
+login = (req, res) ->
+    res.render 'user/login'
+        title: 'login'
+        content: 'login'
 
 # get userlist
-app.get '/wikis/note/userlist', (req, res) ->
-    userlist = users.findAll()
+users = (req, res) ->
+    userlist = user.findAll()
     res.render 'user/userlist',
         title: 'User List',
         content: "등록된 사용자 " + Object.keys(userlist).length + "명",
         userlist: userlist
 
+# get new user
+app.get '/wikis/note/users/new', (req, res) ->
+    res.render 'user/new'
+        title: 'new user'
+
+# post new user
+app.post '/wikis/note/users/new', (req, res) ->
+    user.add
+        id: req.body.id,
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+    userInfo = user.findUserById req.body.id
+
+    res.render 'user/user',
+        title: '사용자가 등록되었습니다.',
+        content: "사용자 정보",
+        userInfo: userInfo
+
+# show user information
+app.get '/wikis/note/user/:id', (req, res) ->
+    userInfo = user.findUserById req.params.id
+    res.render 'user/edit',
+        title: 'User information',
+        content: "사용자 정보",
+        user: userInfo
+
+# change user information (password change)
+app.post '/wikis/note/user/:id', (req, res) ->
+    targetUser = user.findUserById req.params.id
+    isValid = user.changePassword req.body.previousPassword, req.body.newPassword, targetUser
+    targetUser.email = req.body.email if isValid
+    user.save targetUser if isValid
+
+    userInfo = user.findUserById req.params.id
+    res.render 'user/user',
+        title: '사용자 정보가 변경되었습니다.',
+        content: "사용자 정보",
+        userInfo: userInfo    
+
+
 # drop user
 app.post '/wikis/note/dropuser', (req, res) ->
-    user = users.findUserById req.body.id
-    users.remove({id: req.body.id}) if user
+    user = user.findUserById req.body.id
+    user.remove({id: req.body.id}) if user
     res.redirect '/wikis/note/userlist'
+
+# file attachment 
+app.post '/wikis/note/pages/:name/attachment', (req, res) ->
+    localUploadPath = path.dirname(req.files.attachment.path) + "/" + req.params.name
+    fs.mkdir localUploadPath, (err) ->
+        throw err if err && err.code != 'EEXIST'
+        fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
+            return if req.files.attachment.name isnt on
+            throw err if err
+    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
+
+# attachment file delete
+app.del '/wikis/note/pages/:name/attachment/:filename', (req, res) ->
+    filePath = path.join(uploadDir, req.params.name, req.params.filename)
+    fs.unlink filePath, (err) ->
+        throw err if err
+    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'    
+
 
 exports.start = (port, callback) ->
     wiki.init (err) ->
@@ -184,6 +238,7 @@ exports.start = (port, callback) ->
             throw err if err
             console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
             callback() if callback
+
 
 exports.stop = -> app.close
 

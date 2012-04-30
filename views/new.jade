@@ -1,12 +1,19 @@
-h1= title
-form(method="post", action="/wikis/note/pages")
-    label(name="name") title
-    input(name="name")
-    br
-    label(name="body") body
-    textarea(id="body", name="body")
-    br
-    input(type="submit", name="submit")
+div.page-header
+  h1= title
+
+form(method="post", action="/wikis/note/pages").form-horizontal
+  fieldset
+    div.control-group
+      label(name="name").control-label title
+      div.controls
+        input(name="name").input-xlarge
+    div.control-group
+      label(name="body").control-label body
+      div.controls
+        textarea(id="body", name="body", rows="10").input-xlarge
+    div.form-actions
+      input(type="submit", name="submit").btn-primary
+
 div(id="preview")
 
 script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
