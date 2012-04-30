@@ -509,7 +509,7 @@ suite('gitfs.log', function() {
 });
 
 suite('gitfs.log (pack)', function() {
-    var gitRoot = 'test/resources/pack.git_fixture/.git';
+    var gitRoot = 'test/resources/pack.git_fixture';
     var originalGitRoot;
 
     setup(function() {

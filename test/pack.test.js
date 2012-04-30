@@ -12,7 +12,7 @@ var gitfs = require('../lib/gitfs');
 
 suite('pack.getObjectIds', function(){
     var packId = 'a0e60bd1c3e0b983d3fced8c46fe85758ee52eac';
-    var gitRoot = 'test/resources/pack.git_fixture/.git';
+    var gitRoot = 'test/resources/pack.git_fixture';
 
     test('object id를 가져온다.', function(done) {
         var pack = new packutil.Pack();
@@ -31,7 +31,7 @@ suite('pack.getObject', function() {
 
     setup(function(done) {
         packId = 'a0e60bd1c3e0b983d3fced8c46fe85758ee52eac';
-        gitRoot = 'test/resources/pack.git_fixture/.git';
+        gitRoot = 'test/resources/pack.git_fixture';
         pack = new packutil.Pack();
         pack.init(gitRoot, packId, done);
     });
