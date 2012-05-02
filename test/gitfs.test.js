@@ -457,7 +457,7 @@ suite('gitfs.log', function() {
     });
 
     test('두 번 커밋된 FrontPage 페이지의 히스토리 가져오기', function(done) {
-        gitfs.log('FrontPage', function(err, actual) {
+        gitfs.log('FrontPage', null, function(err, actual) {
             if (err) throw err;
             assert.equal(actual.length, 2);
             assert.equal(actual[0].message, givenCommits[1].message);
@@ -467,7 +467,7 @@ suite('gitfs.log', function() {
     });
 
     test('커밋된 후 삭제된 Index 페이지의 히스토리 가져오기', function(done) {
-        gitfs.log('Index', function(err, actual) {
+        gitfs.log('Index', null, function(err, actual) {
             if (err) throw err;
             assert.equal(actual.length, 1);
             assert.equal(actual[0].message, givenCommits[1].message);
@@ -491,7 +491,7 @@ suite('gitfs.log', function() {
                 gitfs.commit(thirdCommit, this);
             },
             function when() {
-                gitfs.log('README', this);
+                gitfs.log('README', null, this);
             },
             function then(err, actual) {
                 if (err) throw err;
@@ -520,7 +520,7 @@ suite('gitfs.log (pack)', function() {
     test('커밋 로그를 에러없이 가져온다.', function(done) {
         step(
             function when() {
-                gitfs.log('test', this);
+                gitfs.log('test', null, this);
             },
             function then(err, logs) {
                 if (err) throw err;
@@ -534,6 +534,113 @@ suite('gitfs.log (pack)', function() {
         gitfs.setRepoPath(originalGitRoot);
     });
 });
+
+suite('gitfs.queryLog', function() {
+    setup(function(done) {
+        gitfs.init(function (err) {
+            if (err) throw err;
+            step(
+                function() {
+                    var commitRequest = {files: {'frontpage': 'welcome to n4wiki'}, user: {name: 'Guest', mail: 'guest@n4wiki.com', timezone: '+0900'}, message: 'Edit frontpage'};
+                    gitfs.commit(commitRequest, this);
+                },
+                function() {
+                    var commitRequest = {files: {'SecondPage': 'hello'}, user: {name: 'Guest', mail: 'guest@n4wiki.com', timezone: '+0900'}, message: 'hello'};
+                    gitfs.commit(commitRequest, this);
+                },
+                function() {
+                    var commitRequest = {files: {'SecondPage': 'hello, world'}, user: {name: 'Guest', mail: 'guest@n4wiki.com', timezone: '+0900'}, message: 'hello, world'};
+                    gitfs.commit(commitRequest, this);
+                },
+                function() {
+                    var commitRequest = {files: {'SecondPage': 'bye'}, user: {name: 'Guest', mail: 'guest@n4wiki.com', timezone: '+0900'}, message: 'bye'};
+                    gitfs.commit(commitRequest, done);
+                }
+            );
+        });
+    });
+
+    test('커밋로그를 지정한 갯수만큼만 가져오기', function(done) {
+        gitfs.log('SecondPage', 2, function(err, commits) {
+            assert.equal(commits.length, 2);
+            assert.equal(commits[0].message, 'bye');
+            assert.equal(commits[1].message, 'hello, world');
+            done();
+        });
+    });
+
+    test('지정한 시점까지의 커밋로그 가져오기 (offset > 0)', function(done) {
+        var expected;
+
+        step(
+            function given() {
+                var next = this;
+                gitfs.log('SecondPage', null, function(err, commits) {
+                    expected = [commits[2]];
+                    expected.ids = [commits.ids[2]];
+                    next(err, commits);
+                });
+            },
+            function when(err, commits) {
+                gitfs.queryLog({filename: 'SecondPage', until: commits.ids[1], offset: 1}, this);
+            },
+            function then(err, commits) {
+                assert.deepEqual(commits, expected);
+                done();
+            }
+        );
+    });
+
+    test('지정한 시점까지의 커밋로그 가져오기 (offset < 0)', function(done) {
+        var expected;
+
+        step(
+            function given() {
+                var next = this;
+                gitfs.log('SecondPage', null, function(err, commits) {
+                    expected = [commits[1], commits[2]];
+                    expected.ids = [commits.ids[1], commits.ids[2]];
+                    next(err, commits);
+                });
+            },
+            function when(err, commits) {
+                gitfs.queryLog({filename: 'SecondPage', until: commits.ids[2], offset: -1}, this);
+            },
+            function then(err, commits) {
+                assert.deepEqual(commits, expected);
+                done();
+            }
+        );
+    });
+
+    test('지정한 시점부터의 커밋로그 가져오기', function(done) {
+        var expected;
+
+        step(
+            function given() {
+                var next = this;
+                gitfs.log('SecondPage', 2, function(err, commits) {
+                    expected = [commits[0]];
+                    expected.ids = [commits.ids[0]];
+                    next(err, commits);
+                });
+            },
+            function when(err, commits) {
+                gitfs.queryLog({filename: 'SecondPage', since: commits.ids[1]}, this);
+            },
+            function then(err, commits) {
+                assert.deepEqual(commits, expected);
+                done();
+            }
+        );
+    });
+
+    teardown(function(done) {
+        fileutils.rm_rf('pages.git');
+        done();
+    });
+});
+
 suite('gitfs.getHeadTree', function(){
     var givenCommits;
 

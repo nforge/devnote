@@ -1,6 +1,7 @@
 var assert = require('assert');
 var wiki = require('../lib/wiki');
 var fileutils = require('../lib/fileutils');
+var step = require('step');
 
 var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
 
@@ -69,7 +70,7 @@ suite('wiki', function() {
             var content = 'hello, world';
             wiki.writePage(name, content, function(err) {
                 if (err) throw err;
-                wiki.getHistory(name, function(err, commits) {
+                wiki.getHistory(name, null, function(err, commits) {
                     wiki.rollback(name, commits.ids[1], function(err) {
                         wiki.getPage(name, function(err, actual) {
                             assert.equal('hello', actual);
@@ -117,4 +118,3 @@ suite('wiki', function() {
         done();
     });
 });
-

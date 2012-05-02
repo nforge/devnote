@@ -64,13 +64,22 @@ edit = (name, req, res) ->
                 content: content,
 
 history = (name, req, res) ->
-    wiki.getHistory name, (err, commits) ->
+    LIMIT = 30
+
+    handler = (err, commits) ->
         if err
             error404 err, req, res
         else
             res.render 'history',
                 title: name,
                 commits: commits,
+                limit: LIMIT,
+
+    if req.query.until
+        offset = parseInt(req.query.offset or 0)
+        wiki.queryHistory {filename: name, until: req.query.until, offset: offset, limit: LIMIT}, handler
+    else
+        wiki.getHistory name, limit, handler
 
 diff = (name, req, res) ->
     wiki.diff name, req.query.a, req.query.b, (err, diff) ->

@@ -49,3 +49,17 @@ N4WIKI Models
                 },
                 message: "Added test"
     };
+
+- log query
+
+    var logQuery = {
+        filename: 'frontpage',  // 디렉토리를 지원하게 되면 path 로 이름을 바꾸는 것이 좋을 것이다.
+        until: 'f96845522d7a2de3c0c4677ac96f6640ceb19055',  // 가져올 커밋의 범위 (이 커밋까지)
+        offset: 1,                                          // until에 대한 offset (음수도 가능)
+        since: '0cc71c0002496eccbe919c2e5f4c0616f9f2e611',  // 가져올 커밋의 범위 (이 커밋 이후)
+        limit: 30                                           // 가져올 커밋의 최대 갯수
+    }
+
+    위 query 는 아래의 git 명령과 같다.
+
+    git log -30 0cc71c0002496eccbe919c2e5f4c0616f9f2e611..f96845522d7a2de3c0c4677ac96f6640ceb19055^1 -- frontpage

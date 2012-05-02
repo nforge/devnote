@@ -9,6 +9,8 @@ form(method="get", action="/wikis/note/pages/"+title)
           input(type="submit", value="diff", name="action")
         td Message
     tbody(id="commits")
+      - var first = commits.ids[0];
+      - var last = commits.ids[commits.length - 1];
       - commits.forEach(function(commit, index) {
       - var date = new Date(commit.author.unixtime * 1000)
         tr
@@ -21,6 +23,13 @@ form(method="get", action="/wikis/note/pages/"+title)
           td
             a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
       - });
+
+ul(class="pager")
+  li
+    a(href="/wikis/note/pages/" + title + "?action=history&until=" + first + "&offset=-" + limit) « Newer
+  li
+    a(href="/wikis/note/pages/" + title + "?action=history&until=" + last + "&offset=1") Older »
+
 ul
   li
     a(href="?") View
