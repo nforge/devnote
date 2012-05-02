@@ -30,6 +30,10 @@ task('build', function() {
             cp_async, 
             'lib/highlight-c.js',
             'public/scripts/highlight-c.js'),
+        async.apply(
+            cp_async, 
+            'node_modules/hljs/styles/zenburn.css',
+            'public/stylesheets/zenburn.css'),
     ], complete);
     if ( process.platform !== 'win32' ){
         var proc = exec('npm install zombie');
