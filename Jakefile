@@ -31,16 +31,33 @@ task('build', function() {
             'lib/highlight-c.js',
             'public/scripts/highlight-c.js'),
     ], complete);
+    if ( process.platform !== 'win32' ){
+        var proc = exec('npm install zombie');
+        proc.on('exit', function(){
+            console.log('end~~~~~~~~~~~~')
+            jake.Task['test'].invoke();
+            process.exit();
+        });
+        proc.stdout.on('data', function(data){
+        console.log(data);
+        })
+        proc.stderr.on('data', function(data){
+            console.log(data)
+        })
+    }
 }, true);
 
 task('test', function() {
-    var proc = spawn('mocha', ['-t','5000', '-R', 'spec', '-u', 'tdd', '--compilers', 'coffee:coffee-script'], { customFds: [0, 1, 2] });
-    proc.on('exit', process.exit);
+    if( process.platform === 'win32' ) {
+        jake.Task['testWin'].invoke();
+    } else{
+        jake.Task['testAll'].invoke();
+    }
 });
 
 desc("mocha test - process run style")
 task('testAll', function(){
-    var proc = exec('mocha -t 5000 -R spec -u tdd');
+    var proc = exec('mocha -t 5000 -R spec -u tdd --compilers coffee:coffee-script');
     proc.on('exit', process.exit);
     proc.stdout.on('data', function(data){
         console.log(data);
@@ -50,23 +67,51 @@ task('testAll', function(){
     })
 }, {async: true})
 
-
-desc("mocha test - run with node")
-task('testSomething', function(){
-    var mocha = new Mocha;
+desc("mocha test in *nix os - run with node")
+task('testnix', function(){
+    var options = {}; 
+    options.timeout = 5000;
+    var mocha = new Mocha(options);
     mocha.reporter('spec').ui('tdd');
 
-    mocha.addFile('test/users.test.js');
+    var files = fs.readdirSync('./test')
+    for(var i=0, length = files.length; i< length; i += 1){
+        if ( files[i].lastIndexOf('test') !== -1 ) {
+            mocha.addFile('./test/'+files[i]);
+        }
+    }
 
     var runner = mocha.run(function(){
       console.log('finished');
     });
 
     runner.on('pass', function(test){
-      console.log('... %s passed', test.title);
     });
 
     runner.on('fail', function(test){
-      console.log('... %s failed', test.title);
+    });
+})
+
+desc("mocha test in windows - run with node")
+task('testWin', function(){
+    var mocha = new Mocha;
+    mocha.reporter('spec').ui('tdd');
+
+    var files = fs.readdirSync('./test')
+    for(var i=0, length = files.length; i< length; i += 1){
+        //Excluded CoffeeScipt bacause zombie doesn't work in windows
+        if ( files[i].lastIndexOf('test') !== -1 && files[i].lastIndexOf('coffee') === -1) {
+            mocha.addFile('./test/'+files[i]);
+        }
+    }
+
+    var runner = mocha.run(function(){
+      console.log('finished');
+    });
+
+    runner.on('pass', function(test){
+    });
+
+    runner.on('fail', function(test){
     });
 })
