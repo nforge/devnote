@@ -36,7 +36,6 @@ app.configure 'production', ->
 
 # Routes
 app.get '/', routes.index
-app.get '/wikis/note/pages/:name/attachment', routes.attachment
 
 error404 = (err, req, res, next) ->
     res.render '404.jade',
@@ -129,7 +128,7 @@ app.get '/wikis/note/pages/:name', (req, res) ->
 
 # get a form to post new wikipage
 app.get '/wikis/note/new', (req, res) ->
-    res.render 'new', title: 'New Page'
+    res.render 'new', title: 'New Page', pageName: '____new_' + new Date().getTime(), filelist: []
 
 # rollback
 app.post '/api/note/pages/:name', (req, res) ->
@@ -222,15 +221,34 @@ app.post '/wikis/note/dropuser', (req, res) ->
     user.remove({id: req.body.id}) if user
     res.redirect '/wikis/note/userlist'
 
+# file attachment page
+app.get '/wikis/note/pages/:name/attachment', (req, res) ->
+    dirname = path.join process.env.uploadDir, req.params.name
+
+    fs.readdir dirname, (err, filelist) ->
+        filelist = filelist || [];
+        res.render 'fileupload.jade', {title: '파일첨부', pageName: req.params.name, filelist: filelist}
+
 # file attachment 
-app.post '/wikis/note/pages/:name/attachment', (req, res) ->
+app.post '/wikis/note/pages/:name/attachment.:format?', (req, res) ->
     localUploadPath = path.dirname(req.files.attachment.path) + "/" + req.params.name
     fs.mkdir localUploadPath, (err) ->
         throw err if err && err.code != 'EEXIST'
         fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
-            return if req.files.attachment.name isnt on
+            throw new Error "no file selected" if !req.files.attachment.name 
             throw err if err
-    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
+            if req.params.format
+               res.json {title: '파일첨부', pageName: req.params.name, filename: req.files.attachment.name}  
+            else 
+               res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
+    
+
+# file attachment list call by json
+app.get '/wikis/note/pages/:name/attachment.:format', (req, res) ->
+    dirname = path.join process.env.uploadDir, req.params.name
+    fs.readdir dirname, (err, filelist) ->
+        filelist = filelist || [];
+        res.json {title: '파일첨부', pageName: req.params.name, filelist: filelist}
 
 # attachment file delete
 app.del '/wikis/note/pages/:name/attachment/:filename', (req, res) ->

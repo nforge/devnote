@@ -3,7 +3,7 @@ style
 h1= title
 div.container
     div.span4
-        form(method="post", enctype="multipart/form-data", action="/wikis/note/pages/#{pageName}/attachment")
+        form(method="post", id='fileupload', enctype="multipart/form-data", action="/wikis/note/pages/#{pageName}/attachment")
             label(for="attachment") 첨부할 파일을 선택해 주세요
             input(type='file', name='attachment', id='attachment')
             input(type="submit", name="submit", value="첨부").btn-primary
@@ -14,6 +14,9 @@ div.container
                 tr
                     th(colspan=2) 파일이름
             tbody
+                if filelist == ''
+                    tr
+                        td(colspan='2', id='nofile') 첨부 파일이 없습니다.
                 each filename in filelist
                     tr
                         td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
@@ -26,14 +29,21 @@ div.container
 div#alert.alert.alert-error.fade.out.span3
     h4.alert-heading 업로드할 파일을 선택해 주세요
 
-script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
+script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
 script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
 script(type="text/javascript")
+        $(document).ready(function() { 
+            $('#fileupload').ajaxForm(function() { 
+                alert("Thank you for your comment!"); 
+            }); 
+        });     
+script(type="text/javascript")
     $(function() {
-        $('form').change(function(event){
+        $('#fileupload').change(function(event){
             $('#alert').hide();
         });
-        $('form').submit(function(event){
+        $('#fileupload').submit(function(event){
             $('#alert').removeClass('out');
             $('#alert').addClass('in');
             if ( $('#attachment').val() === "" ) {
