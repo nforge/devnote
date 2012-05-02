@@ -38,10 +38,6 @@ task('test', function() {
     proc.on('exit', process.exit);
 });
 
-task('start', function() {
-    require('./app.js');
-});
-
 desc("mocha test - process run style")
 task('testAll', function(){
     var proc = exec('mocha -t 5000 -R spec -u tdd');
