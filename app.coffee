@@ -41,7 +41,13 @@ error404 = (err, req, res, next) ->
     res.render '404.jade',
     title: "404 Not Found",
     error: err.message,
-    status: 404,
+    status: 404
+
+error500 = (err, req, res, next) ->
+    res.render '500.jade',
+    title: "Sorry, Error Occurred...",
+    error: err.message,
+    status: 500
 
 view = (name, req, res) ->
     wiki.getPage name, (err, content) ->
@@ -237,7 +243,13 @@ app.post '/wikis/note/pages/:name/attachment.:format?', (req, res) ->
         fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
             throw new Error "no file selected" if !req.files.attachment.name 
             throw err if err
-            if req.params.format
+            if req.params.format == 'partial'
+                    dirname = path.join process.env.uploadDir, req.params.name
+
+                    fs.readdir dirname, (err, filelist) ->
+                        filelist = filelist || [];
+                        res.render 'fileupload.partial.jade', {layout: false, title: '파일첨부', pageName: req.params.name, filelist: filelist}
+            else if req.params.format == 'json'
                res.json {title: '파일첨부', pageName: req.params.name, filename: req.files.attachment.name}  
             else 
                res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'

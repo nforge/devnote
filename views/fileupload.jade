@@ -27,29 +27,33 @@ div.container
                                 input(type="submit", name="submit", value="삭제").btn-danger
 
 div#alert.alert.alert-error.fade.out.span3
-    h4.alert-heading 업로드할 파일을 선택해 주세요
+    h4.alert-heading 
 
 script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
 script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
 script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
 script(type="text/javascript")
-        $(document).ready(function() { 
-            $('#fileupload').ajaxForm(function() { 
-                alert("Thank you for your comment!"); 
-            }); 
-        });     
-script(type="text/javascript")
     $(function() {
+        var options = { 
+            beforeSubmit: function() { 
+                $('#').removeClass('out');
+                $('#alert').addClass('in');
+                if ( $('#attachment').val() === "" ) {
+                    $('.alert-heading').html('업로드할 파일을 선택해 주세요');
+                    $('#alert').show();
+                    return false;
+                }
+                return true;
+            },
+            success: function(statusText){
+                $('.alert-heading').html('파일이 업로드 되었습니다.');
+                $('#alert').show();
+            }
+        }
+        
+        $('#fileupload').ajaxForm(options); 
+
         $('#fileupload').change(function(event){
             $('#alert').hide();
-        });
-        $('#fileupload').submit(function(event){
-            $('#alert').removeClass('out');
-            $('#alert').addClass('in');
-            if ( $('#attachment').val() === "" ) {
-                $('#alert').show();
-                return false;
-            }
-            return true;
         });
     })

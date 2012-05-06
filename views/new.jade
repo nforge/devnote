@@ -2,7 +2,7 @@ div.page-header
   h1= title
 
 div.container
-  div.span6
+  div.span5
     form(method="post", action="/wikis/note/pages")
       fieldset
         div.control-group
@@ -16,11 +16,11 @@ div.container
         div
           input(type="submit", name="submit", value="새 페이지 등록").btn-primary
 
-  div(id="preview")
+  div(id="preview").span6
 
 div.container
-  div.span4
-      form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.json")
+  div.span
+      form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
           label(for="attachment") 첨부할 파일을 선택해 주세요
           input(type='file', name='attachment', id='attachment')
           input(type="submit", name="submit", value="첨부").btn-primary
@@ -29,7 +29,7 @@ div.container
         thead
             tr
                 th(colspan=2) 첨부 파일
-        tbody
+        tbody#filelist
             if filelist == ''
                 tr
                     td(colspan=2) 첨부 파일이 없습니다.
@@ -41,37 +41,64 @@ div.container
                             input(name='filename', type='hidden', id='filename', value='#{filename}')
                             input(type="hidden", name="_method", id='_method', value="delete")
                             input(type="submit", name="submit", value="삭제").btn-danger
-    div#upload_file_list
 
 div#alert.alert.alert-error.fade.out.span3
     h4.alert-heading 업로드할 파일을 선택해 주세요
 
 script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
 script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
+script(type='text/javascript', src="http://documentcloud.github.com/underscore/underscore.js")
 script(src='/bootstrap/js/bootstrap.js')
 script(type="text/javascript")
-    $(document).ready(function() {
-      $('#fileupload').ajaxForm(function(data){
-          $('#upload_file_list').append('<p>'+data.filename+'</p>');
-      });
-    });
-    $(function() {
+  $(function(){
+        var getFilenameOnly = function(filename){
+            var fakepath = 'fakepath';
+            var fakepathPostion = filename.indexOf(fakepath);
+            if( fakepathPostion > -1 ){
+              filename = filename.substring(fakepath.length + fakepathPostion + 1);
+            }
+            return filename;
+        }
+
+        var options = { 
+            beforeSubmit: function() { 
+                var filename = getFilenameOnly( $('#attachment').val() );
+
+                // show message box 
+                $('#').removeClass('out');
+                $('#alert').addClass('in');
+                // show message box end
+
+                if ( $('#attachment').val() === "" ) {
+                    $('.alert-heading').html('업로드할 파일을 선택해 주세요');
+                    $('#alert').show();
+                    return false;
+                }
+                return true;
+            },
+            success: function(text){
+                var filename = getFilenameOnly( $('#attachment').val() );
+
+                $('.alert-heading').html(filename + ' 파일이 업로드 되었습니다.');
+                $('#filelist').html(text);
+                $('#alert').show();
+                $('#attachment').val("");
+            }
+        }
+        
+        $('#fileupload').ajaxForm(options); 
+
         $('#fileupload').change(function(event){
             $('#alert').hide();
         });
-        $('#fileupload').submit(function(event){
-            $('#alert').removeClass('out');
-            $('#alert').addClass('in');
-            if ( $('#attachment').val() === "" ) {
-                $('#alert').show();
-                return false;
-            }
-            var filename = $('#attachment').val();
-            var enctype = $('#_method').val();
-            return false;
-        });
 
+        $('.insertInto').live("click",function(){
+            var content = $(this).parent();
+            alert(content);
+            $('#body').val( content );
+        });
     })
+
 
 script(type="text/javascript")
   var module = {};
