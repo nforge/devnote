@@ -170,7 +170,12 @@ app.get '/wikis/note/users', (req, res) ->
 login = (req, res) ->
     res.render 'user/login'
         title: 'login'
-        content: 'login'
+
+app.post '/wikis/note/users/login', (req, res) ->
+    user.login
+        id: req.body.id,
+        password: req.body.password
+    res.redirect '/wikis/note/pages/frontpage'
 
 # get userlist
 users = (req, res) ->
