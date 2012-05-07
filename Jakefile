@@ -51,6 +51,14 @@ task('build', function() {
     }
 }, true);
 
+task('start', function() {
+    // spawn('coffee', ['app.coffee'], {customFds: [0, 1, 2]});
+    var proc = exec('coffee app.coffee');
+    proc.on('exit', process.exit);
+    proc.stdout.pipe(process.stdout, { end: false });
+    proc.stderr.pipe(process.stderr, { end: false });
+});
+
 task('test', function() {
     if( process.platform === 'win32' ) {
         jake.Task['testWin'].invoke();
