@@ -19,10 +19,7 @@
         }
     }
 
-    window.addEventListener('load', function init() {
-        $("#body").keyup(function(){
-            _.throttle(preview, 1000) ;
-            preview();
-        });
-        preview();
-    });
+$(document).ready(function init() {
+    $("#body").keyup(preview);
+    preview();
+});

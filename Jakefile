@@ -51,6 +51,14 @@ task('build', function() {
     }
 }, true);
 
+task('start', function() {
+    // spawn('coffee', ['app.coffee'], {customFds: [0, 1, 2]});
+    var proc = exec('coffee app.coffee');
+    proc.on('exit', process.exit);
+    proc.stdout.pipe(process.stdout, { end: false });
+    proc.stderr.pipe(process.stderr, { end: false });
+});
+
 task('test', function() {
     if( process.platform === 'win32' ) {
         jake.Task['testWin'].invoke();
@@ -61,14 +69,11 @@ task('test', function() {
 
 desc("mocha test - process run style")
 task('testAll', function(){
-    var proc = exec('mocha -t 5000 -R spec -u tdd --compilers coffee:coffee-script');
+    // spawn('mocha', ['-t', '5000', '-R', 'spec', '-u', 'tdd', '--compilers', 'coffee:coffee-script'], {customFds: [0, 1, 2]});
+    var proc = exec('mocha --colors -t 5000 -R spec -u tdd --compilers coffee:coffee-script');
     proc.on('exit', process.exit);
-    proc.stdout.on('data', function(data){
-        console.log(data);
-    })
-    proc.stderr.on('data', function(data){
-        console.log(data)
-    })
+    proc.stdout.pipe(process.stdout, { end: false });
+    proc.stderr.pipe(process.stderr, { end: false });
 }, {async: true})
 
 desc("mocha test in *nix os - run with node")
