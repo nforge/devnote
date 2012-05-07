@@ -1,15 +1,12 @@
+var LIB_PATH = '../lib';
+
 var assert = require('assert');
-var gitfs = require('../lib/users');
-var async = require('async');
-var step = require('step');
-var users = require('../lib/users').users;
-var users2 = require('../lib/users').users;
-var users3 = require('../lib/users').users;
+var User = require(LIB_PATH+'/users').User;
 var util = require('util');
 
-suite("users", function(){
+suite("User", function(){
     setup(function () {
-        users.removeAll();
+        User.removeAll();
     });
     suite("add", function () {
         test("한 명의 새로운 사용자 사용자 추가", function () {
@@ -21,10 +18,10 @@ suite("users", function(){
                 password: "rrrr"
             }
             //When
-            users.add(userA);
+            User.add(userA);
             //Then
-            assert.equal(users.getTotal(), 1);
-            assert.equal(users.findUserById("racoon"), userA);
+            assert.equal(User.getTotal(), 1);
+            assert.equal(User.findUserById("racoon"), userA);
         });
     });
     suite("remove", function () {
@@ -43,16 +40,16 @@ suite("users", function(){
                 email: "semtlenori@gmail.com",
                 password: "nori"
             }
-            users.add(userA);
-            users.add(userB);
-            assert.equal(users.getTotal(), 2);
+            User.add(userA);
+            User.add(userB);
+            assert.equal(User.getTotal(), 2);
 
             //When
-            users.remove(userB);
+            User.remove(userB);
 
             //Then
-            assert.equal(users.getTotal(), 1);
-            assert.equal(users.findUserById("semtlenori@gmail.com"), undefined);
+            assert.equal(User.getTotal(), 1);
+            assert.equal(User.findUserById("semtlenori@gmail.com"), undefined);
         });
     });
     suite("changePassword", function(){
@@ -66,13 +63,13 @@ suite("users", function(){
             };
             var findUser = "";
 
-            users.add(userA);
+            User.add(userA);
 
             //When
-            users.changePassword('rrrr','gggg', userA);
+            User.changePassword('rrrr','gggg', userA);
 
             //Then
-            findUser = users.findUserById(userA.id);
+            findUser = User.findUserById(userA.id);
             assert.equal(findUser.id, "racoon");
             assert.equal(findUser.password, "0iDHuWfX4QCc5lu4qTel/iwX3LtkVLcvXJwM6kaP9xZC1oQiBUHGTkRru5no2vJZBSOEQaWgv6eZmCL9NmTZBw=="); //salted password
         });
@@ -85,11 +82,11 @@ suite("users", function(){
                 password: "rrrr"
             };
             var findUser = "";
-            users.add(userA);
+            User.add(userA);
             
             try{
                 //When
-                users.changePassword('ffff', 'gggg', userA);    
+                User.changePassword('ffff', 'gggg', userA);    
             } catch (e){
                 //Then
                 assert.equal(e.message, "Entered previous password is incorrect!");

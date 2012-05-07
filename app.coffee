@@ -8,7 +8,7 @@ Module dependencies.
 express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
-user = require('./lib/users').users
+User = require('./lib/users').User
 path = require 'path'
 
 app = express.createServer()
@@ -172,14 +172,14 @@ login = (req, res) ->
         title: 'login'
 
 app.post '/wikis/note/users/login', (req, res) ->
-    user.login
+    User.login
         id: req.body.id,
         password: req.body.password
     res.redirect '/wikis/note/pages/frontpage'
 
 # get userlist
 users = (req, res) ->
-    userlist = user.findAll()
+    userlist = User.findAll()
     res.render 'user/userlist',
         title: 'User List',
         content: "등록된 사용자 " + Object.keys(userlist).length + "명",
@@ -192,12 +192,12 @@ app.get '/wikis/note/users/new', (req, res) ->
 
 # post new user
 app.post '/wikis/note/users/new', (req, res) ->
-    user.add
+    User.add
         id: req.body.id,
         name: req.body.name,
         email: req.body.email,
         password: req.body.password
-    userInfo = user.findUserById req.body.id
+    userInfo = User.findUserById req.body.id
 
     res.render 'user/user',
         title: '사용자가 등록되었습니다.',
@@ -206,7 +206,7 @@ app.post '/wikis/note/users/new', (req, res) ->
 
 # show user information
 app.get '/wikis/note/user/:id', (req, res) ->
-    userInfo = user.findUserById req.params.id
+    userInfo = User.findUserById req.params.id
     res.render 'user/edit',
         title: 'User information',
         content: "사용자 정보",
@@ -214,10 +214,10 @@ app.get '/wikis/note/user/:id', (req, res) ->
 
 # change user information (password change)
 app.post '/wikis/note/user/:id', (req, res) ->
-    targetUser = user.findUserById req.params.id
-    isValid = user.changePassword req.body.previousPassword, req.body.newPassword, targetUser
+    targetUser = User.findUserById req.params.id
+    isValid = User.changePassword req.body.previousPassword, req.body.newPassword, targetUser
     targetUser.email = req.body.email if isValid
-    user.save targetUser if isValid
+    User.save targetUser if isValid
 
     userInfo = user.findUserById req.params.id
     res.render 'user/user',
@@ -228,7 +228,7 @@ app.post '/wikis/note/user/:id', (req, res) ->
 
 # drop user
 app.post '/wikis/note/dropuser', (req, res) ->
-    user = user.findUserById req.body.id
+    user = User.findUserById req.body.id
     user.remove({id: req.body.id}) if user
     res.redirect '/wikis/note/userlist'
 
