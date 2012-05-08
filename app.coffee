@@ -5,8 +5,12 @@ Module dependencies.
 ###
 
 express = require 'express'
-routes = require './routes'
-wiki = require './lib/wiki'
+routes  = require './routes'
+wiki    = require './lib/wiki'
+
+wikiApp = require './wikiApp'
+userApp = require './userApp'
+fileApp = require './fileApp'
 
 noop = ->
 app = express.createServer()
@@ -66,117 +70,32 @@ error500 = (err, req, res, next) ->
     error: err.message,
     status: 500
 
+# Wiki
+app.get  '/wikis/note/pages', wikiApp.getPages          # get page list
+app.get  '/wikis/note/pages/:name', wikiApp.getPage     # get a page
+app.get  '/wikis/note/new', wikiApp.getNew              # get a form to post new wikipage
+app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
+app.post '/wikis/note/pages', wikiApp.postNew           # post new wikipage
+app.post '/wikis/note/delete/:name', wikiApp.postDelete # delete wikipage
 
+# Login & Logout
+app.post '/wikis/note/users/login', userApp.postLogin   # post login
 
-edit = (name, req, res) ->
-    wiki.getPage name, (err, content) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'edit',
-                title: 'Edit Page',
-                name: name,
-                content: content,
+# User
+app.get  '/wikis/note/users', userApp.getUsers          # get user list
+app.get  '/wikis/note/users/new', userApp.getNew        # new user page
+app.post '/wikis/note/users/new', userApp.postNew       # post new user
+app.get  '/wikis/note/user/:id', userApp.getId          # show user information
+app.post '/wikis/note/user/:id', userApp.postId         # change user information (password change)
+app.post '/wikis/note/dropuser', userApp.postDropuser   # drop user
 
-history = (name, req, res) ->
-    LIMIT = 30
+# attachment
+app.get  '/wikis/note/pages/:name/attachment', fileApp.getAttachment             # file attachment page
+app.get  '/wikis/note/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
+app.post '/wikis/note/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment 
+app.del  '/wikis/note/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
-    handler = (err, commits) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'history',
-                title: name,
-                commits: commits,
-                limit: LIMIT,
-
-    if req.query.until
-        offset = parseInt(req.query.offset or 0)
-        wiki.queryHistory {filename: name, until: req.query.until, offset: offset, limit: LIMIT}, handler
-    else
-        wiki.getHistory name, LIMIT, handler
-
-diff = (name, req, res) ->
-    wiki.diff name, req.query.a, req.query.b, (err, diff) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'diff',
-                title: 'Diff',
-                name: name,
-                diff: wiki.renderDiff(diff),
-
-search = (req, res) ->
-    keyword = req.query.keyword
-    if not keyword
-        res.render 'search',
-            title: 'Search'
-            pages: {}
-    else
-        wiki.search keyword, (err, pages) ->
-            throw err if err
-            res.render 'search',
-                title: 'Search'
-                pages: wiki.renderSearch(pages)
-
-wikiApp = require('./wikiApp')
-userApp = require('./userApp')
-fileApp = require('./fileApp')
-
-#########################################################
-# get page list
-app.get '/wikis/note/pages', wikiApp.getPages
-
-# get a page
-app.get '/wikis/note/pages/:name', wikiApp.getPage
-
-# get a form to post new wikipage
-app.get '/wikis/note/new', wikiApp.getNew
-
-# rollback
-app.post '/api/note/pages/:name', wikiApp.postRollback
-
-# post new wikipage
-app.post '/wikis/note/pages', wikiApp.postNew
-
-# delete wikipage
-app.post '/wikis/note/delete/:name', wikiApp.postDelete
-
-#########################################################
-# get user
-app.get '/wikis/note/users', userApp.getUsers
-
-# post login
-app.post '/wikis/note/users/login', userApp.postLogin
-
-# get new user
-app.get '/wikis/note/users/new', userApp.getNew
-
-# post new user
-app.post '/wikis/note/users/new', userApp.postNew
-
-# show user information
-app.get '/wikis/note/user/:id', userApp.getId
-
-# change user information (password change)
-app.post '/wikis/note/user/:id', userApp.postId
-
-# drop user
-app.post '/wikis/note/dropuser', userApp.postDropuser
-
-#########################################################
-# file attachment page
-app.get '/wikis/note/pages/:name/attachment', fileApp.getAttachment
-
-# file attachment list call by json
-app.get '/wikis/note/pages/:name/attachment.:format', fileApp.getAttachmentList
-
-# file attachment 
-app.post '/wikis/note/pages/:name/attachment.:format?', fileApp.postAttachment   
-
-# attachment file delete
-app.del '/wikis/note/pages/:name/attachment/:filename', fileApp.delAttachment
-
+# wiki init on start
 wiki.init (err) ->
     console.log err.message if err 
     wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
