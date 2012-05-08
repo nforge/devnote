@@ -85,7 +85,12 @@ history = (name, req, res) ->
 
     if req.query.until
         offset = parseInt(req.query.offset or 0)
-        wiki.queryHistory {filename: name, until: req.query.until, offset: offset, limit: LIMIT}, handler
+        wiki.queryHistory
+            filename: name,
+            until: req.query.until,
+            offset: offset,
+            limit: LIMIT,
+            handler
     else
         wiki.getHistory name, LIMIT, handler
 
