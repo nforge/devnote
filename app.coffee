@@ -1,5 +1,4 @@
 util = require 'util'
-fs = require 'fs'
 
 ###
 Module dependencies.
@@ -8,19 +7,16 @@ Module dependencies.
 express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
-User = require('./lib/users').User
-path = require 'path'
 
 noop = ->
 app = express.createServer()
 
 session = {} #ToDo: session interface
 # Configuration
-process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
-
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
 
+process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
 app.configure ->
   app.use express.bodyParser 
@@ -182,126 +178,42 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             message: req.params.name,
             content: 'Page deleted',
 
+userApp = require('./userApp')
+fileApp = require('./fileApp')
+
 # get user
-app.get '/wikis/note/users', (req, res) ->
-    switch req.query.action
-        when 'login' then login req, res
-        else users req, res
+app.get '/wikis/note/users', userApp.getUsers
 
-login = (req, res) ->
-    res.render 'user/login'
-        title: 'login'
-
-app.post '/wikis/note/users/login', (req, res) ->
-    console.log req.session.user
-    User.login
-        id: req.body.id,
-        password: req.body.password
-        (err, user) ->
-            if user
-                req.session.regenerate ->
-                    req.session.user = User.findUserById(req.body.id)
-                    console.log req.session
-            else
-                req.session.error = err.message
-    res.redirect '/wikis/note/pages/frontpage'
-
-# get userlist
-users = (req, res) ->
-    userlist = User.findAll()
-    res.render 'user/userlist',
-        title: 'User List',
-        content: "등록된 사용자 " + Object.keys(userlist).length + "명",
-        userlist: userlist
+# post login
+app.post '/wikis/note/users/login', userApp.postLogin
 
 # get new user
-app.get '/wikis/note/users/new', (req, res) ->
-    res.render 'user/new'
-        title: 'new user'
+app.get '/wikis/note/users/new', userApp.getNew
 
 # post new user
-app.post '/wikis/note/users/new', (req, res) ->
-    User.add
-        id: req.body.id,
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    userInfo = User.findUserById req.body.id
-
-    res.render 'user/user',
-        title: '사용자가 등록되었습니다.',
-        content: "사용자 정보",
-        userInfo: userInfo
+app.post '/wikis/note/users/new', userApp.postNew
 
 # show user information
-app.get '/wikis/note/user/:id', (req, res) ->
-    userInfo = User.findUserById req.params.id
-    res.render 'user/edit',
-        title: 'User information',
-        content: "사용자 정보",
-        user: userInfo
+app.get '/wikis/note/user/:id', userApp.getId
 
 # change user information (password change)
-app.post '/wikis/note/user/:id', (req, res) ->
-    targetUser = User.findUserById req.params.id
-    isValid = User.changePassword req.body.previousPassword, req.body.newPassword, targetUser
-    targetUser.email = req.body.email if isValid
-    User.save targetUser if isValid
-
-    userInfo = user.findUserById req.params.id
-    res.render 'user/user',
-        title: '사용자 정보가 변경되었습니다.',
-        content: "사용자 정보",
-        userInfo: userInfo    
-
+app.post '/wikis/note/user/:id', userApp.postId
 
 # drop user
-app.post '/wikis/note/dropuser', (req, res) ->
-    user = User.findUserById req.body.id
-    user.remove({id: req.body.id}) if user
-    res.redirect '/wikis/note/userlist'
+app.post '/wikis/note/dropuser', userApp.postDropuser
+
 
 # file attachment page
-app.get '/wikis/note/pages/:name/attachment', (req, res) ->
-    dirname = path.join process.env.uploadDir, req.params.name
-
-    fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || [];
-        res.render 'fileupload.jade', {title: '파일첨부', pageName: req.params.name, filelist: filelist}
-
-# file attachment 
-app.post '/wikis/note/pages/:name/attachment.:format?', (req, res) ->
-    localUploadPath = path.dirname(req.files.attachment.path) + "/" + req.params.name
-    fs.mkdir localUploadPath, (err) ->
-        throw err if err && err.code != 'EEXIST'
-        fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
-            throw new Error "no file selected" if !req.files.attachment.name 
-            throw err if err
-            if req.params.format == 'partial'
-                    dirname = path.join process.env.uploadDir, req.params.name
-
-                    fs.readdir dirname, (err, filelist) ->
-                        filelist = filelist || [];
-                        res.render 'fileupload.partial.jade', {layout: false, title: '파일첨부', pageName: req.params.name, filelist: filelist}
-            else if req.params.format == 'json'
-               res.json {title: '파일첨부', pageName: req.params.name, filename: req.files.attachment.name}  
-            else 
-               res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
-    
+app.get '/wikis/note/pages/:name/attachment', fileApp.getAttachment
 
 # file attachment list call by json
-app.get '/wikis/note/pages/:name/attachment.:format', (req, res) ->
-    dirname = path.join process.env.uploadDir, req.params.name
-    fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || [];
-        res.json {title: '파일첨부', pageName: req.params.name, filelist: filelist}
+app.get '/wikis/note/pages/:name/attachment.:format', fileApp.getAttachmentList
+
+# file attachment 
+app.post '/wikis/note/pages/:name/attachment.:format?', fileApp.postAttachment   
 
 # attachment file delete
-app.del '/wikis/note/pages/:name/attachment/:filename', (req, res) ->
-    filePath = path.join(uploadDir, req.params.name, req.params.filename)
-    fs.unlink filePath, (err) ->
-        throw err if err
-    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'    
+app.del '/wikis/note/pages/:name/attachment/:filename', fileApp.delAttachment
 
 
 wiki.init (err) ->
