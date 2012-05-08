@@ -66,14 +66,7 @@ error500 = (err, req, res, next) ->
     error: err.message,
     status: 500
 
-view = (name, req, res) ->
-    wiki.getPage name, (err, content) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'page',
-                title: name,
-                content: wiki.render content,
+
 
 edit = (name, req, res) ->
     wiki.getPage name, (err, content) ->
@@ -126,61 +119,30 @@ search = (req, res) ->
                 title: 'Search'
                 pages: wiki.renderSearch(pages)
 
-# get wikipage list
-list = (req, res) ->
-    wiki.getPages (err, pages) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'pages',
-                title: 'Pages',
-                content: pages
-
-app.get '/wikis/note/pages', (req, res) ->
-    switch req.query.action
-        when 'search' then search req, res
-        else list req, res
-
-app.get '/wikis/note/pages/:name', (req, res) ->
-    name = req.params.name
-    switch req.query.action
-        when 'diff' then diff name, req, res
-        when 'history' then history name, req, res
-        when 'edit' then edit name, req, res
-        else view name, req, res
-
-# get a form to post new wikipage
-app.get '/wikis/note/new', (req, res) ->
-    res.render 'new', title: 'New Page', pageName: '____new_' + new Date().getTime(), filelist: []
-
-# rollback
-app.post '/api/note/pages/:name', (req, res) ->
-    name = req.params.name
-    wiki.rollback name, req.body.id, (err) ->
-        wiki.getHistory name, (err, commits) ->
-            if err
-                error404 err, req, res
-            else
-                res.contentType 'json'
-                res.send {commits: commits, name: name, ids: commits.ids}
-
-# post new wikipage
-app.post '/wikis/note/pages', (req, res) ->
-    name = req.body.name
-    wiki.writePage name, req.body.body, (err) ->
-        res.redirect '/wikis/note/pages/' + name
-
-# delete wikipage
-app.post '/wikis/note/delete/:name', (req, res) ->
-    wiki.deletePage req.params.name, (err) ->
-        res.render 'deleted',
-            title: req.body.name,
-            message: req.params.name,
-            content: 'Page deleted',
-
+wikiApp = require('./wikiApp')
 userApp = require('./userApp')
 fileApp = require('./fileApp')
 
+#########################################################
+# get page list
+app.get '/wikis/note/pages', wikiApp.getPages
+
+# get a page
+app.get '/wikis/note/pages/:name', wikiApp.getPage
+
+# get a form to post new wikipage
+app.get '/wikis/note/new', wikiApp.getNew
+
+# rollback
+app.post '/api/note/pages/:name', wikiApp.postRollback
+
+# post new wikipage
+app.post '/wikis/note/pages', wikiApp.postNew
+
+# delete wikipage
+app.post '/wikis/note/delete/:name', wikiApp.postDelete
+
+#########################################################
 # get user
 app.get '/wikis/note/users', userApp.getUsers
 
@@ -202,7 +164,7 @@ app.post '/wikis/note/user/:id', userApp.postId
 # drop user
 app.post '/wikis/note/dropuser', userApp.postDropuser
 
-
+#########################################################
 # file attachment page
 app.get '/wikis/note/pages/:name/attachment', fileApp.getAttachment
 
@@ -215,7 +177,6 @@ app.post '/wikis/note/pages/:name/attachment.:format?', fileApp.postAttachment
 # attachment file delete
 app.del '/wikis/note/pages/:name/attachment/:filename', fileApp.delAttachment
 
-
 wiki.init (err) ->
     console.log err.message if err 
     wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
@@ -226,7 +187,6 @@ if not module.parent
     LISTEN_PORT = 3000
     app.listen LISTEN_PORT;
     console.log "Express server listening on port %d in %s mode", LISTEN_PORT, app.settings.env
-
 
 exports.stop = -> app.close
 
