@@ -1,4 +1,4 @@
-user = require('./lib/users').User
+User = require('./lib/users').User
 
 exports.getUsers = (req, res) ->
     switch req.query.action
@@ -11,7 +11,7 @@ login = (req, res) ->
 
 # get userlist
 users = (req, res) ->
-    userlist = user.findAll()
+    userlist = User.findAll()
     res.render 'user/userlist',
         title: 'User List',
         content: "등록된 사용자 " + Object.keys(userlist).length + "명",
@@ -37,12 +37,12 @@ exports.getNew = (req, res) ->
         title: 'new user'      
 
 exports.postNew = (req, res) ->
-    user.add
+    User.add
         id: req.body.id,
         name: req.body.name,
         email: req.body.email,
         password: req.body.password
-    userInfo = user.findUserById req.body.id
+    userInfo = User.findUserById req.body.id
 
     res.render 'user/user',
         title: '사용자가 등록되었습니다.',
@@ -50,25 +50,25 @@ exports.postNew = (req, res) ->
         userInfo: userInfo            
 
 exports.getId = (req, res) ->
-    userInfo = user.findUserById req.params.id
+    userInfo = User.findUserById req.params.id
     res.render 'user/edit',
         title: 'User information',
         content: "사용자 정보",
         user: userInfo    
 
 exports.postId = (req, res) ->
-    targetUser = user.findUserById req.params.id
+    targetUser = User.findUserById req.params.id
     isValid = user.changePassword req.body.previousPassword, req.body.newPassword, targetUser
     targetUser.email = req.body.email if isValid
-    user.save targetUser if isValid
+    User.save targetUser if isValid
 
-    userInfo = user.findUserById req.params.id
+    userInfo = User.findUserById req.params.id
     res.render 'user/user',
         title: '사용자 정보가 변경되었습니다.',
         content: "사용자 정보",
         userInfo: userInfo   
         
 exports.postDropuser = (req, res) ->
-    userInfo = user.findUserById req.body.id
-    user.remove({id: req.body.id}) if userInfo
+    userInfo = User.findUserById req.body.id
+    User.remove({id: req.body.id}) if userInfo
     res.redirect '/wikis/note/users'                

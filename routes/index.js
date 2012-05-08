@@ -5,7 +5,6 @@ var path = require('path')
  */
 
 exports.index = function(req, res){
-  console.log(req.session);
   res.render('index', { title: 'N4Wiki' })
 };
 
