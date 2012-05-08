@@ -13,14 +13,13 @@ userApp = require './userApp'
 fileApp = require './fileApp'
 
 noop = ->
-app = express.createServer()
+process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
-session = {} #ToDo: session interface
+app = module.exports = express.createServer()
+
 # Configuration
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
-
-process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
 app.configure ->
   app.use express.bodyParser 
@@ -32,19 +31,17 @@ app.configure ->
   app.use express.static __dirname + '/public'
   app.use express.logger 'dev'
 
-
 # Session-persisted message middleware
 app.locals.use (req, res) ->
   err = req.session.error
   msg = req.session.success
   delete req.session.error
   delete req.session.success
-  
   res.locals.message = ''
-  if (err) 
-     res.locals.message = '<p class="msg error">' + err + '</p>'
-  if (msg) 
-     res.locals.message = '<p class="msg success">' + msg + '</p>'
+  if err
+     res.locals.message = err
+  if msg
+     res.locals.message = msg
 
 app.configure 'development', ->
   app.use express.errorHandler
@@ -61,9 +58,9 @@ app.get '/', routes.index
 app.get  '/wikis/note/pages', wikiApp.getPages          # get page list
 app.get  '/wikis/note/pages/:name', wikiApp.getPage     # get a page
 app.get  '/wikis/note/new', wikiApp.getNew              # get a form to post new wikipage
-app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 app.post '/wikis/note/pages', wikiApp.postNew           # post new wikipage
 app.post '/wikis/note/delete/:name', wikiApp.postDelete # delete wikipage
+app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 
 # Login & Logout
 app.post '/wikis/note/users/login', userApp.postLogin   # post login

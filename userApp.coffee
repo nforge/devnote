@@ -27,10 +27,11 @@ exports.postLogin =  (req, res) ->
             if user
                 req.session.regenerate ->
                     req.session.user = User.findUserById(req.body.id)
-                    console.log req.session
+                    req.session.success = req.session.user.name + ' logined.';
+                    res.redirect '/'
             else
                 req.session.error = err.message
-    res.redirect '/wikis/note/pages/frontpage'
+                res.redirect '/'
 
 exports.getNew = (req, res) ->
     res.render 'user/new'
@@ -71,4 +72,5 @@ exports.postId = (req, res) ->
 exports.postDropuser = (req, res) ->
     userInfo = User.findUserById req.body.id
     User.remove({id: req.body.id}) if userInfo
-    res.redirect '/wikis/note/users'                
+    res.redirect '/wikis/note/users'
+
