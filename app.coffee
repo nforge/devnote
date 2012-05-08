@@ -162,76 +162,30 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             message: req.params.name,
             content: 'Page deleted',
 
+userApp = require('./userApp')
+
 # get user
-app.get '/wikis/note/users', (req, res) ->
-    switch req.query.action
-        when 'login' then login req, res
-        else users req, res
+app.get '/wikis/note/users', userApp.getUsers
 
-login = (req, res) ->
-    res.render 'user/login'
-        title: 'login'
-
-app.post '/wikis/note/users/login', (req, res) ->
-    User.login
-        id: req.body.id,
-        password: req.body.password
-    res.redirect '/wikis/note/pages/frontpage'
-
-# get userlist
-users = (req, res) ->
-    userlist = User.findAll()
-    res.render 'user/userlist',
-        title: 'User List',
-        content: "등록된 사용자 " + Object.keys(userlist).length + "명",
-        userlist: userlist
+# post login
+app.post '/wikis/note/users/login', userApp.postLogin
 
 # get new user
-app.get '/wikis/note/users/new', (req, res) ->
-    res.render 'user/new'
-        title: 'new user'
+app.get '/wikis/note/users/new', userApp.getNew
 
 # post new user
-app.post '/wikis/note/users/new', (req, res) ->
-    User.add
-        id: req.body.id,
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    userInfo = User.findUserById req.body.id
-
-    res.render 'user/user',
-        title: '사용자가 등록되었습니다.',
-        content: "사용자 정보",
-        userInfo: userInfo
+app.post '/wikis/note/users/new', userApp.postNew
 
 # show user information
-app.get '/wikis/note/user/:id', (req, res) ->
-    userInfo = User.findUserById req.params.id
-    res.render 'user/edit',
-        title: 'User information',
-        content: "사용자 정보",
-        user: userInfo
+app.get '/wikis/note/user/:id', userApp.getId
 
 # change user information (password change)
-app.post '/wikis/note/user/:id', (req, res) ->
-    targetUser = User.findUserById req.params.id
-    isValid = User.changePassword req.body.previousPassword, req.body.newPassword, targetUser
-    targetUser.email = req.body.email if isValid
-    User.save targetUser if isValid
-
-    userInfo = user.findUserById req.params.id
-    res.render 'user/user',
-        title: '사용자 정보가 변경되었습니다.',
-        content: "사용자 정보",
-        userInfo: userInfo    
-
+app.post '/wikis/note/user/:id', userApp.postId
 
 # drop user
-app.post '/wikis/note/dropuser', (req, res) ->
-    user = User.findUserById req.body.id
-    user.remove({id: req.body.id}) if user
-    res.redirect '/wikis/note/userlist'
+app.post '/wikis/note/dropuser', userApp.postDropuser
+
+
 
 # file attachment page
 app.get '/wikis/note/pages/:name/attachment', (req, res) ->
