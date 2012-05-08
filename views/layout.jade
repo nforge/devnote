@@ -8,4 +8,8 @@ html
     link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.css')
   body
     div.container
+    - if (message)
+        p
+            span.label.label-important= message
+
       block content
