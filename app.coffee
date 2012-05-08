@@ -13,12 +13,14 @@ path = require 'path'
 
 app = express.createServer()
 
+session = {}
 # Configuration
 
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
+
 
 app.configure ->
   app.use express.bodyParser 
