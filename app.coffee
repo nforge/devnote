@@ -11,11 +11,11 @@ wiki = require './lib/wiki'
 User = require('./lib/users').User
 path = require 'path'
 
+noop = ->
 app = express.createServer()
 
-session = {}
+session = {} #ToDo: session interface
 # Configuration
-
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
 app.set 'views', __dirname + '/views'
@@ -25,9 +25,27 @@ app.set 'view engine', 'jade'
 app.configure ->
   app.use express.bodyParser 
     uploadDir: uploadDir
+  app.use express.cookieParser 'n4wiki session'
+  app.use express.session()   
   app.use express.methodOverride()
   app.use app.router
   app.use express.static __dirname + '/public'
+  app.use express.logger 'dev'
+
+
+# Session-persisted message middleware
+app.locals.use (req, res) ->
+  err = req.session.error
+  msg = req.session.success
+  delete req.session.error
+  delete req.session.success
+  
+  res.locals.message = ''
+  if (err) 
+     res.locals.message = '<p class="msg error">' + err + '</p>'
+  if (msg) 
+     res.locals.message = '<p class="msg success">' + msg + '</p>'
+
 
 app.configure 'development', ->
   app.use express.errorHandler
@@ -175,10 +193,17 @@ login = (req, res) ->
         title: 'login'
 
 app.post '/wikis/note/users/login', (req, res) ->
+    console.log req.session.user
     User.login
         id: req.body.id,
         password: req.body.password
-    session.user = User.findUserById(req.body.id);
+        (err, user) ->
+            if user
+                req.session.regenerate ->
+                    req.session.user = User.findUserById(req.body.id)
+                    console.log req.session
+            else
+                req.session.error = err.message
     res.redirect '/wikis/note/pages/frontpage'
 
 # get userlist
@@ -279,15 +304,18 @@ app.del '/wikis/note/pages/:name/attachment/:filename', (req, res) ->
     res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'    
 
 
-exports.start = (port, callback) ->
-    wiki.init (err) ->
-        wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
-          app.listen port, null, (err) ->
-            throw err if err
-            console.log "Express server listening on port %d in %s mode", port, app.settings.env
-            callback() if callback
+wiki.init (err) ->
+    console.log err.message if err 
+    wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
+        throw err if err
+
+if not module.parent
+    wiki.init noop
+    LISTEN_PORT = 3000
+    app.listen LISTEN_PORT;
+    console.log "Express server listening on port %d in %s mode", LISTEN_PORT, app.settings.env
 
 
 exports.stop = -> app.close
 
-exports.start 3000 if not module.parent
+
