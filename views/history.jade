@@ -1,44 +1,47 @@
-h1= title
-form(method="get", action="/wikis/note/pages/"+title)
-  table
-    thead
-      tr
-        td Author
-        td Date
-        td
-          input(type="submit", value="diff", name="action")
-        td Message
-    tbody(id="commits")
-      - var first = commits.ids[0];
-      - var last = commits.ids[commits.length - 1];
-      - commits.forEach(function(commit, index) {
-      - var date = new Date(commit.author.unixtime * 1000)
+extends layout
+
+block content
+  h1= title
+  form(method="get", action="/wikis/note/pages/"+title)
+    table
+      thead
         tr
-          td= commit.author.name
-          td= date
+          td Author
+          td Date
           td
-            input(type="radio", value=commits.ids[index], name="a")
-            input(type="radio", value=commits.ids[index], name="b")
-          td= commit.message
-          td
-            a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
-      - });
+            input(type="submit", value="diff", name="action")
+          td Message
+      tbody(id="commits")
+        - var first = commits.ids[0];
+        - var last = commits.ids[commits.length - 1];
+        - commits.forEach(function(commit, index) {
+        - var date = new Date(commit.author.unixtime * 1000)
+          tr
+            td= commit.author.name
+            td= date
+            td
+              input(type="radio", value=commits.ids[index], name="a")
+              input(type="radio", value=commits.ids[index], name="b")
+            td= commit.message
+            td
+              a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
+        - });
 
-ul(class="pager")
-  li
-    a(href="/wikis/note/pages/" + title + "?action=history&until=" + first + "&offset=-" + limit) « Newer
-  li
-    a(href="/wikis/note/pages/" + title + "?action=history&until=" + last + "&offset=1") Older »
+  ul(class="pager")
+    li
+      a(href="/wikis/note/pages/" + title + "?action=history&until=" + first + "&offset=-" + limit) « Newer
+    li
+      a(href="/wikis/note/pages/" + title + "?action=history&until=" + last + "&offset=1") Older »
 
-ul
-  li
-    a(href="?") View
-  li
-    a(href="?action=edit") Edit
-  li
-    a(href="?action=history") History
-form(method="post", action="/wikis/note/delete/"+title)
-    input(type="submit", value="delete", name="submit")
+  ul
+    li
+      a(href="?") View
+    li
+      a(href="?action=edit") Edit
+    li
+      a(href="?action=history") History
+  form(method="post", action="/wikis/note/delete/"+title)
+      input(type="submit", value="delete", name="submit")
 
-script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
-script(type="text/javascript", src="/scripts/rollback.js")
+  script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+  script(type="text/javascript", src="/scripts/rollback.js")

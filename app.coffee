@@ -35,8 +35,8 @@ app.configure ->
 app.locals.use (req, res) ->
   err = req.session.error
   msg = req.session.success
-  delete req.session.error
-  delete req.session.success
+  # delete req.session.error
+  # delete req.session.success
   res.locals.message = ''
   if err
      res.locals.message = err

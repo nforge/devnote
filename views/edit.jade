@@ -1,26 +1,28 @@
+extends layout
 
-form(method="post", action="/wikis/note/pages")
-  div.page-header
-    input(name="name", value=name).input-xlarge
+block content
+  form(method="post", action="/wikis/note/pages")
+    div.page-header
+      input(name="name", value=name).input-xlarge
 
-  textarea(id="body", name="body").input-xlarge
-    = content
+    textarea(id="body", name="body").input-xlarge
+      = content
+    br
+    input(type="submit", name="submit").btn-primary
+
+  div.btn-group
+    a(href="?").btn View
+    form(method="post", action="/wikis/note/delete/"+title)
+      input(type="submit", value="delete", name="submit").btn
   br
-  input(type="submit", name="submit").btn-primary
+  br
+  br
+  div(id="preview")
 
-div.btn-group
-  a(href="?").btn View
-  form(method="post", action="/wikis/note/delete/"+title)
-    input(type="submit", value="delete", name="submit").btn
-br
-br
-br
-div(id="preview")
-
-script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
-script(type="text/javascript")
-  var module = {};
-script(type="text/javascript", src="/scripts/highlight.js")
-script(type="text/javascript", src="/scripts/highlight-c.js")
-script(type="text/javascript", src="/scripts/showdown.js")
-script(type="text/javascript", src="/scripts/preview.js")
+  script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+  script(type="text/javascript")
+    var module = {};
+  script(type="text/javascript", src="/scripts/highlight.js")
+  script(type="text/javascript", src="/scripts/highlight-c.js")
+  script(type="text/javascript", src="/scripts/showdown.js")
+  script(type="text/javascript", src="/scripts/preview.js")

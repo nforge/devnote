@@ -1,108 +1,111 @@
-div.page-header
-  h1= title
+extends layout
 
-div.container
-  div.span5
-    form(method="post", action="/wikis/note/pages")
-      fieldset
-        div.control-group
-          label(name="name").control-label title
-          div.controls
-            input(name="name").input-xlarge
-        div.control-group
-          label(name="body").control-label body
-          div.controls
-            textarea(id="body", name="body", rows="15").input-xlarge
-        div
-          input(type="submit", name="submit", value="새 페이지 등록").btn-primary
+block content
+  div.page-header
+    h1= title
 
-  div(id="preview").span6
+  div.container
+    div.span5
+      form(method="post", action="/wikis/note/pages")
+        fieldset
+          div.control-group
+            label(name="name").control-label title
+            div.controls
+              input(name="name").input-xlarge
+          div.control-group
+            label(name="body").control-label body
+            div.controls
+              textarea(id="body", name="body", rows="15").input-xlarge
+          div
+            input(type="submit", name="submit", value="새 페이지 등록").btn-primary
 
-div.container
-  div.span
-      form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
-          label(for="attachment") 첨부할 파일을 선택해 주세요
-          input(type='file', name='attachment', id='attachment')
-          input(type="submit", name="submit", value="첨부").btn-primary
-  div.span4
-    table.table.table-bordered.table-condensed
-        thead
-            tr
-                th(colspan=2) 첨부 파일
-        tbody#filelist
-            if filelist == ''
-                tr
-                    td(colspan=2) 첨부 파일이 없습니다.
-            each filename in filelist
-                tr
-                    td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
-                    td 
-                        form(method="post", action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
-                            input(name='filename', type='hidden', id='filename', value='#{filename}')
-                            input(type="hidden", name="_method", id='_method', value="delete")
-                            input(type="submit", name="submit", value="삭제").btn-danger
+    div(id="preview").span6
 
-div#alert.alert.alert-error.fade.out.span3
-    h4.alert-heading 업로드할 파일을 선택해 주세요
+  div.container
+    div.span
+        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
+            label(for="attachment") 첨부할 파일을 선택해 주세요
+            input(type='file', name='attachment', id='attachment')
+            input(type="submit", name="submit", value="첨부").btn-primary
+    div.span4
+      table.table.table-bordered.table-condensed
+          thead
+              tr
+                  th(colspan=2) 첨부 파일
+          tbody#filelist
+              if filelist == ''
+                  tr
+                      td(colspan=2) 첨부 파일이 없습니다.
+              each filename in filelist
+                  tr
+                      td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
+                      td 
+                          form(method="post", action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
+                              input(name='filename', type='hidden', id='filename', value='#{filename}')
+                              input(type="hidden", name="_method", id='_method', value="delete")
+                              input(type="submit", name="submit", value="삭제").btn-danger
 
-script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
-script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
-script(type='text/javascript', src="http://documentcloud.github.com/underscore/underscore.js")
-script(src='/bootstrap/js/bootstrap.js')
-script(type="text/javascript")
-  $(function(){
-        var getFilenameOnly = function(filename){
-            var fakepath = 'fakepath';
-            var fakepathPostion = filename.indexOf(fakepath);
-            if( fakepathPostion > -1 ){
-              filename = filename.substring(fakepath.length + fakepathPostion + 1);
-            }
-            return filename;
-        }
+  div#alert.alert.alert-error.fade.out.span3
+      h4.alert-heading 업로드할 파일을 선택해 주세요
 
-        var options = { 
-            beforeSubmit: function() { 
-                var filename = getFilenameOnly( $('#attachment').val() );
+  script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
+  script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
+  script(type='text/javascript', src="http://documentcloud.github.com/underscore/underscore.js")
+  script(src='/bootstrap/js/bootstrap.js')
+  script(type="text/javascript")
+    $(function(){
+          var getFilenameOnly = function(filename){
+              var fakepath = 'fakepath';
+              var fakepathPostion = filename.indexOf(fakepath);
+              if( fakepathPostion > -1 ){
+                filename = filename.substring(fakepath.length + fakepathPostion + 1);
+              }
+              return filename;
+          }
 
-                // show message box 
-                $('#').removeClass('out');
-                $('#alert').addClass('in');
-                // show message box end
+          var options = { 
+              beforeSubmit: function() { 
+                  var filename = getFilenameOnly( $('#attachment').val() );
 
-                if ( $('#attachment').val() === "" ) {
-                    $('.alert-heading').html('업로드할 파일을 선택해 주세요');
-                    $('#alert').show();
-                    return false;
-                }
-                return true;
-            },
-            success: function(text){
-                var filename = getFilenameOnly( $('#attachment').val() );
+                  // show message box 
+                  $('#').removeClass('out');
+                  $('#alert').addClass('in');
+                  // show message box end
 
-                $('.alert-heading').html(filename + ' 파일이 업로드 되었습니다.');
-                $('#filelist').html(text);
-                $('#alert').show();
-                $('#attachment').val("");
-            }
-        }
-        
-        $('#fileupload').ajaxForm(options); 
+                  if ( $('#attachment').val() === "" ) {
+                      $('.alert-heading').html('업로드할 파일을 선택해 주세요');
+                      $('#alert').show();
+                      return false;
+                  }
+                  return true;
+              },
+              success: function(text){
+                  var filename = getFilenameOnly( $('#attachment').val() );
 
-        $('#fileupload').change(function(event){
-            $('#alert').hide();
-        });
+                  $('.alert-heading').html(filename + ' 파일이 업로드 되었습니다.');
+                  $('#filelist').html(text);
+                  $('#alert').show();
+                  $('#attachment').val("");
+              }
+          }
+          
+          $('#fileupload').ajaxForm(options); 
 
-        $('.insertInto').live("click",function(){
-            var content = $(this).parent();
-            alert(content);
-            $('#body').val( content );
-        });
-    })
+          $('#fileupload').change(function(event){
+              $('#alert').hide();
+          });
+
+          $('.insertInto').live("click",function(){
+              var content = $(this).parent();
+              alert(content);
+              $('#body').val( content );
+          });
+      })
 
 
-script(type="text/javascript")
-  var module = {};
-script(type="text/javascript", src="/scripts/highlight.js")
-script(type="text/javascript", src="/scripts/highlight-c.js")
-script(type="text/javascript", src="/scripts/showdown.js")
-script(type="text/javascript", src="/scripts/preview.js")
+  script(type="text/javascript")
+    var module = {};
+  script(type="text/javascript", src="/scripts/highlight.js")
+  script(type="text/javascript", src="/scripts/highlight-c.js")
+  script(type="text/javascript", src="/scripts/showdown.js")
+  script(type="text/javascript", src="/scripts/preview.js")

@@ -1,25 +1,28 @@
-h1= title
-p= content
+extends ../layout
 
-div
-    table.table.table-bordered
-        thead
-            tr
-                th 이름
-                th 이메일
-                th 아이디
-                th #Salted Password
-                th 삭제
-        tbody
-            each user in userlist
+block content
+    h1= title
+    p= content
+
+    div
+        table.table.table-bordered
+            thead
                 tr
-                    td #{user.name}
-                    td #{user.email}
-                    td: a(href='/wikis/note/user/#{user.id}') #{user.id}
-                    td #{user.password}
-                    th 
-                        form(method="post", action="/wikis/note/dropuser")
-                            input(name='id', type='hidden', value='#{user.id}')
-                            input(type="submit", name="submit", value="삭제").btn-danger
-div
-    a(href='http://localhost:3000/wikis/note/users') 새 사용자 등록
+                    th 이름
+                    th 이메일
+                    th 아이디
+                    th #Salted Password
+                    th 삭제
+            tbody
+                each user in userlist
+                    tr
+                        td #{user.name}
+                        td #{user.email}
+                        td: a(href='/wikis/note/user/#{user.id}') #{user.id}
+                        td #{user.password}
+                        th 
+                            form(method="post", action="/wikis/note/dropuser")
+                                input(name='id', type='hidden', value='#{user.id}')
+                                input(type="submit", name="submit", value="삭제").btn-danger
+    div
+        a(href='http://localhost:3000/wikis/note/users') 새 사용자 등록

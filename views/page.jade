@@ -1,15 +1,18 @@
-div.page-header
-  h1= title
+extends layout
 
-div.row
-  div.span12
-    != content
+block content
+    div.page-header
+      h1= title
 
-a(href="?action=edit").btn Edit
-br
-br
-div.btn-group
-  form(method="post", action="/wikis/note/delete/"+title)
-      a(href='/wikis/note/new').btn New
-      a(href="?action=history").btn History
-      input(type="submit", value="delete", name="submit").btn
+    div.row
+      div.span12
+        != content
+
+    a(href="?action=edit").btn Edit
+    br
+    br
+    div.btn-group
+      form(method="post", action="/wikis/note/delete/"+title)
+          a(href='/wikis/note/new').btn New
+          a(href="?action=history").btn History
+          input(type="submit", value="delete", name="submit").btn
