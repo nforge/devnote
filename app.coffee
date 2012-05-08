@@ -13,12 +13,14 @@ path = require 'path'
 
 app = express.createServer()
 
+session = {}
 # Configuration
 
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
+
 
 app.configure ->
   app.use express.bodyParser
@@ -176,6 +178,7 @@ app.post '/wikis/note/users/login', (req, res) ->
     User.login
         id: req.body.id,
         password: req.body.password
+    session.user = User.findUserById(req.body.id);
     res.redirect '/wikis/note/pages/frontpage'
 
 # get userlist
