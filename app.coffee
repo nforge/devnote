@@ -17,9 +17,10 @@ app = express.createServer()
 
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
+app.set 'views', __dirname + '/views'
+app.set 'view engine', 'jade'
+
 app.configure ->
-  app.set 'views', __dirname + '/views'
-  app.set 'view engine', 'jade'
   app.use express.bodyParser 
     uploadDir: uploadDir
   app.use express.methodOverride()
@@ -280,7 +281,7 @@ exports.start = (port, callback) ->
         wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
           app.listen port, null, (err) ->
             throw err if err
-            console.log "Express server listening on port %d in %s mode", app.address().port, app.settings.env
+            console.log "Express server listening on port %d in %s mode", port, app.settings.env
             callback() if callback
 
 
