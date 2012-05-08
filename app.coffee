@@ -1,5 +1,4 @@
 util = require 'util'
-fs = require 'fs'
 
 ###
 Module dependencies.
@@ -8,19 +7,16 @@ Module dependencies.
 express = require 'express'
 routes = require './routes'
 wiki = require './lib/wiki'
-User = require('./lib/users').User
-path = require 'path'
 
 app = express.createServer()
 
 session = {}
 # Configuration
 
-process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
-
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
 
+process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
 app.configure ->
   app.use express.bodyParser 
@@ -165,6 +161,7 @@ app.post '/wikis/note/delete/:name', (req, res) ->
             content: 'Page deleted',
 
 userApp = require('./userApp')
+fileApp = require('./fileApp')
 
 # get user
 app.get '/wikis/note/users', userApp.getUsers
@@ -188,48 +185,17 @@ app.post '/wikis/note/user/:id', userApp.postId
 app.post '/wikis/note/dropuser', userApp.postDropuser
 
 
-
 # file attachment page
-app.get '/wikis/note/pages/:name/attachment', (req, res) ->
-    dirname = path.join process.env.uploadDir, req.params.name
-
-    fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || [];
-        res.render 'fileupload.jade', {title: '파일첨부', pageName: req.params.name, filelist: filelist}
-
-# file attachment 
-app.post '/wikis/note/pages/:name/attachment.:format?', (req, res) ->
-    localUploadPath = path.dirname(req.files.attachment.path) + "/" + req.params.name
-    fs.mkdir localUploadPath, (err) ->
-        throw err if err && err.code != 'EEXIST'
-        fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
-            throw new Error "no file selected" if !req.files.attachment.name 
-            throw err if err
-            if req.params.format == 'partial'
-                    dirname = path.join process.env.uploadDir, req.params.name
-
-                    fs.readdir dirname, (err, filelist) ->
-                        filelist = filelist || [];
-                        res.render 'fileupload.partial.jade', {layout: false, title: '파일첨부', pageName: req.params.name, filelist: filelist}
-            else if req.params.format == 'json'
-               res.json {title: '파일첨부', pageName: req.params.name, filename: req.files.attachment.name}  
-            else 
-               res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
-    
+app.get '/wikis/note/pages/:name/attachment', fileApp.getAttachment
 
 # file attachment list call by json
-app.get '/wikis/note/pages/:name/attachment.:format', (req, res) ->
-    dirname = path.join process.env.uploadDir, req.params.name
-    fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || [];
-        res.json {title: '파일첨부', pageName: req.params.name, filelist: filelist}
+app.get '/wikis/note/pages/:name/attachment.:format', fileApp.getAttachmentList
+
+# file attachment 
+app.post '/wikis/note/pages/:name/attachment.:format?', fileApp.postAttachment   
 
 # attachment file delete
-app.del '/wikis/note/pages/:name/attachment/:filename', (req, res) ->
-    filePath = path.join(uploadDir, req.params.name, req.params.filename)
-    fs.unlink filePath, (err) ->
-        throw err if err
-    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'    
+app.del '/wikis/note/pages/:name/attachment/:filename', fileApp.delAttachment
 
 
 exports.start = (port, callback) ->
