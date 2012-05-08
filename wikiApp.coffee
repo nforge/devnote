@@ -1,5 +1,17 @@
 wiki = require './lib/wiki'
 
+error404 = (err, req, res, next) ->
+    res.render '404.jade',
+    title: "404 Not Found",
+    error: err.message,
+    status: 404
+
+error500 = (err, req, res, next) ->
+    res.render '500.jade',
+    title: "Sorry, Error Occurred...",
+    error: err.message,
+    status: 500
+    
 history = (name, req, res) ->
     LIMIT = 30
     handler = (err, commits) ->

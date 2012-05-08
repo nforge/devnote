@@ -46,7 +46,6 @@ app.locals.use (req, res) ->
   if (msg) 
      res.locals.message = '<p class="msg success">' + msg + '</p>'
 
-
 app.configure 'development', ->
   app.use express.errorHandler
       dumpExceptions: true,
@@ -57,18 +56,6 @@ app.configure 'production', ->
 
 # Routes
 app.get '/', routes.index
-
-error404 = (err, req, res, next) ->
-    res.render '404.jade',
-    title: "404 Not Found",
-    error: err.message,
-    status: 404
-
-error500 = (err, req, res, next) ->
-    res.render '500.jade',
-    title: "Sorry, Error Occurred...",
-    error: err.message,
-    status: 500
 
 # Wiki
 app.get  '/wikis/note/pages', wikiApp.getPages          # get page list
@@ -108,5 +95,3 @@ if not module.parent
     console.log "Express server listening on port %d in %s mode", LISTEN_PORT, app.settings.env
 
 exports.stop = -> app.close
-
-
