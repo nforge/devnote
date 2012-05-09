@@ -1,9 +1,12 @@
-h1= title
-p= content
+extends ../layout
 
-p 이름: #{userInfo.name}
-p 이메일: #{userInfo.email}
-p 아이디: #{userInfo.id}
-p #salted Password: #{userInfo.password}
+block content
+    h1= title
+    p= content
 
-a(href='/wikis/note/users') 목록보기
+    p 이름: #{userInfo.name}
+    p 이메일: #{userInfo.email}
+    p 아이디: #{userInfo.id}
+    p #salted Password: #{userInfo.password}
+
+    a(href='/wikis/note/users') 목록보기

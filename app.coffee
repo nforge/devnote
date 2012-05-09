@@ -1,33 +1,47 @@
 util = require 'util'
-fs = require 'fs'
 
 ###
 Module dependencies.
 ###
 
 express = require 'express'
-routes = require './routes'
-wiki = require './lib/wiki'
-User = require('./lib/users').User
-path = require 'path'
+routes  = require './routes'
+wiki    = require './lib/wiki'
 
-app = express.createServer()
+wikiApp = require './wikiApp'
+userApp = require './userApp'
+fileApp = require './fileApp'
 
-session = {}
-# Configuration
-
+noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
+app = module.exports = express.createServer()
+
+# Configuration
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
-
 
 app.configure ->
   app.use express.bodyParser
     uploadDir: uploadDir
+  app.use express.cookieParser 'n4wiki session'
+  app.use express.session()   
   app.use express.methodOverride()
   app.use app.router
   app.use express.static __dirname + '/public'
+  app.use express.logger 'dev'
+
+# Session-persisted message middleware
+app.locals.use (req, res) ->
+  err = req.session.error
+  msg = req.session.success
+  # delete req.session.error
+  # delete req.session.success
+  res.locals.message = ''
+  if err
+     res.locals.message = err
+  if msg
+     res.locals.message = msg
 
 app.configure 'development', ->
   app.use express.errorHandler
@@ -40,259 +54,41 @@ app.configure 'production', ->
 # Routes
 app.get '/', routes.index
 
-error404 = (err, req, res, next) ->
-    res.render '404.jade',
-    title: "404 Not Found",
-    error: err.message,
-    status: 404
+# Wiki
+app.get  '/wikis/note/pages', wikiApp.getPages          # get page list
+app.get  '/wikis/note/pages/:name', wikiApp.getPage     # get a page
+app.get  '/wikis/note/new', wikiApp.getNew              # get a form to post new wikipage
+app.post '/wikis/note/pages', wikiApp.postNew           # post new wikipage
+app.post '/wikis/note/delete/:name', wikiApp.postDelete # delete wikipage
+app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 
-error500 = (err, req, res, next) ->
-    res.render '500.jade',
-    title: "Sorry, Error Occurred...",
-    error: err.message,
-    status: 500
+# Login & Logout
+app.post '/wikis/note/users/login', userApp.postLogin   # post login
 
-view = (name, req, res) ->
-    wiki.getPage name, (err, content) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'page',
-                title: name,
-                content: wiki.render content,
+# User
+app.get  '/wikis/note/users', userApp.getUsers          # get user list
+app.get  '/wikis/note/users/new', userApp.getNew        # new user page
+app.post '/wikis/note/users/new', userApp.postNew       # post new user
+app.get  '/wikis/note/user/:id', userApp.getId          # show user information
+app.post '/wikis/note/user/:id', userApp.postId         # change user information (password change)
+app.post '/wikis/note/dropuser', userApp.postDropuser   # drop user
 
-edit = (name, req, res) ->
-    wiki.getPage name, (err, content) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'edit',
-                title: 'Edit Page',
-                name: name,
-                content: content,
+# attachment
+app.get  '/wikis/note/pages/:name/attachment', fileApp.getAttachment             # file attachment page
+app.get  '/wikis/note/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
+app.post '/wikis/note/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment 
+app.del  '/wikis/note/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
-history = (name, req, res) ->
-    LIMIT = 30
-
-    handler = (err, commits) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'history',
-                title: name,
-                commits: commits,
-                limit: LIMIT,
-
-    if req.query.until
-        offset = parseInt(req.query.offset or 0)
-        wiki.queryHistory
-            filename: name,
-            until: req.query.until,
-            offset: offset,
-            limit: LIMIT,
-            handler
-    else
-        wiki.getHistory name, LIMIT, handler
-
-diff = (name, req, res) ->
-    wiki.diff name, req.query.a, req.query.b, (err, diff) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'diff',
-                title: 'Diff',
-                name: name,
-                diff: wiki.renderDiff(diff),
-
-search = (req, res) ->
-    keyword = req.query.keyword
-    if not keyword
-        res.render 'search',
-            title: 'Search'
-            pages: {}
-    else
-        wiki.search keyword, (err, pages) ->
-            throw err if err
-            res.render 'search',
-                title: 'Search'
-                pages: wiki.renderSearch(pages)
-
-# get wikipage list
-list = (req, res) ->
-    wiki.getPages (err, pages) ->
-        if err
-            error404 err, req, res
-        else
-            res.render 'pages',
-                title: 'Pages',
-                content: pages
-
-app.get '/wikis/note/pages', (req, res) ->
-    switch req.query.action
-        when 'search' then search req, res
-        else list req, res
-
-app.get '/wikis/note/pages/:name', (req, res) ->
-    name = req.params.name
-    switch req.query.action
-        when 'diff' then diff name, req, res
-        when 'history' then history name, req, res
-        when 'edit' then edit name, req, res
-        else view name, req, res
-
-# get a form to post new wikipage
-app.get '/wikis/note/new', (req, res) ->
-    res.render 'new', title: 'New Page', pageName: '____new_' + new Date().getTime(), filelist: []
-
-# rollback
-app.post '/api/note/pages/:name', (req, res) ->
-    name = req.params.name
-    wiki.rollback name, req.body.id, (err) ->
-        wiki.getHistory name, (err, commits) ->
-            if err
-                error404 err, req, res
-            else
-                res.contentType 'json'
-                res.send {commits: commits, name: name, ids: commits.ids}
-
-# post new wikipage
-app.post '/wikis/note/pages', (req, res) ->
-    name = req.body.name
-    wiki.writePage name, req.body.body, (err) ->
-        res.redirect '/wikis/note/pages/' + name
-
-# delete wikipage
-app.post '/wikis/note/delete/:name', (req, res) ->
-    wiki.deletePage req.params.name, (err) ->
-        res.render 'deleted',
-            title: req.body.name,
-            message: req.params.name,
-            content: 'Page deleted',
-
-# get user
-app.get '/wikis/note/users', (req, res) ->
-    switch req.query.action
-        when 'login' then login req, res
-        else users req, res
-
-login = (req, res) ->
-    res.render 'user/login'
-        title: 'login'
-
-app.post '/wikis/note/users/login', (req, res) ->
-    User.login
-        id: req.body.id,
-        password: req.body.password
-    session.user = User.findUserById(req.body.id);
-    res.redirect '/wikis/note/pages/frontpage'
-
-# get userlist
-users = (req, res) ->
-    userlist = User.findAll()
-    res.render 'user/userlist',
-        title: 'User List',
-        content: "등록된 사용자 " + Object.keys(userlist).length + "명",
-        userlist: userlist
-
-# get new user
-app.get '/wikis/note/users/new', (req, res) ->
-    res.render 'user/new'
-        title: 'new user'
-
-# post new user
-app.post '/wikis/note/users/new', (req, res) ->
-    User.add
-        id: req.body.id,
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    userInfo = User.findUserById req.body.id
-
-    res.render 'user/user',
-        title: '사용자가 등록되었습니다.',
-        content: "사용자 정보",
-        userInfo: userInfo
-
-# show user information
-app.get '/wikis/note/user/:id', (req, res) ->
-    userInfo = User.findUserById req.params.id
-    res.render 'user/edit',
-        title: 'User information',
-        content: "사용자 정보",
-        user: userInfo
-
-# change user information (password change)
-app.post '/wikis/note/user/:id', (req, res) ->
-    targetUser = User.findUserById req.params.id
-    isValid = User.changePassword req.body.previousPassword, req.body.newPassword, targetUser
-    targetUser.email = req.body.email if isValid
-    User.save targetUser if isValid
-
-    userInfo = user.findUserById req.params.id
-    res.render 'user/user',
-        title: '사용자 정보가 변경되었습니다.',
-        content: "사용자 정보",
-        userInfo: userInfo
-
-
-# drop user
-app.post '/wikis/note/dropuser', (req, res) ->
-    user = User.findUserById req.body.id
-    user.remove({id: req.body.id}) if user
-    res.redirect '/wikis/note/userlist'
-
-# file attachment page
-app.get '/wikis/note/pages/:name/attachment', (req, res) ->
-    dirname = path.join process.env.uploadDir, req.params.name
-
-    fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || []
-        res.render 'fileupload.jade', {title: '파일첨부', pageName: req.params.name, filelist: filelist}
-
-# file attachment
-app.post '/wikis/note/pages/:name/attachment.:format?', (req, res) ->
-    localUploadPath = path.dirname(req.files.attachment.path) + "/" + req.params.name
-    fs.mkdir localUploadPath, (err) ->
-        throw err if err && err.code != 'EEXIST'
-        fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
-            throw new Error "no file selected" if !req.files.attachment.name
-            throw err if err
-            if req.params.format == 'partial'
-                    dirname = path.join process.env.uploadDir, req.params.name
-
-                    fs.readdir dirname, (err, filelist) ->
-                        filelist = filelist || []
-                        res.render 'fileupload.partial.jade', {layout: false, title: '파일첨부', pageName: req.params.name, filelist: filelist}
-            else if req.params.format == 'json'
-               res.json {title: '파일첨부', pageName: req.params.name, filename: req.files.attachment.name}
-            else
-               res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
-
-
-# file attachment list call by json
-app.get '/wikis/note/pages/:name/attachment.:format', (req, res) ->
-    dirname = path.join process.env.uploadDir, req.params.name
-    fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || []
-        res.json {title: '파일첨부', pageName: req.params.name, filelist: filelist}
-
-# attachment file delete
-app.del '/wikis/note/pages/:name/attachment/:filename', (req, res) ->
-    filePath = path.join(uploadDir, req.params.name, req.params.filename)
-    fs.unlink filePath, (err) ->
+# wiki init on start
+wiki.init (err) ->
+    console.log err.message if err 
+    wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
         throw err if err
-    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
 
-
-exports.start = (port, callback) ->
-    wiki.init (err) ->
-        wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
-          app.listen port, null, (err) ->
-            throw err if err
-            console.log "Express server listening on port %d in %s mode", port, app.settings.env
-            callback() if callback
-
+if not module.parent
+    wiki.init noop
+    LISTEN_PORT = 3000
+    app.listen LISTEN_PORT;
+    console.log "Express server listening on port %d in %s mode", LISTEN_PORT, app.settings.env
 
 exports.stop = -> app.close
-
-exports.start 3000 if not module.parent

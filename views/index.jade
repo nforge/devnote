@@ -1,21 +1,24 @@
-h1= title
-p Welcome to #{title}
+extends layout
 
-h2 Note
-a(href='/wikis/note/pages/frontpage') frontpage
-p
-a(href='/wikis/note/new') new note
-p
-a(href='/wikis/note/pages') note list
-p
-a(href='/wikis/note/pages?action=search') search notes
-p
-a(href='/wikis/note/pages/today/attachment') file attachment at page name 'today'
-p
-h2 user
-p
-a(href='/wikis/note/users?action=login') login
-p
-a(href='/wikis/note/users') user list
-p
-a(href='/wikis/note/users/new') new user
+block content
+    h1= title
+    p Welcome to #{title}
+
+    h2 Note
+    a(href='/wikis/note/pages/frontpage') frontpage
+    p
+    a(href='/wikis/note/new') new note
+    p
+    a(href='/wikis/note/pages') note list
+    p
+    a(href='/wikis/note/pages?action=search') search notes
+    p
+    a(href='/wikis/note/pages/today/attachment') file attachment at page name 'today'
+    p
+    h2 user
+    p
+    a(href='/wikis/note/users?action=login') login
+    p
+    a(href='/wikis/note/users') user list
+    p
+    a(href='/wikis/note/users/new') new user

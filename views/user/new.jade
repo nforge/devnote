@@ -1,13 +1,16 @@
-h1= title
-form(method="post", action="/wikis/note/users/new")
-    label(for="name") 이름
-    input(name="name", id="name")
-    label(for="id") id
-    input(name="id", id="id")
-    label(for="email") email
-    input(name="email", id="email")
-    label(for="password") password
-    input(name="password", id="password", placeholder="4자리 이상으로 입력해 주세요.")
-    br
-    input(type="submit", name="submit").btn-primary
+extends ../layout
+
+block content
+    h1= title
+    form(method="post", action="/wikis/note/users/new")
+        label(for="name") 이름
+        input(name="name", id="name")
+        label(for="id") id
+        input(name="id", id="id")
+        label(for="email") email
+        input(name="email", id="email")
+        label(for="password") password
+        input(name="password", id="password", placeholder="4자리 이상으로 입력해 주세요.")
+        br
+        input(type="submit", name="submit").btn-primary
 
