@@ -15,9 +15,10 @@ fileApp = require './fileApp'
 noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
-app = module.exports = express.createServer()
+app = express.createServer()
 
 # Configuration
+LISTEN_PORT = 3000
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
 
@@ -25,7 +26,7 @@ app.configure ->
   app.use express.bodyParser
     uploadDir: uploadDir
   app.use express.cookieParser 'n4wiki session'
-  app.use express.session()   
+  app.use express.session()
   app.use express.methodOverride()
   app.use app.router
   app.use express.static __dirname + '/public'
@@ -85,10 +86,12 @@ wiki.init (err) ->
     wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
         throw err if err
 
-if not module.parent
+exports.start = (port, callback) ->
     wiki.init noop
-    LISTEN_PORT = 3000
-    app.listen LISTEN_PORT;
-    console.log "Express server listening on port %d in %s mode", LISTEN_PORT, app.settings.env
+    app.listen port
+    console.log "Express server listening on port %d in %s mode", port, app.settings.env
+    callback() if callback
 
 exports.stop = -> app.close
+
+exports.start LISTEN_PORT if not module.parent
