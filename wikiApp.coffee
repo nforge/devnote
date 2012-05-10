@@ -1,7 +1,16 @@
 wiki = require './lib/wiki'
 url = require 'url'
 
+ROOT_PATH = '/wikis/'
+
 lastVisits = {}
+
+exports.init = (wikiname, err) ->
+    ROOT_PATH += wikiname
+    wiki.init (err) ->
+        console.log err.message if err 
+        wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
+            throw err if err
 
 error404 = (err, req, res, next) ->
     res.render '404.jade',
@@ -124,7 +133,7 @@ view = (name, req, res) ->
                 wiki.readCommit lastVisitId,
                     (err, commit) ->
                         changesUrl = url.format
-                            pathname: '/wikis/note/pages/' + name,
+                            pathname: ROOT_PATH+'/pages/' + name,
                             query:
                                 action: 'diff',
                                 a: lastVisitId,
@@ -149,7 +158,7 @@ exports.postNew = (req, res) ->
 
             lastVisits[userId][name] = commitId
 
-        res.redirect '/wikis/note/pages/' + name
+        res.redirect ROOT_PATH+'/pages/' + name
 
 exports.postDelete = (req, res) ->
     wiki.deletePage req.params.name, (err) ->

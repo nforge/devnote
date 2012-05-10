@@ -6,7 +6,6 @@ Module dependencies.
 
 express = require 'express'
 routes  = require './routes'
-wiki    = require './lib/wiki'
 
 wikiApp = require './wikiApp'
 userApp = require './userApp'
@@ -81,14 +80,8 @@ app.get  ROOT_PATH+'/pages/:name/attachment.:format', fileApp.getAttachmentList 
 app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment 
 app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
-# wiki init on start
-wiki.init (err) ->
-    console.log err.message if err 
-    wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
-        throw err if err
-
 if not module.parent
-    wiki.init noop
+    wikiApp.init wikiname
     LISTEN_PORT = 3000
     app.listen LISTEN_PORT;
     console.log "Express server listening on port %d in %s mode", LISTEN_PORT, app.settings.env
