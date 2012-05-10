@@ -14,6 +14,8 @@ fileApp = require './fileApp'
 
 noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
+wikiname = 'note'
+ROOT_PATH = '/wikis/' + wikiname
 
 app = module.exports = express.createServer()
 
@@ -55,29 +57,29 @@ app.configure 'production', ->
 app.get '/', routes.index
 
 # Wiki
-app.get  '/wikis/note/pages', wikiApp.getPages          # get page list
-app.get  '/wikis/note/pages/:name', wikiApp.getPage     # get a page
-app.get  '/wikis/note/new', wikiApp.getNew              # get a form to post new wikipage
-app.post '/wikis/note/pages', wikiApp.postNew           # post new wikipage
-app.post '/wikis/note/delete/:name', wikiApp.postDelete # delete wikipage
+app.get  ROOT_PATH+'/pages', wikiApp.getPages          # get page list
+app.get  ROOT_PATH+'/pages/:name', wikiApp.getPage     # get a page
+app.get  ROOT_PATH+'/new', wikiApp.getNew              # get a form to post new wikipage
+app.post ROOT_PATH+'/pages', wikiApp.postNew           # post new wikipage
+app.post ROOT_PATH+'/delete/:name', wikiApp.postDelete # delete wikipage
 app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 
 # Login & Logout
-app.post '/wikis/note/users/login', userApp.postLogin   # post login
+app.post ROOT_PATH+'/users/login', userApp.postLogin   # post login
 
 # User
-app.get  '/wikis/note/users', userApp.getUsers          # get user list
-app.get  '/wikis/note/users/new', userApp.getNew        # new user page
-app.post '/wikis/note/users/new', userApp.postNew       # post new user
-app.get  '/wikis/note/user/:id', userApp.getId          # show user information
-app.post '/wikis/note/user/:id', userApp.postId         # change user information (password change)
-app.post '/wikis/note/dropuser', userApp.postDropuser   # drop user
+app.get  ROOT_PATH+'/users', userApp.getUsers          # get user list
+app.get  ROOT_PATH+'/users/new', userApp.getNew        # new user page
+app.post ROOT_PATH+'/users/new', userApp.postNew       # post new user
+app.get  ROOT_PATH+'/user/:id', userApp.getId          # show user information
+app.post ROOT_PATH+'/user/:id', userApp.postId         # change user information (password change)
+app.post ROOT_PATH+'/dropuser', userApp.postDropuser   # drop user
 
 # attachment
-app.get  '/wikis/note/pages/:name/attachment', fileApp.getAttachment             # file attachment page
-app.get  '/wikis/note/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
-app.post '/wikis/note/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment 
-app.del  '/wikis/note/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
+app.get  ROOT_PATH+'/pages/:name/attachment', fileApp.getAttachment             # file attachment page
+app.get  ROOT_PATH+'/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
+app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment 
+app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
 # wiki init on start
 wiki.init (err) ->
