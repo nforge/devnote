@@ -9,6 +9,9 @@ var zlib = require('zlib');
 var fileutils = require('../lib/fileutils');
 var util = require('util');
 
+// var WIKINAME = 'note';
+var REPO_PATH = 'note.pages.git';
+
 //  $ mkdir -p ./pages.git/objects
 //     $ mkdir -p ./pages.git/refs
 //     $ echo 'ref: refs/heads/master' > ./pages.git/HEAD
@@ -22,19 +25,19 @@ var _ifExistsSync = function(file, func) {
 
 suite('gitfs.init', function(){
     setup(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
     test('필요한 디렉터리와 파일이 생성되어야 함', function(done){
         step(
             function when() {
-                gitfs.init(this);
+                gitfs.init(REPO_PATH, this);
             },
             function then(err) {
                 if (err) throw err;
-                assert.ok(fs.statSync('./pages.git/objects').isDirectory());
-                assert.ok(fs.statSync('./pages.git/refs').isDirectory());
-                assert.equal('ref: refs/heads/master', fs.readFileSync('./pages.git/HEAD', 'utf8'));
+                assert.ok(fs.statSync(REPO_PATH+'/objects').isDirectory());
+                assert.ok(fs.statSync(REPO_PATH+'/refs').isDirectory());
+                assert.equal('ref: refs/heads/master', fs.readFileSync(REPO_PATH+'/HEAD', 'utf8'));
                 done();
             }
         )
@@ -42,14 +45,14 @@ suite('gitfs.init', function(){
     test('이미 폴더가 존재할 경우 안내 메시지 출력', function(done){
         step(
             function given(){
-                fs.mkdir('./pages.git', this);
+                fs.mkdir(REPO_PATH, this);
             },
             function when(err) {
-                gitfs.init(this);
+                gitfs.init(REPO_PATH, this);
             },
             function then(err) {
                 if (err) {
-                    assert.equal("pages.git already exists", err.message);
+                    assert.equal(REPO_PATH+" already exists", err.message);
                     done();
                 } else {
                     assert.fail('fail!');
@@ -58,7 +61,7 @@ suite('gitfs.init', function(){
         );
     });
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
 });
@@ -68,7 +71,7 @@ suite('gitfs._serializeBlob', function() {
     setup(function(done) {
         content = 'wiki-content';
 
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             if (err) throw err;
             done();
         });
@@ -95,9 +98,9 @@ suite('gitfs._serializeBlob', function() {
         done();
     });
 
-    test('pages.git/objects/<sha1 해시값 앞 2자리> 폴더 생성', function(done) {
+    test(REPO_PATH+'/objects/<sha1 해시값 앞 2자리> 폴더 생성', function(done) {
         var digest;
-        var bucketPath = 'pages.git/objects/f2';
+        var bucketPath = REPO_PATH+'/objects/f2';
         step(
             function given() {
                 var blob = gitfs._serializeBlob(content);
@@ -118,7 +121,7 @@ suite('gitfs._serializeBlob', function() {
         );
     });
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
 });
@@ -126,7 +129,7 @@ suite('gitfs._serializeBlob', function() {
 suite('gitfs._storeObject', function() {
     setup(function(done) {
 
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             if (err) throw err;
             done();
         });
@@ -138,7 +141,7 @@ suite('gitfs._storeObject', function() {
             function given() {
                 var raw = gitfs._serializeBlob(content);
                 var digest = gitfs._hash(raw);
-                blobPath = 'pages.git/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
+                blobPath = REPO_PATH+'/objects/' + digest.substr(0, 2) + '/' + digest.substr(2);
                 this();
             },
             function when(err) {
@@ -156,7 +159,7 @@ suite('gitfs._storeObject', function() {
         );
     });
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
 });
@@ -166,7 +169,7 @@ suite('gitfs._serializeTree', function(){
     var expectedTree;
 
     setup(function (done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
 
         var digest1 = crypto.createHash('sha1').update('content1').digest('hex');
         var digest2 = crypto.createHash('sha1').update('content2').digest('hex');
@@ -204,22 +207,22 @@ suite('gitfs._serializeTree', function(){
     });
 
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
 });
 
 suite('gitfs._getCommitIdFromHEAD', function(){
     setup(function(done) {
-        fileutils.mkdir_p('pages.git/refs/heads');
-        fs.writeFileSync('pages.git/HEAD','ref: refs/heads/master');
-        fs.writeFileSync('pages.git/refs/heads/master','f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
+        fileutils.mkdir_p(REPO_PATH+'/refs/heads');
+        fs.writeFileSync(REPO_PATH+'/HEAD','ref: refs/heads/master');
+        fs.writeFileSync(REPO_PATH+'/refs/heads/master','f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f');
         done();
     });
     test('HEAD 파일이 존재하지 않을 때 예외처리', function(done) {
         step(
             function when(){
-                _ifExistsSync('pages.git/HEAD', fs.unlinkSync);
+                _ifExistsSync(REPO_PATH+'/HEAD', fs.unlinkSync);
                 gitfs._getCommitIdFromHEAD(this);
             },
             function then(err) {
@@ -240,7 +243,7 @@ suite('gitfs._getCommitIdFromHEAD', function(){
         );
     });
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
 });
@@ -269,10 +272,10 @@ suite('gitfs._serializeCommit', function(){
         assert.equal(actualCommit, expectedCommit);
     });
     test('생성된 commit object를 압축해서 저장', function(done) {
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             if (err) throw err;
             var digest = crypto.createHash('sha1').update(expectedCommit, 'binary').digest('hex');
-            var commitPath = path.join('pages.git', 'objects', digest.substr(0, 2), digest.substr(2));
+            var commitPath = path.join(REPO_PATH, 'objects', digest.substr(0, 2), digest.substr(2));
             gitfs._storeObject(gitfs._serializeCommit(commit), function (err) {
                 if (err) throw err;
                 zlib.inflate(fs.readFileSync(commitPath), function(err, result) {
@@ -284,7 +287,7 @@ suite('gitfs._serializeCommit', function(){
         });
     });
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
 	});
 });
@@ -308,7 +311,7 @@ suite('gitfs.commit', function(){
             message: "initial commit"
         };
 
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             if (err) throw err;
             done();
         });
@@ -347,7 +350,7 @@ suite('gitfs.commit', function(){
     });
 
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
 	});
 });
@@ -370,7 +373,7 @@ suite('gitfs.show', function() {
         };
 
         //When
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             gitfs.commit(givenCommit, function(err) {
                 gitfs._getCommitIdFromHEAD(function(err, commitId) {
                     gitfs.show('FrontPage', commitId, function(err, actual) {
@@ -402,7 +405,7 @@ suite('gitfs.show', function() {
             message: 'initial commit'
         };
 
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             gitfs.commit(givenCommit, function (err) {
                 gitfs._getCommitIdFromHEAD(function (err, commitId) {
                     gitfs.show('Index', commitId, function (err, actual) {
@@ -414,7 +417,7 @@ suite('gitfs.show', function() {
         });
     });
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
 	});
 });
@@ -449,7 +452,7 @@ suite('gitfs.log', function() {
         };
 
         givenCommits = [firstCommit, secondCommit];
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             async.forEachSeries(givenCommits, function(commit, cb) {
                 gitfs.commit(commit, cb);
             }, done);
@@ -503,7 +506,7 @@ suite('gitfs.log', function() {
     });
 
     teardown(function() {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
 	});
 
 });
@@ -537,7 +540,7 @@ suite('gitfs.log (pack)', function() {
 
 suite('gitfs.queryLog', function() {
     setup(function(done) {
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             if (err) throw err;
             step(
                 function() {
@@ -636,7 +639,7 @@ suite('gitfs.queryLog', function() {
     });
 
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
 });
@@ -652,7 +655,7 @@ suite('gitfs.getHeadTree', function(){
         }
 
         givenCommits = [firstCommit];
-        gitfs.init(function (err) {
+        gitfs.init(REPO_PATH, function (err) {
             async.forEachSeries(givenCommits, function (commit, cb) {
                 gitfs.commit(commit, cb);
             }, done);
@@ -682,7 +685,7 @@ suite('gitfs.getHeadTree', function(){
         )
     });
     teardown(function (done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(REPO_PATH);
         done();
     });
 });
