@@ -1,4 +1,7 @@
 wiki = require './lib/wiki'
+url = require 'url'
+
+lastVisits = {}
 
 error404 = (err, req, res, next) ->
     res.render '404.jade',
@@ -91,20 +94,61 @@ edit = (name, req, res) ->
                 content: content
 
 view = (name, req, res) ->
-    wiki.getPage name, (err, content) ->
+    wiki.getPage name, (err, content, commitId) ->
         if err
             error404 err, req, res
         else
-            res.render 'page',
-                title: name,
-                content: wiki.render content,
-                
+            pageRender = (changesUrl, lastVisitDate) ->
+                res.render 'page',
+                    title: name,
+                    content: (wiki.render content),
+                    changesUrl: changesUrl,
+                    lastVisitDate: lastVisitDate,
+
+            if not req.session.user
+                return pageRender()
+
+            userId = req.session.user.id
+
+            if not lastVisits[userId]
+                lastVisits[userId] = {}
+
+            lastVisitId = lastVisits[userId][name]
+            lastVisits[userId][name] = commitId
+
+            if not lastVisitId
+                return pageRender()
+
+            if lastVisitId != commitId
+                # something changed
+                wiki.readCommit lastVisitId,
+                    (err, commit) ->
+                        changesUrl = url.format
+                            pathname: '/wikis/note/pages/' + name,
+                            query:
+                                action: 'diff',
+                                a: lastVisitId,
+                                b: commitId,
+                        lastVisitDate = new Date commit.committer.unixtime * 1000
+                        pageRender changesUrl, lastVisitDate
+            else
+                # nothing changed
+                pageRender()
+
 exports.getNew = (req, res) ->
     res.render 'new', title: 'New Page', pageName: '____new_' + new Date().getTime(), filelist: []
-        
+
 exports.postNew = (req, res) ->
     name = req.body.name
-    wiki.writePage name, req.body.body, (err) ->
+    wiki.writePage name, req.body.body, (err, commitId) ->
+        if req.session.user
+            userId = req.session.user.id
+
+            if not lastVisits[userId]
+                lastVisits[userId] = {}
+
+            lastVisits[userId][name] = commitId
+
         res.redirect '/wikis/note/pages/' + name
 
 exports.postDelete = (req, res) ->

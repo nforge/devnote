@@ -1,6 +1,12 @@
 extends layout
 
 block content
+    if changesUrl
+      div.alert.alert-info
+        span Something changed since your last visit, #{lastVisitDate}.#{' '}
+        a(href=changesUrl) Click here
+        span #{' '}to see the difference.
+
     div.page-header
       h1= title
 
