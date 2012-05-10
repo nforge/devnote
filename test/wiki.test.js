@@ -5,9 +5,11 @@ var step = require('step');
 
 var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
 
+var WIKINAME = 'note';
+
 suite('wiki', function() {
     setup(function(done) {
-        wiki.init(function (err) {
+        wiki.init(WIKINAME, function (err) {
             wiki.writePage('frontpage', 'welcome to n4wiki', function (err) {
                 if (err) throw err;
                 done();
@@ -55,7 +57,7 @@ suite('wiki', function() {
     test('사용자는 모든 위키 페이지 목록을 볼 수 있다.', function(done){
         wiki.getPages(function (err, pages) {
             if (err) throw err;
-            assert.equal(pages.length, 1);
+            assert.equal(pages.length, 2);
             assert.equal(pages[0], 'frontpage');
             done();
         });

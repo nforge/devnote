@@ -5,9 +5,9 @@ ROOT_PATH = '/wikis/'
 
 lastVisits = {}
 
-exports.init = (wikiname, err) ->
+exports.init = (wikiname) ->
     ROOT_PATH += wikiname
-    wiki.init (err) ->
+    wiki.init wikiname, (err) ->
         console.log err.message if err 
         wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
             throw err if err

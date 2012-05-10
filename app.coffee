@@ -13,8 +13,8 @@ fileApp = require './fileApp'
 
 noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
-wikiname = 'note'
-ROOT_PATH = '/wikis/' + wikiname
+WIKINAME = 'note'
+ROOT_PATH = '/wikis/' + WIKINAME
 
 app = module.exports = express.createServer()
 
@@ -81,7 +81,7 @@ app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   
 app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
 if not module.parent
-    wikiApp.init wikiname
+    wikiApp.init WIKINAME
     LISTEN_PORT = 3000
     app.listen LISTEN_PORT;
     console.log "Express server listening on port %d in %s mode", LISTEN_PORT, app.settings.env
