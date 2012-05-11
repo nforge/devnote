@@ -108,7 +108,7 @@ view = (name, req, res) ->
         if err
             error404 err, req, res
         else
-            pageRender = (changesUrl, lastVisitDate) ->
+            renderPage = (changesUrl, lastVisitDate) ->
                 res.render 'page',
                     title: name,
                     content: (wiki.render content),
@@ -116,7 +116,7 @@ view = (name, req, res) ->
                     lastVisitDate: lastVisitDate,
 
             if not req.session.user
-                return pageRender()
+                return renderPage()
 
             userId = req.session.user.id
 
@@ -127,7 +127,7 @@ view = (name, req, res) ->
             lastVisits[userId][name] = commitId
 
             if not lastVisitId
-                return pageRender()
+                return renderPage()
 
             if lastVisitId != commitId
                 # something changed
@@ -140,10 +140,10 @@ view = (name, req, res) ->
                                 a: lastVisitId,
                                 b: commitId,
                         lastVisitDate = new Date commit.committer.unixtime * 1000
-                        pageRender changesUrl, lastVisitDate
+                        renderPage changesUrl, lastVisitDate
             else
                 # nothing changed
-                pageRender()
+                renderPage()
 
 exports.getNew = (req, res) ->
     res.render 'new', title: 'New Page', pageName: '____new_' + new Date().getTime(), filelist: []
