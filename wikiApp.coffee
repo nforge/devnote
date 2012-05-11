@@ -1,5 +1,6 @@
 wiki = require './lib/wiki'
 url = require 'url'
+debug = (require 'debug')('main')
 
 ROOT_PATH = '/wikis/'
 
@@ -8,7 +9,7 @@ lastVisits = {}
 exports.init = (wikiname) ->
     ROOT_PATH += wikiname
     wiki.init wikiname, (err) ->
-        console.log err.message if err 
+        console.log err.message if err
         wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
             throw err if err
 
@@ -176,4 +177,3 @@ exports.postRollback = (req, res) ->
             else
                 res.contentType 'json'
                 res.send {commits: commits, name: name, ids: commits.ids}
-
