@@ -55,7 +55,7 @@ suite '웹 인터페이스', ->
                 pressButton 'submit', ->
                     browser.visit getUrl('/wikis/note/pages/FrontPage2'),
                         (e, browser, status) ->
-                            assert.equal status, 404, 'ok 404'
+                            assert.equal status, 404, 'The status code should be 404, but ' + status + '.'
                             done()
 
     test '등록한 페이지 편집하기 - /wikis/note/pages/:name?action=edit', (done) ->
@@ -87,7 +87,7 @@ suite '웹 인터페이스', ->
                             browser.pressButton 'submit', ->
                                 browser.visit "http://localhost:3000/wikis/note/pages/FrontPage",
                                     (e, browser, status) ->
-                                        assert.equal status, 404
+                                        assert.equal status, 404, 'The status code should be 404, but ' + status + '.'
                                         done()
 
     suiteTeardown (done) ->

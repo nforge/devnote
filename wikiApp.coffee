@@ -1,6 +1,7 @@
 fs = require 'fs'
 wiki = require './lib/wiki'
 url = require 'url'
+debug = (require 'debug')('main')
 
 ROOT_PATH = '/wikis/'
 
@@ -178,4 +179,3 @@ exports.postRollback = (req, res) ->
             else
                 res.contentType 'json'
                 res.send {commits: commits, name: name, ids: commits.ids}
-
