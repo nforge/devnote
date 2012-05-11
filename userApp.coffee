@@ -15,7 +15,7 @@ users = (req, res) ->
     res.render 'user/userlist',
         title: 'User List',
         content: "등록된 사용자 " + Object.keys(userlist).length + "명",
-        userlist: userlist            
+        userlist: userlist
 
 # post login
 exports.postLogin =  (req, res) ->
@@ -27,7 +27,7 @@ exports.postLogin =  (req, res) ->
             if user
                 req.session.regenerate ->
                     req.session.user = User.findUserById(req.body.id)
-                    req.session.success = req.session.user.name + ' logined.';
+                    req.session.success = req.session.user.name + ' logined.'
                     res.redirect '/'
             else
                 req.session.error = err.message
@@ -35,7 +35,7 @@ exports.postLogin =  (req, res) ->
 
 exports.getNew = (req, res) ->
     res.render 'user/new'
-        title: 'new user'      
+        title: 'new user'
 
 exports.postNew = (req, res) ->
     User.add
@@ -48,14 +48,14 @@ exports.postNew = (req, res) ->
     res.render 'user/user',
         title: '사용자가 등록되었습니다.',
         content: "사용자 정보",
-        userInfo: userInfo            
+        userInfo: userInfo
 
 exports.getId = (req, res) ->
     userInfo = User.findUserById req.params.id
     res.render 'user/edit',
         title: 'User information',
         content: "사용자 정보",
-        user: userInfo    
+        user: userInfo
 
 exports.postId = (req, res) ->
     targetUser = User.findUserById req.params.id
@@ -67,8 +67,8 @@ exports.postId = (req, res) ->
     res.render 'user/user',
         title: '사용자 정보가 변경되었습니다.',
         content: "사용자 정보",
-        userInfo: userInfo   
-        
+        userInfo: userInfo
+
 exports.postDropuser = (req, res) ->
     userInfo = User.findUserById req.body.id
     User.remove({id: req.body.id}) if userInfo
