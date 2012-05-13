@@ -10,3 +10,17 @@ a {
 .matched {
     background-color: #DFD;
 }
+
+.title, .textbody {
+    width: 100%;
+}
+
+.
+.writer {
+    float: left;
+    position: fixed;
+}
+
+.previewer {
+    left-margin: 20px;
+}
