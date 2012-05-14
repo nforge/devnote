@@ -96,7 +96,12 @@ block content
 
           $('.insertInto').live("click",function(){
               var filename = $(this).siblings('input').val();
-              filename = '<img src="/attachment/#{pageName}/' + filename + '">'
+              var filetype = filename.substring(filename.lastIndexOf('.') + 1);
+              var images = ["jpg","png","gif"];
+              if (filetype in  )
+                filename = '<img src="/attachment/#{pageName}/' + filename + '">'
+              else 
+                filename = '</attachment/#{pageName}/' + filename + '">'
               $('#body').val( $('#body').val() + filename );
               preview();
           });
