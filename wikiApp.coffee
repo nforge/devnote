@@ -96,56 +96,77 @@ exports.getPage = (req, res) ->
         else view name, req, res
 
 edit = (name, req, res) ->
-    wiki.getPage name, (err, content) ->
+    wiki.getPage name, (err, page) ->
         if err
             error404 err, req, res
         else
             res.render 'edit',
                 title: 'Edit Page',
                 name: name,
-                content: content
+                content: page.content
+
+commandUrls = (name) ->
+    view: ROOT_PATH + '/pages/' + name,
+    new: ROOT_PATH + '/new',
+    edit: url.format
+        pathname: ROOT_PATH + '/pages/' + name,
+        query:
+            action: 'edit',
+    history: url.format
+        pathname: ROOT_PATH + '/pages/' + name,
+        query:
+            action: 'history',
+    delete: url.format
+        pathname: ROOT_PATH + '/delete/' + name,
 
 view = (name, req, res) ->
-    wiki.getPage name, (err, content, commitId) ->
-        if err
-            error404 err, req, res
+    wiki.getPage name, req.query.rev, (err, page) ->
+        if err then return error404 err, req, res
+        renderPage = (lastVisit) ->
+            options =
+                title: name,
+                content: (wiki.render page.content),
+                commit: page.commit,
+                commitId: page.commitId,
+                isOld: page.isOld,
+                urls: commandUrls name,
+
+            if lastVisit
+                options.urls.diffSinceLastVisit = url.format
+                    pathname: ROOT_PATH + '/pages/' + name,
+                    query:
+                        action: 'diff',
+                        a: lastVisit.id,
+                        b: page.commitId,
+                options.lastVisitDate = lastVisit.date
+
+            res.render 'page', options
+
+        if not req.session.user
+            return renderPage()
+
+        userId = req.session.user.id
+
+        if not lastVisits[userId]
+            lastVisits[userId] = {}
+
+        lastVisitId = lastVisits[userId][name]
+        lastVisits[userId][name] = page.commitId
+
+        if not lastVisitId
+            return renderPage()
+
+        if lastVisitId != page.commitId
+            # something changed
+            wiki.readCommit lastVisitId,
+                (err, commit) ->
+                    lastVisit =
+                        date: new Date commit.committer.unixtime * 1000
+                        id: lastVisitId,
+                    renderPage lastVisit
         else
-            renderPage = (changesUrl, lastVisitDate) ->
-                res.render 'page',
-                    title: name,
-                    content: (wiki.render content),
-                    changesUrl: changesUrl,
-                    lastVisitDate: lastVisitDate,
-
-            if not req.session.user
-                return renderPage()
-
-            userId = req.session.user.id
-
-            if not lastVisits[userId]
-                lastVisits[userId] = {}
-
-            lastVisitId = lastVisits[userId][name]
-            lastVisits[userId][name] = commitId
-
-            if not lastVisitId
-                return renderPage()
-
-            if lastVisitId != commitId
-                # something changed
-                wiki.readCommit lastVisitId,
-                    (err, commit) ->
-                        changesUrl = url.format
-                            pathname: ROOT_PATH+'/pages/' + name,
-                            query:
-                                action: 'diff',
-                                a: lastVisitId,
-                                b: commitId,
-                        lastVisitDate = new Date commit.committer.unixtime * 1000
-                        renderPage changesUrl, lastVisitDate
-            else
-                # nothing changed
-                renderPage()
+            # nothing changed
+            renderPage()
 
 exports.getNew = (req, res) ->
     res.render 'new', title: 'New Page', pageName: '____new_' + new Date().getTime(), filelist: []

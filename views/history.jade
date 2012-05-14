@@ -24,6 +24,8 @@ block content
               input(type="radio", value=commits.ids[index], name="b")
             td= commit.message
             td
+              a(href="/wikis/note/pages/" + title + "?rev=" + commits.ids[index], name=title) Show
+            td
               a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
         - });
 

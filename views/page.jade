@@ -1,10 +1,20 @@
 extends layout
 
 block content
-    if changesUrl
+    if isOld
+      div.alert.alert-info
+        span This is an old revision of this page, as edited by#{' '}
+        span= commit.author.name
+        span #{' '}at#{' '}
+        - var date = new Date(commit.author.unixtime * 1000)
+        span= date
+        span . It may differ significantly from the#{' '}
+        a(href=urls.view) current revision.
+
+    if urls.diffSinceLastVisit
       div.alert.alert-info
         span Something changed since your last visit, #{lastVisitDate}.#{' '}
-        a(href=changesUrl) Click here
+        a(href=urls.diffSinceLastVisit) Click here
         span #{' '}to see the difference.
 
     div.page-header
@@ -12,11 +22,11 @@ block content
 
     div.row.pull-right
       div.span3
-        a(href="?action=edit").btn.btn-primary Edit
-        a(href='/wikis/note/new').btn New
-        a(href="?action=history").btn History
+        a(href=urls.edit).btn.btn-primary Edit
+        a(href=urls.new).btn New
+        a(href=urls.history).btn History
       div.span1
-        form(method="post", action="/wikis/note/delete/"+title)
+        form(method="post", action=urls.delete)
           input(type="submit", value="delete", name="submit").btn
 
     div.row

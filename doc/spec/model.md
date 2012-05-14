@@ -63,3 +63,12 @@ N4WIKI Models
     위 query 는 아래의 git 명령과 같다.
 
     git log -30 0cc71c0002496eccbe919c2e5f4c0616f9f2e611..f96845522d7a2de3c0c4677ac96f6640ceb19055^1 -- frontpage
+
+- page
+
+    var page = {
+        content: 'welcome to n4wiki'                          // 본문
+        commitId: '0cc71c0002496eccbe919c2e5f4c0616f9f2e611', // 이 페이지가 속한 커밋의 id
+        commit: commit,                                       // 이 페이지가 속한 커밋
+        isOld: false                                          // 이 페이지의 내용이 최신 버전과 같은지
+    }

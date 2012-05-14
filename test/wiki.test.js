@@ -24,7 +24,7 @@ suite('wiki', function() {
         wiki.writePage(name, content, function(err) {
             if (err) throw err;
             wiki.getPage(name, function(err, actual) {
-                assert.equal(content, actual);
+                assert.equal(content, actual.content);
                 done();
             });
         });
@@ -75,7 +75,7 @@ suite('wiki', function() {
                 wiki.getHistory(name, null, function(err, commits) {
                     wiki.rollback(name, commits.ids[1], function(err) {
                         wiki.getPage(name, function(err, actual) {
-                            assert.equal('hello', actual);
+                            assert.equal('hello', actual.content);
                             done();
                         });
                     });
