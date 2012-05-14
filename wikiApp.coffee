@@ -1,3 +1,4 @@
+fs = require 'fs'
 wiki = require './lib/wiki'
 url = require 'url'
 debug = (require 'debug')('main')
@@ -9,8 +10,9 @@ lastVisits = {}
 exports.init = (wikiname) ->
     ROOT_PATH += wikiname
     wiki.init wikiname, (err) ->
-        console.log err.message if err
-        wiki.writePage 'frontpage', 'welcome to n4wiki', (err) ->
+        console.log err.message if err 
+        data = fs.readFileSync 'frontpage.md'
+        wiki.writePage 'frontpage', data, (err) ->
             throw err if err
 
 error404 = (err, req, res, next) ->

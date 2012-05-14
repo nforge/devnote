@@ -25,7 +25,8 @@
     "jshashes": ">= 0.1.3b",
     "github-flavored-markdown": ">= 1.0.1",
     "hljs": ">= 6.1.3",
-    "diff": ">= 1.0.3"
+    "diff": ">= 1.0.3",
+    "debug": "*"
   },
   "devDependencies": {
     "mocha"      : "1.0.x",
@@ -39,7 +40,8 @@
     "hljs": ">= 6.1.3",
     "jshashes": ">= 0.1.3b",
     "diff": ">= 1.0.3",
-    "console-trace": "*"
+    "console-trace": "*",
+    "debug": "*"
   },
   "noAnalyze": true,
   "contributors": [ 

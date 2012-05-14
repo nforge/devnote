@@ -1,4 +1,8 @@
 node_modules
 *.log
-pages.git
-
+*.pages.git
+public/scripts/highlight-c.js
+public/scripts/highlight.js
+public/scripts/showdown.js
+public/stylesheets/zenburn.css
+public/attachment
