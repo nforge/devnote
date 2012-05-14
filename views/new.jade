@@ -96,10 +96,10 @@ block content
               var filename = $(this).siblings('input').val();
               var filetype = filename.substring(filename.lastIndexOf('.') + 1);
               var images = ["jpg","png","gif"];
-              if (filetype in  )
+              if ( ~images.indexOf(filetype) )
                 filename = '<img src="/attachment/#{pageName}/' + filename + '">'
               else 
-                filename = '</attachment/#{pageName}/' + filename + '">'
+                filename = '<a href="/attachment/#{pageName}/' + filename + '">' + filename + '</a>'
               $('#body').val( $('#body').val() + filename );
               preview();
           });
