@@ -42,7 +42,8 @@ block content
       a(href="?action=edit") Edit
     li
       a(href="?action=history") History
-  form(method="post", action="/wikis/note/delete/"+title)
+  form(method="post", action="/wikis/note/pages/"+title)
+      input(type="hidden", name="_method", id='_method', value="delete")
       input(type="submit", value="delete", name="submit")
 
   script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")

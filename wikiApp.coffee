@@ -117,7 +117,7 @@ commandUrls = (name) ->
         query:
             action: 'history',
     delete: url.format
-        pathname: ROOT_PATH + '/delete/' + name,
+        pathname: ROOT_PATH + '/pages/' + name,
 
 view = (name, req, res) ->
     wiki.getPage name, req.query.rev, (err, page) ->
