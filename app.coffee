@@ -65,7 +65,7 @@ app.get  ROOT_PATH+'/pages', wikiApp.getPages          # get page list
 app.get  ROOT_PATH+'/pages/:name', wikiApp.getPage     # get a page
 app.get  ROOT_PATH+'/new', wikiApp.getNew              # get a form to post new wikipage
 app.post ROOT_PATH+'/pages', wikiApp.postNew           # post new wikipage
-app.post ROOT_PATH+'/delete/:name', wikiApp.postDelete # delete wikipage
+app.del ROOT_PATH+'/pages/:name', wikiApp.postDelete   # delete wikipage
 app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 
 # Login & Logout

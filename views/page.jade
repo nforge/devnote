@@ -27,6 +27,7 @@ block content
         a(href=urls.history).btn History
       div.span1
         form(method="post", action=urls.delete)
+          input(type="hidden", name="_method", id='_method', value="delete")
           input(type="submit", value="delete", name="submit").btn
 
     div.row

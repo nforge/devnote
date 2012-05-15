@@ -12,7 +12,8 @@ block content
 
   div.btn-group
     a(href="?").btn View
-    form(method="post", action="/wikis/note/delete/"+title)
+    form(method="post", action="/wikis/note/pages/"+title)
+      input(type="hidden", name="_method", id='_method', value="delete")
       input(type="submit", value="delete", name="submit").btn
   br
   br

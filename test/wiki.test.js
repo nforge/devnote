@@ -2,6 +2,7 @@ var assert = require('assert');
 var wiki = require('../lib/wiki');
 var fileutils = require('../lib/fileutils');
 var step = require('step');
+var async = require('async');
 
 var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
 
@@ -55,12 +56,20 @@ suite('wiki', function() {
     });
 
     test('사용자는 모든 위키 페이지 목록을 볼 수 있다.', function(done){
-        wiki.getPages(function (err, pages) {
-            if (err) throw err;
-            assert.equal(pages.length, 2);
-            assert.equal(pages[0], 'frontpage');
-            done();
-        });
+        step(
+            function given() {
+                wiki.writePage('SecondPage', 'hello', this);
+            },
+            function when(err) {
+                if (err) throw err;
+                wiki.getPages(this);
+            },
+            function then(err, pages) {
+                assert.equal(pages.length, 2);
+                assert.deepEqual(pages, ['frontpage', 'SecondPage']);
+                done();
+            }
+        );
     });
 
     test('사용자는 위키 페이지를 특정 시점으로 되돌릴 수 있다.', function(done) {
@@ -82,6 +91,31 @@ suite('wiki', function() {
                 });
             });
         });
+    });
+
+    test('사용자는 특정 시점의 위키페이지를 볼 수 있다.', function(done) {
+        var name = 'SecondPage';
+
+        step(
+            function given() {
+                async.mapSeries(
+                    ['hello', 'hello, world'],
+                    async.apply(wiki.writePage, name),
+                    this
+                );
+            },
+            function when(err) {
+                if (err) throw err;
+                var next = this;
+                wiki.getHistory(name, null, function(err, commits) {
+                    wiki.getPage(name, commits.ids[1], next);
+                });
+            },
+            function then(err, page) {
+                assert.equal(page.content, 'hello');
+                done();
+            }
+        );
     });
 
     test('사용자는 제목으로 위키 페이지를 검색할 수 있다.', function(done) {
@@ -115,8 +149,38 @@ suite('wiki', function() {
         });
     });
 
+    test('사용자는 위키 페이지의 두 시점간 차이를 볼 수 있다.', function(done) {
+        var name = 'SecondPage';
+
+        step(
+            function given() {
+                async.mapSeries(
+                    ['hello', 'hello, world'],
+                    async.apply(wiki.writePage, name),
+                    this
+                );
+            },
+            function when(err) {
+                if (err) throw err;
+                var next = this;
+                wiki.getHistory(name, null, function(err, commits) {
+                    wiki.diff(name, commits.ids[1], commits.ids[0], next);
+                });
+            },
+            function then(err, diff) {
+                if (err) throw err;
+                var expected = [
+                    {value: 'hello, world', added: true, removed: undefined},
+                    {value: 'hello', added: undefined, removed: true},
+                ];
+                assert.deepEqual(diff, expected);
+                done();
+            }
+        );
+    });
+
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(WIKINAME + '.pages.git');
         done();
     });
 });
