@@ -147,7 +147,7 @@ suite('wiki', function() {
     });
 
     teardown(function(done) {
-        fileutils.rm_rf('pages.git');
+        fileutils.rm_rf(WIKINAME + '.pages.git');
         done();
     });
 });
