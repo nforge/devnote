@@ -23,6 +23,8 @@ LISTEN_PORT = 3000
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
 
+oneHour = 60*60*1000
+
 app.configure ->
   app.use express.bodyParser
     uploadDir: uploadDir
@@ -30,7 +32,7 @@ app.configure ->
   app.use express.session()
   app.use express.methodOverride()
   app.use app.router
-  app.use express.static __dirname + '/public'
+  app.use express.staticCache()
   app.use express.logger 'dev'
 
 # Session-persisted message middleware
@@ -46,12 +48,14 @@ app.locals.use (req, res) ->
      res.locals.message = msg
 
 app.configure 'development', ->
+  app.use express.static __dirname + '/public'
   app.use express.errorHandler
       dumpExceptions: true,
       showStack: true,
 
 app.configure 'production', ->
   app.use express.errorHandler()
+  app.use express.static __dirname + '/public', { maxAge: oneHour }
 
 # Routes
 app.get '/', routes.index

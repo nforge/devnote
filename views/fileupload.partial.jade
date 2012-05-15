@@ -5,7 +5,7 @@ each filename in filelist
     tr
         td.filelink: a(href='/attachment/#{pageName}/#{filename}',target='_blank') #{filename}
         td 
-            form(method="post", action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
+            form(method="post", id='filedelete', action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
                 input(name='filename', type='hidden', id='filename', value='#{filename}')
                 input(type="hidden", name="_method", id='_method', value="delete")
                 input(type="button", class="insertInto", value="본문에 삽입").btn-warning
