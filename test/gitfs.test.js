@@ -212,7 +212,7 @@ suite('gitfs._serializeTree', function(){
     });
 });
 
-suite('gitfs._getCommitIdFromHEAD', function(){
+suite('gitfs.getCommitIdFromHEAD', function(){
     setup(function(done) {
         fileutils.mkdir_p(REPO_PATH+'/refs/heads');
         fs.writeFileSync(REPO_PATH+'/HEAD','ref: refs/heads/master');
@@ -223,7 +223,7 @@ suite('gitfs._getCommitIdFromHEAD', function(){
         step(
             function when(){
                 _ifExistsSync(REPO_PATH+'/HEAD', fs.unlinkSync);
-                gitfs._getCommitIdFromHEAD(this);
+                gitfs.getCommitIdFromHEAD(this);
             },
             function then(err) {
                 assert.equal('HEAD does not exist', err.message);
@@ -234,7 +234,7 @@ suite('gitfs._getCommitIdFromHEAD', function(){
     test('HEAD 파일 참조 읽어오기', function(done) {
         step(
             function when() {
-                gitfs._getCommitIdFromHEAD(this);
+                gitfs.getCommitIdFromHEAD(this);
             },
             function then(err, parentId) {
                 assert.equal('f2c0c508c21b3a49e9f8ffdc82277fb5264fed4f', parentId);
@@ -341,7 +341,7 @@ suite('gitfs.commit', function(){
 
     test('commit이 완료되면 HEAD가 가리키는 커밋 아이디가 갱신됨', function(done){
         gitfs.commit(givenCommit, function(err, commitId) {
-            gitfs._getCommitIdFromHEAD(function (err, id) {
+            gitfs.getCommitIdFromHEAD(function (err, id) {
                 if (err) throw err;
                 assert.equal(id, commitId);
                 done();
@@ -375,7 +375,7 @@ suite('gitfs.show', function() {
         //When
         gitfs.init(REPO_PATH, function (err) {
             gitfs.commit(givenCommit, function(err) {
-                gitfs._getCommitIdFromHEAD(function(err, commitId) {
+                gitfs.getCommitIdFromHEAD(function(err, commitId) {
                     gitfs.show('FrontPage', commitId, function(err, actual) {
                         //Then
                         assert.equal(actual, 'Welcome to n4wiki');
@@ -407,7 +407,7 @@ suite('gitfs.show', function() {
 
         gitfs.init(REPO_PATH, function (err) {
             gitfs.commit(givenCommit, function (err) {
-                gitfs._getCommitIdFromHEAD(function (err, commitId) {
+                gitfs.getCommitIdFromHEAD(function (err, commitId) {
                     gitfs.show('Index', commitId, function (err, actual) {
                         assert.equal(actual, 'List of all pages');
                         done();
