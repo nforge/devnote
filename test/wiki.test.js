@@ -93,6 +93,31 @@ suite('wiki', function() {
         });
     });
 
+    test('사용자는 특정 시점의 위키페이지를 볼 수 있다.', function(done) {
+        var name = 'SecondPage';
+
+        step(
+            function given() {
+                async.mapSeries(
+                    ['hello', 'hello, world'],
+                    async.apply(wiki.writePage, name),
+                    this
+                );
+            },
+            function when(err) {
+                if (err) throw err;
+                var next = this;
+                wiki.getHistory(name, null, function(err, commits) {
+                    wiki.getPage(name, commits.ids[1], next);
+                });
+            },
+            function then(err, page) {
+                assert.equal(page.content, 'hello');
+                done();
+            }
+        );
+    });
+
     test('사용자는 제목으로 위키 페이지를 검색할 수 있다.', function(done) {
         var name = 'SecondPage';
         var content = 'hello';
