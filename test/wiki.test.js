@@ -2,6 +2,7 @@ var assert = require('assert');
 var wiki = require('../lib/wiki');
 var fileutils = require('../lib/fileutils');
 var step = require('step');
+var async = require('async');
 
 var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
 
@@ -113,6 +114,36 @@ suite('wiki', function() {
                 done();
             });
         });
+    });
+
+    test('사용자는 위키 페이지의 두 시점간 차이를 볼 수 있다.', function(done) {
+        var name = 'SecondPage';
+
+        step(
+            function given() {
+                async.mapSeries(
+                    ['hello', 'hello, world'],
+                    async.apply(wiki.writePage, name),
+                    this
+                );
+            },
+            function when(err) {
+                if (err) throw err;
+                var next = this;
+                wiki.getHistory(name, null, function(err, commits) {
+                    wiki.diff(name, commits.ids[1], commits.ids[0], next);
+                });
+            },
+            function then(err, diff) {
+                if (err) throw err;
+                var expected = [
+                    {value: 'hello, world', added: true, removed: undefined},
+                    {value: 'hello', added: undefined, removed: true},
+                ];
+                assert.deepEqual(diff, expected);
+                done();
+            }
+        );
     });
 
     teardown(function(done) {
