@@ -24,6 +24,8 @@ block content
               label(for="attachment") 첨부할 파일을 선택해 주세요
               input(type='file', name='attachment', id='attachment')
               input(type="submit", name="submit", value="첨부").btn-primary
+          div.progress.progress-warning
+            div#progressbar.bar
           div#alert.alert.alert-error.fade.out
             h4.alert-heading 업로드할 파일을 선택해 주세요
           div
@@ -36,7 +38,8 @@ block content
                         tr
                             td(colspan=2) 첨부 파일이 없습니다.
 
-      div(id="preview").previewer.span6 
+      div(id="preview").previewer.span6
+      div(id="result")
 
   script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
   script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
@@ -90,13 +93,14 @@ block content
           };
 
           //Insert attachments into contents textarea
+          var imageExtensions = ["jpg","png","gif"];
           $('.insertInto').live("click",function(){
               var filename = $(this).siblings('input').val();
               var filetype = filename.substring(filename.lastIndexOf('.') + 1);
-              var images = ["jpg","png","gif"];
-              if ( ~images.indexOf(filetype) )
+
+              if ( ~imageExtensions.indexOf(filetype) )
                 filename = '<img src="/attachment/#{pageName}/' + filename + '">'
-              else 
+              else
                 filename = '/attachment/#{pageName}/' + filename
               $('#body').insertAtCaret(filename);
               preview();
@@ -106,7 +110,28 @@ block content
   script(type="text/javascript")
     // ajaxForm Plugin control code
     $(function(){
-          var _getFilenameOnly = function(filename){
+
+          var addControlToDeleteFileForm = function(){
+            var filename;
+            var deleteOptions = {
+                target: '#filelist',
+                success: function(text){
+                    $('.alert-heading').html(' 파일이 삭제 되었습니다.');
+                    $('#alert').show();
+                    $('#attachment').val("");
+                    $('.filedelete').ajaxForm(deleteOptions);
+                    setProgressBar(0);
+                }
+            }
+            $('.filedelete').ajaxForm(deleteOptions);
+          }
+
+          var setProgressBar = function(value){
+            $('#progressbar').css("width", value + "%");
+            $('#progressbar').text(value + "%");
+          }
+
+          var _getFileNameOnly = function(filename){
               var fakepath = 'fakepath';
               var fakepathPostion = filename.indexOf(fakepath);
               if( fakepathPostion > -1 ){
@@ -115,11 +140,11 @@ block content
               return filename;
           }
 
-          var fileUploadOptions = { 
-              beforeSubmit: function() { 
-                  var filename = _getFilenameOnly( $('#attachment').val() );
+          var fileUploadOptions = {
+              beforeSubmit: function() {
+                  var filename = _getFileNameOnly( $('#attachment').val() );
 
-                  // show message box 
+                  // show message box
                   $('#').removeClass('out');
                   $('#alert').addClass('in');
                   // show message box end
@@ -132,29 +157,29 @@ block content
                   return true;
               },
               success: function(text){
-                  var filename = _getFilenameOnly( $('#attachment').val() );
+                  var filename = _getFileNameOnly( $('#attachment').val() );
 
                   $('.alert-heading').html(filename + ' 파일이 업로드 되었습니다.');
                   $('#filelist').html(text);
                   $('#alert').show();
                   $('#attachment').val("");
-              }
+                  addControlToDeleteFileForm(filename);
+              },
+              uploadProgress: function(event, position, total, percentComplete) {
+                  setProgressBar(percentComplete);
+              },
           }
 
-          var deleteOptions = { 
-              success: function(text){
-                  $('#filelist').html(text);
-                  $('#alert').show();
-                  $('#attachment').val("");
-                  $('#filedelete').ajaxForm(deleteOptions);
-              }
-          }
-          
           $('#fileupload').ajaxForm(fileUploadOptions);
-          
 
-          $('#fileupload').change(function(event){
+          $('#attachment').click(function(event){
+              setProgressBar(0);
               $('#alert').hide();
+          });
+          $('#fileupload').change(function(event){
+              if ( $('#attachment').val() !== "" ) {
+                $('#fileupload').submit();
+              }
           });
     })
 

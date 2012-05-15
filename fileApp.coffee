@@ -1,6 +1,11 @@
 fs = require 'fs'
 path = require 'path'
+winston = require('winston')
 
+#winston color enabled. In case of only working in console, user 'winston.cli()'
+winston.default.transports.console.colorize = true
+
+#default upload file folder
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 
 exports.getAttachment = (req, res) ->
@@ -25,12 +30,12 @@ exports.postAttachment = (req, res) ->
             switch req.params.format
                 when 'partial'
                     _renderFileuploadPartial req, res
-                when 'json' 
-                    res.json 
+                when 'json'
+                    res.json
                         title   : '파일첨부'
                         pageName: req.params.name
                         filename: req.files.attachment.name
-                else 
+                else
                     res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
 
 _renderFileuploadPartial = (req, res) ->
@@ -47,5 +52,5 @@ _renderFileuploadPartial = (req, res) ->
 exports.delAttachment = (req, res) ->
     filePath = path.join(uploadDir, req.params.name, req.params.filename)
     fs.unlink filePath, (err) ->
-        console.err('Couldn\'t delete file: '+filePath) if err
+        winston.warn('Couldn\'t delete file: ' + filePath) if err
         _renderFileuploadPartial req, res
