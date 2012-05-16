@@ -24,6 +24,8 @@ block content
               label(for="attachment") 첨부할 파일을 선택해 주세요
               input(type='file', name='attachment', id='attachment')
               input(type="submit", name="submit", value="첨부").btn-primary
+          div.progress.progress-warning
+            div#progressbar.bar
           div#alert.alert.alert-error.fade.out
             h4.alert-heading 업로드할 파일을 선택해 주세요
           div
@@ -35,15 +37,9 @@ block content
                     if filelist == ''
                         tr
                             td(colspan=2) 첨부 파일이 없습니다.
-                    each filename in filelist
-                        tr
-                            td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
-                            td 
-                                form(method="post", action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
-                                    input(name='filename', type='hidden', id='filename', value='#{filename}')
-                                    input(type="hidden", name="_method", id='_method', value="delete")
-                                    input(type="submit", name="submit", value="삭제").btn-danger
-      div(id="preview").previewer.span6 
+
+      div(id="preview").previewer.span6
+      div(id="result")
 
   script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
   script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
@@ -51,7 +47,91 @@ block content
   script(src='/bootstrap/js/bootstrap.js')
   script(type="text/javascript")
     $(function(){
-          var getFilenameOnly = function(filename){
+          //JQuery Extension code for insertAtCaret
+          $.fn.extend({
+            insertAtCaret: function(myValue){
+              var obj;
+              if( typeof this[0].name !='undefined' ) obj = this[0];
+              else obj = this;
+
+              if ($.browser.msie) {
+                obj.focus();
+                sel = document.selection.createRange();
+                sel.text = myValue;
+                obj.focus();
+                }
+              else if ($.browser.mozilla || $.browser.webkit) {
+                var startPos = obj.selectionStart;
+                var endPos = obj.selectionEnd;
+                var scrollTop = obj.scrollTop;
+                obj.value = obj.value.substring(0, startPos)+myValue+obj.value.substring(endPos,obj.value.length);
+                obj.focus();
+                obj.selectionStart = startPos + myValue.length;
+                obj.selectionEnd = startPos + myValue.length;
+                obj.scrollTop = scrollTop;
+              } else {
+                obj.value += myValue;
+                obj.focus();
+              }
+            }
+          });
+
+          //JQuery Extension code for selectRange
+          $.fn.selectRange = function(start, end) {
+              return this.each(function() {
+                  if (this.setSelectionRange) {
+                      this.focus();
+                      this.setSelectionRange(start, end);
+                  } else if (this.createTextRange) {
+                      var range = this.createTextRange();
+                      range.collapse(true);
+                      range.moveEnd('character', end);
+                      range.moveStart('character', start);
+                      range.select();
+                  }
+              });
+          };
+
+          //Insert attachments into contents textarea
+          var imageExtensions = ["jpg","png","gif"];
+          $('.insertInto').live("click",function(){
+              var filename = $(this).siblings('input').val();
+              var filetype = filename.substring(filename.lastIndexOf('.') + 1);
+
+              if ( ~imageExtensions.indexOf(filetype) )
+                filename = '<img src="/attachment/#{pageName}/' + filename + '">'
+              else
+                filename = '/attachment/#{pageName}/' + filename
+              $('#body').insertAtCaret(filename);
+              preview();
+          });
+      })
+
+  script(type="text/javascript")
+    // ajaxForm Plugin control code
+    $(function(){
+
+          var addControlToDeleteFileForm = function(){
+            var filename;
+            var deleteOptions = {
+                target: '#filelist',
+                success: function(text){
+                    $('.alert-heading').html(' 파일이 삭제 되었습니다.');
+                    $('#alert').show();
+                    $('#attachment').val("");
+                    $('.filedelete').ajaxForm(deleteOptions);
+                    setProgressBar(0);
+                }
+            }
+            $('.filedelete').ajaxForm(deleteOptions);
+          }
+
+          var setProgressBar = function(value){
+            $('#progressbar').css("width", value + "%");
+            $('#progressbar').text(value + "%");
+          }
+
+          var _getFileNameOnly = function(filename){
               var fakepath = 'fakepath';
               var fakepathPostion = filename.indexOf(fakepath);
               if( fakepathPostion > -1 ){
@@ -60,11 +140,11 @@ block content
               return filename;
           }
 
-          var options = { 
-              beforeSubmit: function() { 
-                  var filename = getFilenameOnly( $('#attachment').val() );
+          var fileUploadOptions = {
+              beforeSubmit: function() {
+                  var filename = _getFileNameOnly( $('#attachment').val() );
 
-                  // show message box 
+                  // show message box
                   $('#').removeClass('out');
                   $('#alert').addClass('in');
                   // show message box end
@@ -77,37 +157,36 @@ block content
                   return true;
               },
               success: function(text){
-                  var filename = getFilenameOnly( $('#attachment').val() );
+                  var filename = _getFileNameOnly( $('#attachment').val() );
 
                   $('.alert-heading').html(filename + ' 파일이 업로드 되었습니다.');
                   $('#filelist').html(text);
                   $('#alert').show();
                   $('#attachment').val("");
-              }
+                  addControlToDeleteFileForm(filename);
+              },
+              uploadProgress: function(event, position, total, percentComplete) {
+                  setProgressBar(percentComplete);
+              },
           }
-          
-          $('#fileupload').ajaxForm(options); 
 
-          $('#fileupload').change(function(event){
+          $('#fileupload').ajaxForm(fileUploadOptions);
+
+          $('#attachment').click(function(event){
+              setProgressBar(0);
               $('#alert').hide();
           });
-
-          $('.insertInto').live("click",function(){
-              var filename = $(this).siblings('input').val();
-              var filetype = filename.substring(filename.lastIndexOf('.') + 1);
-              var images = ["jpg","png","gif"];
-              if ( ~images.indexOf(filetype) )
-                filename = '<img src="/attachment/#{pageName}/' + filename + '">'
-              else 
-                filename = '<a href="/attachment/#{pageName}/' + filename + '">' + filename + '</a>'
-              $('#body').val( $('#body').val() + filename );
-              preview();
+          $('#fileupload').change(function(event){
+              if ( $('#attachment').val() !== "" ) {
+                $('#fileupload').submit();
+              }
           });
-      })
+    })
 
 
   script(type="text/javascript")
-    var module = {};
+    // for using highlight.js both server and client
+    var module = module || {}; //This prevents error on 'module.exports' statements
   script(type="text/javascript", src="/scripts/highlight.js")
   script(type="text/javascript", src="/scripts/highlight-c.js")
   script(type="text/javascript", src="/scripts/showdown.js")

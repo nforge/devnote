@@ -169,20 +169,19 @@ view = (name, req, res) ->
             renderPage()
 
 exports.getNew = (req, res) ->
-    res.render 'new', title: 'New Page', pageName: '____new_' + new Date().getTime(), filelist: []
+    res.render 'new', title: 'New Page', pageName: '__new_' + new Date().getTime(), filelist: []
 
 exports.postNew = (req, res) ->
     name = req.body.name
     wiki.writePage name, req.body.body, (err, commitId) ->
-        if req.session.user
-            userId = req.session.user.id
+        res.redirect ROOT_PATH+'/pages/' + name if not req.session.user
 
-            if not lastVisits[userId]
-                lastVisits[userId] = {}
+        userId = req.session.user.id
+        if not lastVisits[userId]
+            lastVisits[userId] = {}
+        lastVisits[userId][name] = commitId
+        res.redirect ROOT_PATH+'/pages/'        
 
-            lastVisits[userId][name] = commitId
-
-        res.redirect ROOT_PATH+'/pages/' + name
 
 exports.postDelete = (req, res) ->
     wiki.deletePage req.params.name, (err) ->
