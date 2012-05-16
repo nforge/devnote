@@ -1,7 +1,7 @@
 REST API
 ---
 Method  REST    URI *                             Description
-list    GET     /api/:wikiname/pages              전체 위키 페이지 목록 
+list    GET     /api/:wikiname/pages              전체 위키 페이지 목록
 get     GET     /api/:wikiname/pages/:pagename    페이지 읽기
 get     GET     /api/:wikiname/ids/:pageid        페이지 읽기 (id로)
 insert  POST    /api/:wikiname/pages              페이지 추가
@@ -21,13 +21,13 @@ ids: 위키 페이지 id
 
 
 // API: GET /api/{wiki_name}/pages
-// id: 
+// id:
 wiki.pageLists(id)
 
 VIEW URL
 --------
 Method  REST    URI(/wikis/:wikiname 의 하위 path임을 가정)             Description
-list    GET     /pages                                                  전체 위키 페이지 목록 
+list    GET     /pages                                                  전체 위키 페이지 목록
 list    GET     /pages?action=search&keyword=:keyword                   페이지 검색 결과
 view    GET     /pages/:pagename                                        페이지 읽기
 edit    GET     /pages/:pagename?action=edit                            페이지 편집
@@ -38,3 +38,15 @@ get     GET     /users/:id                                              사용�
 list    GET     /users                                                  사용자 목록
 newuser GET     /users/new                                              새 사용자
 login   GET     /users?action=login                                     사용자 로그인
+
+
+
+ToDos <참고>
+-----
+GET      /todos/            => index
+POST     /todos/            => create
+GET      /todos/:id         => show
+PUT      /todos/:id         => update
+DELETE   /todos/:id         => remove
+GET      /todos/:id/add     => add
+GET      /todos/:id/edit    => edit

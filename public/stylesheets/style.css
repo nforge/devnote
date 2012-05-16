@@ -24,3 +24,8 @@ a {
 .previewer {
     left-margin: 20px;
 }
+
+img {
+    height: auto;
+    max-width: 100%;
+}
