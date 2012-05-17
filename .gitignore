@@ -1,4 +1,6 @@
-node_modules
+node_modules/*
+!node_modules/
+!node_modules/nodemailer
 *.log
 *.pages.git
 public/scripts/highlight-c.js

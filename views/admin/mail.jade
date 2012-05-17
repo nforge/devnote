@@ -1,0 +1,60 @@
+extends ../layout
+
+block content
+  div.row-fluid
+      div.span5.writer
+          form(method="post", action="/admin/mail", id="mailForm")
+            fieldset
+
+              h3 Mail configuration
+              div.control-group
+                label(name="from").control-label from
+                input(name="from", id="from", class="required email", placeholder="yourname@mail.com").input-xlarge.title
+
+              div.control-group
+                label(name="password").control-label password
+                input(name="password", id="password", type="password").input-xlarge.title
+
+              div(id="auto-config-alert", style="display: none").alert.alert-success
+                span(id="auto-config-message")
+                span(id="detailed-toggle-message")
+                a(href="#", id="detailed-toggle-link", data-toggle="collapse", data-target="#detailed")
+
+              div(id="detailed").in
+                div.control-group
+                  label(name="host").control-label host
+                  input(name="host", id="host", placeholder="smtp.mail.com").input-xlarge.title
+                div.control-group
+                  label(name="port").control-label port
+                  input(name="port", id="port", placeholder="25, 587 or 465").input-xlarge.title
+                div.control-group
+                  label(name="username").control-label username
+                  input(name="username", id="username", placeholder="yourname").input-xlarge.title
+                div.control-group
+                  label(name="ssl").control-label ssl
+                  input(name="ssl", id="ssl", type="checkbox").input-xlarge.title
+                div.control-group
+                  label(name="tls").control-label tls
+                  input(name="tls", id="tls", type="checkbox").input-xlarge.title
+                div.control-group
+                  label(name="authMethod").control-label authMethod
+                  input(name="authMethod", id="authMethod", placeholder="LOGIN or PLAIN").input-xlarge.title
+
+              h3 Send mail
+
+              div.control-group
+                label(name="to").control-label to
+                input(name="to", placeholder="receiver@mail.com").input-xlarge.title
+              div.control-group
+                label(name="subject").control-label title
+                input(name="subject").input-xlarge.title
+              div.control-group
+                label(name="body").control-label body
+                textarea(id="body", name="body", rows="15").input-xlarge.textbody
+              div
+                input(type="submit", name="submit", value="Send").btn-primary
+
+  script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+  script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
+
+  script(type="text/javascript", src="/scripts/mail.js")
