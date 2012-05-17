@@ -174,14 +174,13 @@ exports.getNew = (req, res) ->
 exports.postNew = (req, res) ->
     name = req.body.name
     wiki.writePage name, req.body.body, (err, commitId) ->
-        res.redirect ROOT_PATH+'/pages/' + name if not req.session.user
+        if req.session.user
+            userId = req.session.user.id
+            if not lastVisits[userId]
+                lastVisits[userId] = {}
+            lastVisits[userId][name] = commitId
 
-        userId = req.session.user.id
-        if not lastVisits[userId]
-            lastVisits[userId] = {}
-        lastVisits[userId][name] = commitId
-        res.redirect ROOT_PATH+'/pages/'        
-
+        res.redirect ROOT_PATH + '/pages/' + name
 
 exports.postDelete = (req, res) ->
     wiki.deletePage req.params.name, (err) ->
