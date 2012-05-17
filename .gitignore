@@ -1,6 +1,4 @@
 node_modules/*
-!node_modules/
-!node_modules/nodemailer
 *.log
 *.pages.git
 public/scripts/highlight-c.js
@@ -10,3 +8,6 @@ public/stylesheets/zenburn.css
 public/attachment
 nohup.out
 
+# I have made some changes to nodemailer, for supporting Naver mail.
+# The changes are merged into upstream, but new version is not released yet.
+!node_modules/nodemailer
