@@ -33,7 +33,6 @@ app.configure ->
   app.use express.session()
   app.use express.methodOverride()
   app.use app.router
-  app.use express.staticCache()
   app.use express.logger 'dev'
 
 # Session-persisted message middleware
@@ -56,6 +55,7 @@ app.configure 'development', ->
 
 app.configure 'production', ->
   app.use express.errorHandler()
+  app.use express.staticCache()
   app.use express.static __dirname + '/public', { maxAge: oneHour }
 
 # Routes
@@ -83,7 +83,7 @@ app.post ROOT_PATH+'/dropuser', userApp.postDropuser   # drop user
 # attachment
 app.get  ROOT_PATH+'/pages/:name/attachment', fileApp.getAttachment             # file attachment page
 app.get  ROOT_PATH+'/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
-app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment 
+app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment
 app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
 # admin
