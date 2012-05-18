@@ -1,17 +1,18 @@
 REST API
 ---
-Method  REST    URI *                             Description
-list    GET     /api/:wikiname/pages              전체 위키 페이지 목록
-get     GET     /api/:wikiname/pages/:pagename    페이지 읽기
-get     GET     /api/:wikiname/ids/:pageid        페이지 읽기 (id로)
-insert  POST    /api/:wikiname/pages              페이지 추가
-update  PUT     /api/:wikiname/pages/:pagename    페이지 업데이트
-delete  DELETE  /api/:wikiname/pages/:pagename    페이지 삭제
-patch   PATCH   /api/:wikiname/pages/:pagename    페이지 부분업데이트
+Method   REST    URI *                             Description
+list     GET     /api/:wikiname/pages              전체 위키 페이지 목록
+get      GET     /api/:wikiname/pages/:pagename    페이지 읽기
+get      GET     /api/:wikiname/ids/:pageid        페이지 읽기 (id로)
+insert   POST    /api/:wikiname/pages              페이지 추가
+update   PUT     /api/:wikiname/pages/:pagename    페이지 업데이트
+delete   DELETE  /api/:wikiname/pages/:pagename    페이지 삭제
+patch    PATCH   /api/:wikiname/pages/:pagename    페이지 부분업데이트
 
-list    GET     /api/:wikiname/users              사용자 목록
-list    GET     /api/:wikiname/users/new          새 사용자 등록
+list     GET     /api/:wikiname/users              사용자 목록
+list     GET     /api/:wikiname/users/new          새 사용자 등록
 
+sendmail POST    /admin/mail                       메일 발송
 
 URI Middle Tag
 --------------
@@ -38,6 +39,7 @@ get     GET     /users/:id                                              사용�
 list    GET     /users                                                  사용자 목록
 newuser GET     /users/new                                              새 사용자
 login   GET     /users?action=login                                     사용자 로그인
+mail    GET     /admin/mail                                             메일 발송
 
 
 

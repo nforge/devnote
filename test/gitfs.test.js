@@ -195,12 +195,12 @@ suite('gitfs._serializeTree', function(){
         offset += "100644 page2\0".length;
         new Buffer([0x6d, 0xc9, 0x9d, 0x47, 0x57, 0xbc, 0xb3, 0x5e, 0xaa, 0xf4, 0xcd, 0x3c, 0xb7, 0x90, 0x71, 0x89, 0xfa, 0xb8, 0xd2, 0x54]).copy(expectedTree, offset);
 
-        tree = {'page1': digest1, 'page2': digest2};
+        tree = {'page2': digest2, 'page1': digest1};
 
         done();
     });
 
-    test('생성된 모든 blob object에 대한 참조를 갖는 tree object 생성', function(done) {
+    test('생성된 모든 blob object에 대한 참조를 갖는 정렬된 tree object 생성', function(done) {
         // when & then
         assert.equal(gitfs._serializeTree(tree).toString(), expectedTree.toString());
         done();

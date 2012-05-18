@@ -1,0 +1,16 @@
+link(rel='stylesheet', href='/stylesheets/diff.css')
+
+h1= name
+
+div(class="diff")!= diff
+
+ul
+  li
+    a(href="/wikis/note/pages/" + name) View
+  li
+    a(href="/wikis/note/pages/" + name + "?action=edit") Edit
+  li
+    a(href="/wikis/note/pages/" + name + "?action=history") History
+form(method="post", action="/wikis/note/pages/" + name)
+  input(type="hidden", name="_method", id='_method', value="delete")
+  input(type="submit", value="delete", name="submit")

@@ -10,6 +10,7 @@ routes  = require './routes'
 wikiApp = require './wikiApp'
 userApp = require './userApp'
 fileApp = require './fileApp'
+adminApp = require './adminApp'
 
 noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
@@ -84,6 +85,11 @@ app.get  ROOT_PATH+'/pages/:name/attachment', fileApp.getAttachment             
 app.get  ROOT_PATH+'/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
 app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment
 app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
+
+# admin
+app.get  '/admin/mail', adminApp.mail
+app.post  '/admin/mail', adminApp.sendmail
+
 
 exports.start = (port, callback) ->
     wikiApp.init WIKINAME
