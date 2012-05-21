@@ -67,6 +67,8 @@ app.get  ROOT_PATH+'/pages/:name', wikiApp.getPage     # get a page
 app.get  ROOT_PATH+'/new', wikiApp.getNew              # get a form to post new wikipage
 app.post ROOT_PATH+'/pages', wikiApp.postNew           # post new wikipage
 app.del ROOT_PATH+'/pages/:name', wikiApp.postDelete   # delete wikipage
+app.put  ROOT_PATH+'/subscribes/:name', wikiApp.postSubscribe     # subscribe wikipage
+app.del  ROOT_PATH+'/subscribes/:name', wikiApp.postUnsubscribe   # unsubscribe wikipage
 app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 
 # Login & Logout
@@ -88,8 +90,9 @@ app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   
 
 # admin
 app.get  '/admin/mail', adminApp.mail
-app.post  '/admin/mail', adminApp.sendmail
-
+app.post '/admin/mail', adminApp.postMail
+app.get  '/admin/mailconf', adminApp.mailconf
+app.post '/admin/mailconf', adminApp.postMailconf
 
 exports.start = (port, callback) ->
     wikiApp.init WIKINAME

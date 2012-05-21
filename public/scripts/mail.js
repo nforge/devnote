@@ -1,9 +1,8 @@
 var lastDomain;
 var selected;
 
+// Guess mail configuration using the domain part from the given 'from' email address.
 var guessMailConfig = function() {
-    // Guess mail configuration using the domain part from the given 'from' email address.
-
     mailAddress = $("#from").val();
     at = mailAddress.lastIndexOf('@');
 
@@ -59,22 +58,33 @@ var guessMailConfig = function() {
             $("#detailed").collapse("hide");
         }
         $("#auto-config-alert").css("display", "block");
-        $("#auto-config-message").html('Your email will be sent using <b>' + selected.service + '</b>.');
+        _updateUsingServiceMessage(selected.service);
         lastDomain = domain;
     }
 }
 
-var HideConfigMessageIfHostIsWrong = function() {
+var _clearUsingServiceMessage = function() {
+    $("#using-wellknown-service-message")
+        .html('');
+}
+
+var _updateUsingServiceMessage = function(service) {
+    $("#using-wellknown-service-message")
+        .html('Your email will be sent using <b>' + service + '</b>.');
+}
+
+// Hide using-wellknown-service-message if configured host differs from selected service's.
+var updateUsingServiceMessage = function() {
     if ($("#host").val().trim().toLowerCase() == selected.host) {
-        $("#auto-config-message").html('Your email will be sent using <b>' + selected.service + '</b>.');
+        _updateUsingServiceMessage(selected.service);
     } else {
-        $("#auto-config-message").html('');
+        _clearUsingServiceMessage();
     }
-};
+}
 
 $(document).ready(function init() {
     $("#from").keyup(guessMailConfig);
-    $("#host").keyup(HideConfigMessageIfHostIsWrong);
+    $("#host").keyup(updateUsingServiceMessage);
 
     $("#detailed").on("hide", function() {
         $("#detailed-toggle-message").text(" If you want to see the detailed configuration and/or fix it, ");
