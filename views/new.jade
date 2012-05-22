@@ -7,12 +7,12 @@ block content
 
   div.row-fluid
       div.span5.writer
-          form(method="post", action="/wikis/note/pages")
+          form(id="newpage", method="post", action="/wikis/note/pages")
             fieldset
               div.control-group
                 label(name="name").control-label title
                 div.controls
-                  input(name="name").input-xlarge.title
+                  input(id="title", name="name").input-xlarge.title
               div.control-group
                 label(name="body").control-label body
                 div.controls
@@ -191,3 +191,6 @@ block content
   script(type="text/javascript", src="/scripts/highlight-c.js")
   script(type="text/javascript", src="/scripts/showdown.js")
   script(type="text/javascript", src="/scripts/preview.js")
+  script(type="text/javascript", src="/scripts/draft.js")
+  script(type="text/javascript")
+    initDraft('n4wiki-new', '#newpage', ['#title', '#body']);
