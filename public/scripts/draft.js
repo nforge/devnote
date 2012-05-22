@@ -40,7 +40,7 @@ var bindFormAndLocalStorage = function(form, fields) {
 }
 
 var initDraft = function(_prefix, form, fields) {
-    if (!localStorage) {
+    if (typeof(localStorage) != 'object') {
         return false;
     }
 
