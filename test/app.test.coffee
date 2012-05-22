@@ -21,7 +21,7 @@ suite '웹 인터페이스', ->
         browser.runScripts = false
         done()
 
-    test '새 페이지 등록하기 - /wikis/note/new', (done) ->
+    test '새 페이지 등록하기 - POST /wikis/note/pages/:name', (done) ->
         browser.visit getUrl('/wikis/note/new'), ->
             assert.ok browser.success
             browser.
@@ -33,7 +33,7 @@ suite '웹 인터페이스', ->
                     assert.equal browser.text('p'), 'Welcome to n4wiki!'
                     done()
 
-    test '등록한 페이지 열어보기 - /wikis/note/pages/:name', (done) ->
+    test '등록한 페이지 열어보기 - GET /wikis/note/pages/:name', (done) ->
         browser.visit getUrl('/wikis/note/new'), ->
             assert.ok browser.success
             browser.
@@ -46,7 +46,7 @@ suite '웹 인터페이스', ->
                         assert.equal browser.text('p'), 'Welcome to n4wiki!'
                         done()
 
-    test '등록하지 않은 페이지 열어보기 - /wikis/note/pages/:name', (done) ->
+    test '등록하지 않은 페이지 열어보기 - GET /wikis/note/pages/:name', (done) ->
         browser.visit getUrl('/wikis/note/new'), ->
             assert.ok browser.success, '페이지 편집 폼을 가져와야 한다'
             browser.
@@ -58,7 +58,7 @@ suite '웹 인터페이스', ->
                             assert.equal status, 404, 'The status code should be 404, but ' + status + '.'
                             done()
 
-    test '등록한 페이지 편집하기 - /wikis/note/pages/:name?action=edit', (done) ->
+    test '등록한 페이지 편집하기 - GET /wikis/note/pages/:name?action=edit', (done) ->
         browser.visit getUrl('/wikis/note/new'), ->
             assert.ok browser.success
             browser.
@@ -77,7 +77,7 @@ suite '웹 인터페이스', ->
                                     assert.equal browser.text('p'), 'n4wiki updated!'
                                     done()
 
-    test '등록한 페이지 삭제하기 - /wikis/note/edit/:name', (done) ->
+    test '등록한 페이지 삭제하기 - DELETE /wikis/note/pages/:name', (done) ->
         browser.visit 'http://localhost:3000/wikis/note/new', ->
             browser.
                 fill('name', 'FrontPage').
