@@ -7,7 +7,7 @@ block content
 
   div.row-fluid
       div.span5.writer
-          form(method="post", action="/wikis/note/pages")
+          form(method="post", id='newpost', action="/wikis/note/pages")
             fieldset
               div.control-group
                 label(name="name").control-label title
@@ -18,15 +18,15 @@ block content
                 div.controls
                   textarea(id="body", name="body", rows="15").input-xlarge.textbody
               div
-                input(type="submit", name="submit", value="새 페이지 등록").btn-primary
+                input(type="submit", value="새 페이지 등록").btn-primary
           div
             form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
               label(for="attachment") 첨부할 파일을 선택해 주세요
               input(type='file', name='attachment', id='attachment')
-              input(type="submit", name="submit", value="첨부").btn-primary
+              input(type="submit", value="첨부").btn-primary
           div.progress.progress-warning
             div#progressbar.bar
-          div#alert.alert.alert-error.fade.out
+          div#alert.alert.alert-error.fade.out.hide
             h4.alert-heading 업로드할 파일을 선택해 주세요
           div
             table.table.table-bordered.table-condensed
@@ -98,91 +98,16 @@ block content
               var filename = $(this).siblings('input').val();
               var filetype = filename.substring(filename.lastIndexOf('.') + 1);
 
-              if ( ~imageExtensions.indexOf(filetype) )
+              if ( _.include(imageExtensions, filetype) ){
                 filename = '<img src="/attachment/#{pageName}/' + filename + '">'
-              else
+              } else {
                 filename = '/attachment/#{pageName}/' + filename
+              }
+
               $('#body').insertAtCaret(filename);
               preview();
           });
       })
-
-  script(type="text/javascript")
-    // ajaxForm Plugin control code
-    $(function(){
-
-          var addControlToDeleteFileForm = function(){
-            var filename;
-            var deleteOptions = {
-                target: '#filelist',
-                success: function(text){
-                    $('.alert-heading').html(' 파일이 삭제 되었습니다.');
-                    $('#alert').show();
-                    $('#attachment').val("");
-                    $('.filedelete').ajaxForm(deleteOptions);
-                    setProgressBar(0);
-                }
-            }
-            $('.filedelete').ajaxForm(deleteOptions);
-          }
-
-          var setProgressBar = function(value){
-            $('#progressbar').css("width", value + "%");
-            $('#progressbar').text(value + "%");
-          }
-
-          var _getFileNameOnly = function(filename){
-              var fakepath = 'fakepath';
-              var fakepathPostion = filename.indexOf(fakepath);
-              if( fakepathPostion > -1 ){
-                filename = filename.substring(fakepath.length + fakepathPostion + 1);
-              }
-              return filename;
-          }
-
-          var fileUploadOptions = {
-              beforeSubmit: function() {
-                  var filename = _getFileNameOnly( $('#attachment').val() );
-
-                  // show message box
-                  $('#').removeClass('out');
-                  $('#alert').addClass('in');
-                  // show message box end
-
-                  if ( $('#attachment').val() === "" ) {
-                      $('.alert-heading').html('업로드할 파일을 선택해 주세요');
-                      $('#alert').show();
-                      return false;
-                  }
-                  return true;
-              },
-              success: function(text){
-                  var filename = _getFileNameOnly( $('#attachment').val() );
-
-                  $('.alert-heading').html(filename + ' 파일이 업로드 되었습니다.');
-                  $('#filelist').html(text);
-                  $('#alert').show();
-                  $('#attachment').val("");
-                  addControlToDeleteFileForm(filename);
-              },
-              uploadProgress: function(event, position, total, percentComplete) {
-                  setProgressBar(percentComplete);
-              },
-          }
-
-          $('#fileupload').ajaxForm(fileUploadOptions);
-
-          $('#attachment').click(function(event){
-              setProgressBar(0);
-              $('#alert').hide();
-          });
-          $('#fileupload').change(function(event){
-              if ( $('#attachment').val() !== "" ) {
-                $('#fileupload').submit();
-              }
-          });
-    })
-
 
   script(type="text/javascript")
     // for using highlight.js both server and client
@@ -191,3 +116,4 @@ block content
   script(type="text/javascript", src="/scripts/highlight-c.js")
   script(type="text/javascript", src="/scripts/showdown.js")
   script(type="text/javascript", src="/scripts/preview.js")
+  script(type="text/javascript", src="/scripts/newpage.js")

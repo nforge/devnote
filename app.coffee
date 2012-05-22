@@ -62,31 +62,31 @@ app.configure 'production', ->
 app.get '/', routes.index
 
 # Wiki
-app.get  ROOT_PATH+'/pages', wikiApp.getPages          # get page list
-app.get  ROOT_PATH+'/pages/:name', wikiApp.getPage     # get a page
-app.get  ROOT_PATH+'/new', wikiApp.getNew              # get a form to post new wikipage
-app.post ROOT_PATH+'/pages', wikiApp.postNew           # post new wikipage
-app.del ROOT_PATH+'/pages/:name', wikiApp.postDelete   # delete wikipage
-app.put  ROOT_PATH+'/subscribes/:name', wikiApp.postSubscribe     # subscribe wikipage
-app.del  ROOT_PATH+'/subscribes/:name', wikiApp.postUnsubscribe   # unsubscribe wikipage
+app.get  ROOT_PATH + '/pages', wikiApp.getPages          # get page list
+app.get  ROOT_PATH + '/pages/:name', wikiApp.getPage     # get a page
+app.get  ROOT_PATH + '/new', wikiApp.getNew              # get a form to post new wikipage
+app.post ROOT_PATH + '/pages', wikiApp.postNew           # post new wikipage
+app.del  ROOT_PATH + '/pages/:name', wikiApp.postDelete   # delete wikipage
+app.put  ROOT_PATH + '/subscribes/:name', wikiApp.postSubscribe     # subscribe wikipage
+app.del  ROOT_PATH + '/subscribes/:name', wikiApp.postUnsubscribe   # unsubscribe wikipage
 app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 
 # Login & Logout
-app.post ROOT_PATH+'/users/login', userApp.postLogin   # post login
+app.post ROOT_PATH + '/users/login', userApp.postLogin   # post login
 
 # User
-app.get  ROOT_PATH+'/users', userApp.getUsers          # get user list
-app.get  ROOT_PATH+'/users/new', userApp.getNew        # new user page
-app.post ROOT_PATH+'/users/new', userApp.postNew       # post new user
-app.get  ROOT_PATH+'/user/:id', userApp.getId          # show user information
-app.post ROOT_PATH+'/user/:id', userApp.postId         # change user information (password change)
-app.post ROOT_PATH+'/dropuser', userApp.postDropuser   # drop user
+app.get  ROOT_PATH + '/users', userApp.getUsers          # get user list
+app.get  ROOT_PATH + '/users/new', userApp.getNew        # new user page
+app.post ROOT_PATH + '/users/new', userApp.postNew       # post new user
+app.get  ROOT_PATH + '/user/:id', userApp.getId          # show user information
+app.post ROOT_PATH + '/user/:id', userApp.postId         # change user information (password change)
+app.post ROOT_PATH + '/dropuser', userApp.postDropuser   # drop user
 
 # attachment
-app.get  ROOT_PATH+'/pages/:name/attachment', fileApp.getAttachment             # file attachment page
-app.get  ROOT_PATH+'/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
-app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment
-app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
+app.get  ROOT_PATH + '/pages/:name/attachment', fileApp.getAttachment             # file attachment page
+app.get  ROOT_PATH + '/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
+app.post ROOT_PATH + '/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment
+app.del  ROOT_PATH + '/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
 # admin
 app.get  '/admin/mail', adminApp.mail
