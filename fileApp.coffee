@@ -41,9 +41,10 @@ exports.postAttachment = (req, res) ->
 _renderFileuploadPartial = (req, res) ->
     dirname = path.join process.env.uploadDir, req.params.name
     fs.readdir dirname, (err, filelist) ->
+        winston.info(filelist)
         filelist = filelist || []
+        winston.info('filelist', filelist);
         res.render 'fileupload.partial.jade',
-            layout  : false
             title   : '파일첨부'
             pageName: req.params.name
             filelist: filelist
