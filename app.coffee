@@ -1,3 +1,8 @@
+# # profiling code ...
+# profiler = require 'nodetime'
+# profiler.profile()
+# # profiling code ends here...
+
 util = require 'util'
 
 ###
@@ -24,7 +29,7 @@ LISTEN_PORT = 3000
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
 
-oneHour = 60*60*1000
+oneDay = 60*60*1000*24
 
 app.configure ->
   app.use express.bodyParser
@@ -56,7 +61,7 @@ app.configure 'development', ->
 app.configure 'production', ->
   app.use express.errorHandler()
   app.use express.staticCache()
-  app.use express.static __dirname + '/public', { maxAge: oneHour }
+  app.use express.static __dirname + '/public', { maxAge: oneDay }
 
 # Routes
 app.get '/', routes.index
