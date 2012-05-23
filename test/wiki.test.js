@@ -59,7 +59,7 @@ suite('wiki', function() {
     test('사용자는 모든 위키 페이지 목록을 볼 수 있다.', function(done){
         step(
             function given() {
-                wiki.writePage('SecondPage', 'hello', this);
+                wiki.writePage('secondPage', 'hello', this);
             },
             function when(err) {
                 if (err) throw err;
