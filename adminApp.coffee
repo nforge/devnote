@@ -1,34 +1,53 @@
-nodemailer = require "nodemailer"
+wiki = require './lib/wiki'
+mailer = require './lib/mailer'
+_ = require 'underscore'
 
-exports.mail = (req, res) ->
-    res.render 'admin/mail.jade'
-        title: 'Mail'
+exports.mailconf = (req, res) ->
+    if not mailer.smtpOptions
+        options = {}
+    else
+        options = _.clone mailer.smtpOptions
 
-exports.sendmail = (req, res) ->
-    options =
+    options.from = mailer.from or ''
+    if mailer.smtpOptions
+        options.ssl = mailer.smtpOptions.secureConnection
+        options.tls = !mailer.smtpOptions.ignoreTLS
+        if mailer.smtpOptions.auth
+            options.username = mailer.smtpOptions.auth.user
+
+    res.render 'admin/mailconf.jade'
+        options: options
+        title: 'Mail Configuration'
+
+exports.postMailconf = (req, res) ->
+    mailer.from = req.body.from
+    smtpOptions =
         host: req.body.host
         secureConnection: req.body.ssl
         port: req.body.port
-        ignoreTLS: !req.body.tls
+        ignoreTLS: not req.body.tls
         authMethod: req.body.authMethod
         auth:
             user: req.body.username
             pass: req.body.password
 
-    smtpTransport =
-        nodemailer.createTransport "SMTP", options
+    # Update password only if not empty.
+    if (not smtpOptions.auth.pass) and mailer.smtpOptions and mailer.smtpOptions.auth
+        smtpOptions.auth.pass = mailer.smtpOptions.auth.pass
 
-    mailOptions =
-        from: req.body.from
-        to: req.body.to
+    mailer.smtpOptions = smtpOptions
+
+    res.redirect '/'
+
+exports.mail = (req, res) ->
+    res.render 'admin/mail.jade'
+        notConfigured: !mailer.smtpOptions
+        title: 'Mail'
+
+exports.postMail = (req, res) ->
+    mailer.send
+        to: req.body.to,
         subject: req.body.subject
         text: req.body.body
-
-    # send mail with defined transport object
-    smtpTransport.sendMail mailOptions, (error, response) ->
-        if error
-            console.log error
-        else
-            console.log "Message sent: " + response.message
 
     res.redirect '/admin/mail'

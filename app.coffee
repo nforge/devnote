@@ -1,3 +1,8 @@
+# # profiling code ...
+# profiler = require 'nodetime'
+# profiler.profile()
+# # profiling code ends here...
+
 util = require 'util'
 
 ###
@@ -24,7 +29,7 @@ LISTEN_PORT = 3000
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
 
-oneHour = 60*60*1000
+oneDay = 60*60*1000*24
 
 app.configure ->
   app.use express.bodyParser
@@ -56,40 +61,43 @@ app.configure 'development', ->
 app.configure 'production', ->
   app.use express.errorHandler()
   app.use express.staticCache()
-  app.use express.static __dirname + '/public', { maxAge: oneHour }
+  app.use express.static __dirname + '/public', { maxAge: oneDay }
 
 # Routes
 app.get '/', routes.index
 
 # Wiki
-app.get  ROOT_PATH+'/pages', wikiApp.getPages          # get page list
-app.get  ROOT_PATH+'/pages/:name', wikiApp.getPage     # get a page
-app.get  ROOT_PATH+'/new', wikiApp.getNew              # get a form to post new wikipage
-app.post ROOT_PATH+'/pages', wikiApp.postNew           # post new wikipage
-app.del ROOT_PATH+'/pages/:name', wikiApp.postDelete   # delete wikipage
+app.get  ROOT_PATH + '/pages', wikiApp.getPages          # get page list
+app.get  ROOT_PATH + '/pages/:name', wikiApp.getPage     # get a page
+app.get  ROOT_PATH + '/new', wikiApp.getNew              # get a form to post new wikipage
+app.post ROOT_PATH + '/pages', wikiApp.postNew           # post new wikipage
+app.del  ROOT_PATH + '/pages/:name', wikiApp.postDelete   # delete wikipage
+app.put  ROOT_PATH + '/subscribes/:name', wikiApp.postSubscribe     # subscribe wikipage
+app.del  ROOT_PATH + '/subscribes/:name', wikiApp.postUnsubscribe   # unsubscribe wikipage
 app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
 
 # Login & Logout
-app.post ROOT_PATH+'/users/login', userApp.postLogin   # post login
+app.post ROOT_PATH + '/users/login', userApp.postLogin   # post login
 
 # User
-app.get  ROOT_PATH+'/users', userApp.getUsers          # get user list
-app.get  ROOT_PATH+'/users/new', userApp.getNew        # new user page
-app.post ROOT_PATH+'/users/new', userApp.postNew       # post new user
-app.get  ROOT_PATH+'/user/:id', userApp.getId          # show user information
-app.post ROOT_PATH+'/user/:id', userApp.postId         # change user information (password change)
-app.post ROOT_PATH+'/dropuser', userApp.postDropuser   # drop user
+app.get  ROOT_PATH + '/users', userApp.getUsers          # get user list
+app.get  ROOT_PATH + '/users/new', userApp.getNew        # new user page
+app.post ROOT_PATH + '/users/new', userApp.postNew       # post new user
+app.get  ROOT_PATH + '/user/:id', userApp.getId          # show user information
+app.post ROOT_PATH + '/user/:id', userApp.postId         # change user information (password change)
+app.post ROOT_PATH + '/dropuser', userApp.postDropuser   # drop user
 
 # attachment
-app.get  ROOT_PATH+'/pages/:name/attachment', fileApp.getAttachment             # file attachment page
-app.get  ROOT_PATH+'/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
-app.post ROOT_PATH+'/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment
-app.del  ROOT_PATH+'/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
+app.get  ROOT_PATH + '/pages/:name/attachment', fileApp.getAttachment             # file attachment page
+app.get  ROOT_PATH + '/pages/:name/attachment.:format', fileApp.getAttachmentList # file attachment list call by json
+app.post ROOT_PATH + '/pages/:name/attachment.:format?', fileApp.postAttachment   # file attachment
+app.del  ROOT_PATH + '/pages/:name/attachment/:filename', fileApp.delAttachment   # attachment file delete
 
 # admin
 app.get  '/admin/mail', adminApp.mail
-app.post  '/admin/mail', adminApp.sendmail
-
+app.post '/admin/mail', adminApp.postMail
+app.get  '/admin/mailconf', adminApp.mailconf
+app.post '/admin/mailconf', adminApp.postMailconf
 
 exports.start = (port, callback) ->
     wikiApp.init WIKINAME

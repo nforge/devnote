@@ -2,15 +2,20 @@ fs = require 'fs'
 wiki = require './lib/wiki'
 url = require 'url'
 debug = (require 'debug')('main')
+assert = require 'assert'
+mailer = require './lib/mailer'
+User = require('./lib/users').User
+_ = require 'underscore'
 
 ROOT_PATH = '/wikis/'
 
 lastVisits = {}
+subscribers = {}
 
 exports.init = (wikiname) ->
     ROOT_PATH += wikiname
     wiki.init wikiname, (err) ->
-        console.log err.message if err 
+        console.log err.message if err
         data = fs.readFileSync 'frontpage.md'
         wiki.writePage 'frontpage', data, (err) ->
             throw err if err
@@ -49,7 +54,7 @@ history = (name, req, res) ->
         wiki.getHistory name, LIMIT, handler
 
 diff = (name, req, res) ->
-    wiki.diff name, req.query.a, req.query.b, (err, diff) ->
+    wiki.diff name, [req.query.a, req.query.b], (err, diff) ->
         if err
             error404 err, req, res
         else
@@ -118,18 +123,23 @@ commandUrls = (name) ->
             action: 'history',
     delete: url.format
         pathname: ROOT_PATH + '/pages/' + name,
+    subscribe: url.format
+        pathname: ROOT_PATH + '/subscribes/' + name,
 
 view = (name, req, res) ->
     wiki.getPage name, req.query.rev, (err, page) ->
         if err then return error404 err, req, res
+        subscribed = req.session.user and subscribers[name] and req.session.user.id in subscribers[name]
         renderPage = (lastVisit) ->
             options =
-                title: name,
-                content: (wiki.render page.content),
-                commit: page.commit,
-                commitId: page.commitId,
-                isOld: page.isOld,
-                urls: commandUrls name,
+                title: name
+                content: (wiki.render page.content)
+                commit: page.commit
+                commitId: page.commitId
+                isOld: page.isOld
+                subscribed: subscribed
+                loggedIn: !!req.session.user
+                urls: commandUrls name
 
             if lastVisit
                 options.urls.diffSinceLastVisit = url.format
@@ -180,6 +190,27 @@ exports.postNew = (req, res) ->
                 lastVisits[userId] = {}
             lastVisits[userId][name] = commitId
 
+        if subscribers[name]
+            # send mail to subscribers of this page.
+            wiki.diff name, commitId, ['json', 'unified'], (err, diff) ->
+                user = req.session.user
+
+                subject = '[n4wiki] ' + name + ' was edited'
+                subject += (' by ' + user.id) if user
+
+                if user
+                    ids = _.without(subscribers[name], user.id)
+                else
+                    ids = subscribers[name]
+                
+                to = (User.findUserById(id).email for id in ids)
+
+                mailer.send
+                    to: to
+                    subject: subject
+                    text: diff['unified']
+                    html: wiki.renderDiff(diff['json'], true)
+
         res.redirect ROOT_PATH + '/pages/' + name
 
 exports.postDelete = (req, res) ->
@@ -198,3 +229,20 @@ exports.postRollback = (req, res) ->
             else
                 res.contentType 'json'
                 res.send {commits: commits, name: name, ids: commits.ids}
+
+exports.postSubscribe = (req, res) ->
+    name = req.params.name
+    if req.session.user
+        subscribers[name] = [] if not subscribers[name]
+        userId = req.session.user.id
+        if not (userId in subscribers[name])
+            subscribers[name].push userId
+
+    res.redirect ROOT_PATH + '/pages/' + name
+
+exports.postUnsubscribe = (req, res) ->
+    name = req.params.name
+    if req.session.user and subscribers[name]
+        subscribers[name] = _.without subscribers[name], req.session.user.id
+
+    res.redirect ROOT_PATH + '/pages/' + name

@@ -3,7 +3,8 @@ if filelist == ''
         td(colspan='2', id='nofile') 첨부 파일이 없습니다.
 each filename in filelist
     tr
-        td.filelink: a(href='/attachment/#{pageName}/#{filename}',target='_blank') #{filename}
+        td.filelink
+            a(href='/attachment/#{pageName}/#{filename}',target='_blank') #{filename}
         td
             form(method="post", id='filedelete', class='filedelete', action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
                 input(name='filename', type='hidden', id='filename', value='#{filename}')

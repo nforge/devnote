@@ -1,9 +1,9 @@
 extends layout
 
 block content
-  form(method="post", action="/wikis/note/pages")
+  form(id="editpage", method="post", action="/wikis/note/pages")
     div.page-header
-      input(name="name", value=name).input-xlarge
+      input(id="pagename", name="name", value=name).input-xlarge
 
     textarea(id="body", name="body").input-xlarge
       = content
@@ -27,3 +27,6 @@ block content
   script(type="text/javascript", src="/scripts/highlight-c.js")
   script(type="text/javascript", src="/scripts/showdown.js")
   script(type="text/javascript", src="/scripts/preview.js")
+  script(type="text/javascript", src="/scripts/draft.js")
+  script(type="text/javascript")
+    initDraft('n4wiki-edit-' + $('#pagename').val(), '#editpage', ['#body']);

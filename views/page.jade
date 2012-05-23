@@ -29,6 +29,15 @@ block content
         form(method="post", action=urls.delete)
           input(type="hidden", name="_method", id='_method', value="delete")
           input(type="submit", value="delete", name="submit").btn
+      div.span1
+        if loggedIn
+          form(method="post", action=urls.subscribe)
+            if subscribed
+              input(type="hidden", name="_method", id="_method", value="delete")
+              input(type="submit", value="unsubscribe", name="submit").btn
+            else
+              input(type="hidden", name="_method", id="_method", value="put")
+              input(type="submit", value="subscribe", name="submit").btn
 
     div.row
       div.span12

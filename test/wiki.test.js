@@ -3,6 +3,7 @@ var wiki = require('../lib/wiki');
 var fileutils = require('../lib/fileutils');
 var step = require('step');
 var async = require('async');
+var _ = require('underscore');
 
 var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
 
@@ -66,7 +67,8 @@ suite('wiki', function() {
             },
             function then(err, pages) {
                 assert.equal(pages.length, 2);
-                assert.deepEqual(pages, ['frontpage', 'secondPage']);
+                assert.ok(_.include(pages, 'frontpage'));
+                assert.ok(_.include(pages, 'SecondPage'));
                 done();
             }
         );
@@ -164,7 +166,7 @@ suite('wiki', function() {
                 if (err) throw err;
                 var next = this;
                 wiki.getHistory(name, null, function(err, commits) {
-                    wiki.diff(name, commits.ids[1], commits.ids[0], next);
+                    wiki.diff(name, [commits.ids[1], commits.ids[0]], next);
                 });
             },
             function then(err, diff) {
