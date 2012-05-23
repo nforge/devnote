@@ -8,7 +8,7 @@ block content
     textarea(id="body", name="body").input-xlarge
       = content
     br
-    input(type="submit", name="submit").btn-primary
+    input(type="submit", name="save").btn-primary
 
   div.btn-group
     a(href="?").btn View
@@ -30,3 +30,6 @@ block content
   script(type="text/javascript", src="/scripts/draft.js")
   script(type="text/javascript")
     initDraft('n4wiki-edit-' + $('#pagename').val(), '#editpage', ['#body']);
+  script(type="text/javascript", src="/scripts/keynavi.js")
+  script(type="text/javascript")
+    activeSubmitKey();
