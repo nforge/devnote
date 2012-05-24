@@ -105,7 +105,7 @@ block content
               }
 
               $('#body').insertAtCaret(filename);
-              preview();
+              preview.update();
           });
       })
 
@@ -115,11 +115,24 @@ block content
   script(type="text/javascript", src="/scripts/highlight.js")
   script(type="text/javascript", src="/scripts/highlight-c.js")
   script(type="text/javascript", src="/scripts/showdown.js")
-  script(type="text/javascript", src="/scripts/preview.js")
   script(type="text/javascript", src="/scripts/newpage.js")
-  script(type="text/javascript", src="/scripts/draft.js")
-  script(type="text/javascript")
-    initDraft('n4wiki-new', '#newpost', ['#title', '#body']);
   script(type="text/javascript", src="/scripts/keynavi.js")
   script(type="text/javascript")
-    activeSubmitKey();
+    activateSubmitKey();
+  script(type="text/javascript", src="/codemirror2/lib/codemirror.js")
+  script(type="text/javascript", src="/codemirror2/mode/xml/xml.js")
+  script(type="text/javascript", src="/codemirror2/mode/markdown/markdown.js")
+  script(type="text/javascript")
+    var editor = CodeMirror.fromTextArea(document.getElementById("body"), {
+      mode: 'markdown',
+      lineNumbers: true,
+      matchBrackets: true,
+      theme: "default"
+    });
+  script(type="text/javascript", src="/scripts/preview.js")
+  script(type="text/javascript")
+    preview.init($(".CodeMirror"), function() { return editor.getValue(); });
+  script(type="text/javascript", src="/scripts/draft.js")
+  script(type="text/javascript")
+    draft.init('n4wiki-new', '#newpost', ['#title', editor]);
+    draft.onRestore(preview.update);

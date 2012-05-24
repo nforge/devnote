@@ -29,3 +29,8 @@ img {
     height: auto;
     max-width: 100%;
 }
+
+.CodeMirror {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
