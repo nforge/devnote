@@ -36,10 +36,12 @@ var bindFormAndLocalStorage = function(form, fields) {
     var _bind = function(field) {
         if (typeof(field) == 'object' && field.getValue) {
             field.setOption('onKeyEvent', function() {
+                draft.notification.css('display', 'none');
                 localStorage.setItem(_key(field), field.getValue());
             });
         } else {
             $(field).keyup(function() {
+                draft.notification.css('display', 'none');
                 localStorage.setItem(_key(field), $(field).val());
             });
         }
