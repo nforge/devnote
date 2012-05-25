@@ -133,3 +133,4 @@ block content
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
     draft.init('n4wiki-new', '#newpost', ['#title', editor]);
     draft.onRestore(preview.update);
+    $('#title').focus();

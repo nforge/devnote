@@ -44,3 +44,4 @@ block content
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
     draft.init('n4wiki-edit-' + $('#pagename').val(), '#editpage', [editor]);
     draft.onRestore(preview.update);
+    editor.focus();
