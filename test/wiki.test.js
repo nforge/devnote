@@ -68,7 +68,7 @@ suite('wiki', function() {
             function then(err, pages) {
                 assert.equal(pages.length, 2);
                 assert.ok(_.include(pages, 'frontpage'));
-                assert.ok(_.include(pages, 'SecondPage'));
+                assert.ok(_.include(pages, 'secondPage'));
                 done();
             }
         );
