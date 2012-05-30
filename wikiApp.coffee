@@ -15,10 +15,12 @@ subscribers = {}
 exports.init = (wikiname) ->
     ROOT_PATH += wikiname
     wiki.init wikiname, (err) ->
-        console.log err.message if err
-        data = fs.readFileSync 'frontpage.md'
-        wiki.writePage 'frontpage', data, (err) ->
-            throw err if err
+        if err
+            console.log err.message
+        else
+            data = fs.readFileSync 'frontpage.md'
+            wiki.writePage 'frontpage', data, (err) ->
+                throw err if err
 
 error404 = (err, req, res, next) ->
     res.statusCode = 404
