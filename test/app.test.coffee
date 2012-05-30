@@ -27,7 +27,7 @@ suite '웹 인터페이스', ->
             browser.
                 fill('name', 'FrontPage').
                 fill('body', 'Welcome to n4wiki!').
-                pressButton 'submit', ->
+                pressButton 'save', ->
                     assert.ok browser.success
                     assert.equal browser.text('h1'), 'FrontPage'
                     assert.equal browser.text('p'), 'Welcome to n4wiki!'
@@ -39,7 +39,7 @@ suite '웹 인터페이스', ->
             browser.
                 fill('name', 'FrontPage').
                 fill('body', 'Welcome to n4wiki!').
-                pressButton 'submit', ->
+                pressButton 'save', ->
                     browser.visit getUrl('/wikis/note/pages/FrontPage'), ->
                         assert.ok browser.success
                         assert.equal browser.text('h1'), 'FrontPage'
@@ -52,7 +52,7 @@ suite '웹 인터페이스', ->
             browser.
                 fill('name', 'FrontPage').
                 fill('body', 'Welcome to n4wiki!').
-                pressButton 'submit', ->
+                pressButton 'save', ->
                     browser.visit getUrl('/wikis/note/pages/FrontPage2'),
                         (e, browser, status) ->
                             assert.equal status, 404, 'The status code should be 404, but ' + status + '.'
@@ -64,13 +64,13 @@ suite '웹 인터페이스', ->
             browser.
                 fill('name', 'FrontPage').
                 fill('body', 'Welcome to n4wiki!').
-                pressButton 'submit', ->
+                pressButton 'save', ->
                     browser.visit getUrl('/wikis/note/pages/FrontPage?action=edit'), ->
                         assert.ok browser.success
                         browser.
                             fill('name', 'FrontPage').
                             fill('body', 'n4wiki updated!').
-                            pressButton 'submit', ->
+                            pressButton 'save', ->
                                 browser.visit getUrl('/wikis/note/pages/FrontPage'), ->
                                     assert.ok browser.success
                                     assert.equal browser.text('h1'), 'FrontPage'
@@ -82,7 +82,7 @@ suite '웹 인터페이스', ->
             browser.
                 fill('name', 'FrontPage').
                 fill('body', 'Welcome to n4wiki!').
-                pressButton 'submit', ->
+                pressButton 'save', ->
                     browser.visit 'http://localhost:3000/wikis/note/pages/FrontPage', ->
                             browser.pressButton 'submit', ->
                                 browser.visit "http://localhost:3000/wikis/note/pages/FrontPage",
