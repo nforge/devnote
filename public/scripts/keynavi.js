@@ -20,7 +20,7 @@ var activateNewKey = function(url) {
 }
 
 // ctrl + enter for submit form
-var activateSubmitKey = function() {
+var activateSubmitKey = function(eventListener) {
     var eventHandler = function (event) {
         if (event.ctrlKey && event.which == 13) {
             $(event.target).parents('form').get(0).submit();
@@ -29,4 +29,8 @@ var activateSubmitKey = function() {
 
     $('textarea').keydown(eventHandler);
     $('input').keydown(eventHandler);
+
+    if (eventListener) {
+        eventListener(eventHandler);
+    }
 }

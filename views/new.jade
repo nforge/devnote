@@ -123,13 +123,13 @@ block content
   script(type="text/javascript", src="/scripts/preview.js")
   script(type="text/javascript", src="/scripts/draft.js")
   script(type="text/javascript")
-    activateSubmitKey();
     var editor = CodeMirror.fromTextArea(document.getElementById("body"), {
       mode: 'markdown',
       lineNumbers: true,
       matchBrackets: true,
       theme: "default",
     });
+    activateSubmitKey(function(handler) { editor.setOption('onKeyEvent', handler); });
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
     draft.init('n4wiki-new', '#newpost', ['#title', editor]);
     draft.onRestore(preview.update);
