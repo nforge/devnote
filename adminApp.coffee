@@ -1,27 +1,27 @@
 wiki = require './lib/wiki'
 mailer = require './lib/mailer'
+config = require './lib/config'
 _ = require 'underscore'
 
 exports.mailconf = (req, res) ->
-    if not mailer.smtpOptions
-        options = {}
-    else
-        options = _.clone mailer.smtpOptions
+    options = (config.get 'mail') or {}
 
-    options.from = mailer.from or ''
-    if mailer.smtpOptions
-        options.ssl = mailer.smtpOptions.secureConnection
-        options.tls = !mailer.smtpOptions.ignoreTLS
-        if mailer.smtpOptions.auth
-            options.username = mailer.smtpOptions.auth.user
+    options.ssl = options.secureConnection
+    options.tls = !options.ignoreTLS
+
+    console.log options
+
+    if options.auth
+        options.username = options.auth.user
 
     res.render 'admin/mailconf.jade'
         options: options
         title: 'Mail Configuration'
 
 exports.postMailconf = (req, res) ->
-    mailer.from = req.body.from
-    smtpOptions =
+    originOptions = config.get 'mail'
+    newOptions =
+        from: req.body.from
         host: req.body.host
         secureConnection: req.body.ssl
         port: req.body.port
@@ -32,16 +32,16 @@ exports.postMailconf = (req, res) ->
             pass: req.body.password
 
     # Update password only if not empty.
-    if (not smtpOptions.auth.pass) and mailer.smtpOptions and mailer.smtpOptions.auth
-        smtpOptions.auth.pass = mailer.smtpOptions.auth.pass
+    if (not newOptions.auth.pass) and originOptions and originOptions.auth
+        newOptions.auth.pass = originOptions.auth.pass
 
-    mailer.smtpOptions = smtpOptions
+    config.set 'mail', newOptions
 
     res.redirect '/'
 
 exports.mail = (req, res) ->
     res.render 'admin/mail.jade'
-        notConfigured: !mailer.smtpOptions
+        notConfigured: !(config.get 'mail')
         title: 'Mail'
 
 exports.postMail = (req, res) ->
