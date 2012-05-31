@@ -9,8 +9,6 @@ exports.mailconf = (req, res) ->
     options.ssl = options.secureConnection
     options.tls = !options.ignoreTLS
 
-    console.log options
-
     if options.auth
         options.username = options.auth.user
 
