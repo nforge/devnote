@@ -26,6 +26,10 @@ Coding Convention
     ```
     예) GitFS Class는 => project_home/lib/gitfs.js
     ```
+ - 커밋 로그는 아래의 Style을 따릅니다.
+    - 첫줄은 50자 정도의 요약
+    - 다음에 공백이 한 줄 오고
+    - 그 다음에 본문이 옵니다.
 
 Achitechture
 ---
