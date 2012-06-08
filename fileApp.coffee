@@ -11,39 +11,49 @@ process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 exports.getAttachment = (req, res) ->
     dirname = path.join process.env.uploadDir, req.params.name
     fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || []
-        res.render 'fileupload.jade', {title: '파일첨부', pageName: req.params.name, filelist: filelist}
+        filelist = filelist or []
+        res.render 'fileupload.jade',
+            title: '파일첨부',
+            pageName: req.params.name,
+            filelist: filelist
 
 exports.getAttachmentList = (req, res) ->
     dirname = path.join process.env.uploadDir, req.params.name
     fs.readdir dirname, (err, filelist) ->
-        filelist = filelist || []
-        res.json {title: '파일첨부', pageName: req.params.name, filelist: filelist}
+        filelist = filelist or []
+        res.json
+            title: '파일첨부'
+            pageName: req.params.name
+            filelist: filelist
 
 exports.postAttachment = (req, res) ->
-    localUploadPath = path.dirname(req.files.attachment.path) + "/" + req.params.name
+    pageName = req.params.name
+    localUploadPath =
+        path.dirname(req.files.attachment.path) + "/" + pageName
     fs.mkdir localUploadPath, (err) ->
-        throw err if err && err.code != 'EEXIST'
-        fs.rename req.files.attachment.path, localUploadPath + '/' + req.files.attachment.name,  (err) ->
-            throw new Error "no file selected" if !req.files.attachment.name
-            throw err if err
-            switch req.params.format
-                when 'partial'
-                    _renderFileuploadPartial req, res
-                when 'json'
-                    res.json
-                        title   : '파일첨부'
-                        pageName: req.params.name
-                        filename: req.files.attachment.name
-                else
-                    res.redirect '/wikis/note/pages/' + req.params.name + '/attachment'
+        throw err if err and err.code != 'EEXIST'
+        fs.rename req.files.attachment.path,
+            localUploadPath + '/' + req.files.attachment.name,  (err) ->
+                throw new Error "no file selected" if !req.files.attachment.name
+                throw err if err
+                switch req.params.format
+                    when 'partial'
+                        _renderFileuploadPartial req, res
+                    when 'json'
+                        res.json
+                            title   : '파일첨부'
+                            pageName: pageName
+                            filename: req.files.attachment.name
+                    else
+                        url = '/wikis/note/pages/' + pageName + '/attachment'
+                        res.redirect url
 
 _renderFileuploadPartial = (req, res) ->
     dirname = path.join process.env.uploadDir, req.params.name
     fs.readdir dirname, (err, filelist) ->
         winston.info(filelist)
-        filelist = filelist || []
-        winston.info('filelist', filelist);
+        filelist = filelist or []
+        winston.info('filelist', filelist)
         res.render 'fileupload.partial.jade',
             title   : '파일첨부'
             pageName: req.params.name

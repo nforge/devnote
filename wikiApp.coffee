@@ -6,6 +6,8 @@ assert = require 'assert'
 mailer = require './lib/mailer'
 User = require('./lib/users').User
 _ = require 'underscore'
+util = require 'util'
+i18n = require 'i18n'
 
 ROOT_PATH = '/wikis/'
 
@@ -38,19 +40,20 @@ history = (name, req, res) ->
     LIMIT = 30
     handler = (err, commits) ->
         if err
+            console.log err
             error404 err, req, res
         else
             res.render 'history',
-                title: name,
-                commits: commits,
-                limit: LIMIT,
+                title: name
+                commits: commits
+                limit: LIMIT
     if req.query.until
         offset = parseInt(req.query.offset or 0)
         wiki.queryHistory
-            filename: name,
-            until: req.query.until,
-            offset: offset,
-            limit: LIMIT,
+            filename: name
+            until: req.query.until
+            offset: offset
+            limit: LIMIT
             handler
     else
         wiki.getHistory name, LIMIT, handler
@@ -60,10 +63,10 @@ diff = (name, req, res) ->
         if err
             error404 err, req, res
         else
-            res.render 'diff',
-                title: 'Diff',
-                name: name,
-                diff: wiki.renderDiff(diff),
+            res.render 'diff'
+                title: 'Diff'
+                name: name
+                diff: wiki.renderDiff(diff)
 
 
 search = (req, res) ->
@@ -130,27 +133,47 @@ commandUrls = (name) ->
 
 view = (name, req, res) ->
     wiki.getPage name, req.query.rev, (err, page) ->
-        if err then return error404 err, req, res
-        subscribed = req.session.user and subscribers[name] and req.session.user.id in subscribers[name]
-        renderPage = (lastVisit) ->
-            options =
-                title: name
-                content: (wiki.render page.content)
-                commit: page.commit
-                commitId: page.commitId
-                isOld: page.isOld
-                subscribed: subscribed
-                loggedIn: !!req.session.user
-                urls: commandUrls name
+        if err
+            return error404 err, req, res
 
+        subscribed = req.session.user and
+            subscribers[name] and
+            req.session.user.id in subscribers[name]
+
+        urls = commandUrls name
+
+        if page.isOld
+            oldRevisionNotice = i18n.__ "
+This is an old revision of this page, as edited by %s at %s.
+ It may differ significantly from the <a href='%s'>current revision</a>.",
+                page.commit.author.name,
+                new Date(page.commit.author.unixtime * 100),
+                urls.view
+
+        renderPage = (lastVisit) ->
             if lastVisit
-                options.urls.diffSinceLastVisit = url.format
+                urlDiffSinceLastVisit = url.format
                     pathname: ROOT_PATH + '/pages/' + name,
                     query:
                         action: 'diff',
                         a: lastVisit.id,
                         b: page.commitId,
-                options.lastVisitDate = lastVisit.date
+
+                changesNotice = i18n.__ "
+Something changed since your last visit, %s.
+ <a href='%s'>Click here</a> to see the difference.",
+                    lastVisit.date, urlDiffSinceLastVisit
+
+            options =
+                title: name
+                content: wiki.render page.content
+                commit: page.commit
+                commitId: page.commitId
+                oldRevisionNotice: oldRevisionNotice
+                subscribed: subscribed
+                loggedIn: !!req.session.user
+                urls: urls
+                changesNotice: changesNotice
 
             res.render 'page', options
 
@@ -170,18 +193,21 @@ view = (name, req, res) ->
 
         if lastVisitId != page.commitId
             # something changed
-            wiki.readCommit lastVisitId,
+            return wiki.readCommit lastVisitId,
                 (err, commit) ->
                     lastVisit =
                         date: new Date commit.committer.unixtime * 1000
-                        id: lastVisitId,
-                    renderPage lastVisit
+                        id: lastVisitId
+                    return renderPage lastVisit
         else
             # nothing changed
-            renderPage()
+            return renderPage()
 
 exports.getNew = (req, res) ->
-    res.render 'new', title: 'New Page', pageName: '__new_' + new Date().getTime(), filelist: []
+    res.render 'new',
+        title: 'New Page'
+        pageName: '__new_' + new Date().getTime()
+        filelist: []
 
 exports.postNew = (req, res) ->
     name = req.body.name
@@ -201,10 +227,10 @@ exports.postNew = (req, res) ->
                 subject += (' by ' + user.id) if user
 
                 if user
-                    ids = _.without(subscribers[name], user.id)
+                    ids = _.without subscribers[name], user.id
                 else
                     ids = subscribers[name]
-                
+
                 to = (User.findUserById(id).email for id in ids)
 
                 mailer.send
@@ -218,9 +244,9 @@ exports.postNew = (req, res) ->
 exports.postDelete = (req, res) ->
     wiki.deletePage req.params.name, (err) ->
         res.render 'deleted',
-            title: req.body.name,
-            message: req.params.name,
-            content: 'Page deleted',
+            title: req.body.name
+            message: req.params.name
+            content: 'Page deleted'
 
 exports.postRollback = (req, res) ->
     name = req.params.name
@@ -230,7 +256,10 @@ exports.postRollback = (req, res) ->
                 error404 err, req, res
             else
                 res.contentType 'json'
-                res.send {commits: commits, name: name, ids: commits.ids}
+                res.send
+                    commits: commits
+                    name: name
+                    ids: commits.ids
 
 exports.postSubscribe = (req, res) ->
     name = req.params.name

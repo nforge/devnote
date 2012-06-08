@@ -59,7 +59,8 @@ exports.getId = (req, res) ->
 
 exports.postId = (req, res) ->
     targetUser = User.findUserById req.params.id
-    isValid = user.changePassword req.body.previousPassword, req.body.newPassword, targetUser
+    isValid = user.changePassword req.body.previousPassword,
+        req.body.newPassword, targetUser
     targetUser.email = req.body.email if isValid
     User.save targetUser if isValid
 

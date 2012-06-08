@@ -32,36 +32,37 @@ app.set 'view engine', 'jade'
 oneDay = 60*60*1000*24
 
 app.configure ->
-  app.use express.bodyParser
-    uploadDir: uploadDir
-  app.use express.cookieParser 'n4wiki session'
-  app.use express.session()
-  app.use express.methodOverride()
-  app.use app.router
-  app.use express.logger 'dev'
+    app.use express.bodyParser
+        uploadDir: uploadDir
+    app.use express.cookieParser 'n4wiki session'
+    app.use express.session()
+    app.use express.methodOverride()
+    app.use i18n.init
+    app.use app.router
+    app.use express.logger 'dev'
 
 # Session-persisted message middleware
 app.locals.use (req, res) ->
-  err = req.session.error
-  msg = req.session.success
-  # delete req.session.error
-  # delete req.session.success
-  res.locals.message = ''
-  if err
-     res.locals.message = err
-  if msg
-     res.locals.message = msg
+    err = req.session.error
+    msg = req.session.success
+    # delete req.session.error
+    # delete req.session.success
+    res.locals.message = ''
+    if err
+        res.locals.message = err
+    if msg
+        res.locals.message = msg
 
 app.configure 'development', ->
-  app.use express.static __dirname + '/public'
-  app.use express.errorHandler
-      dumpExceptions: true,
-      showStack: true,
+    app.use express.static __dirname + '/public'
+    app.use express.errorHandler
+        dumpExceptions: true,
+        showStack: true,
 
 app.configure 'production', ->
-  app.use express.errorHandler()
-  app.use express.staticCache()
-  app.use express.static __dirname + '/public', { maxAge: oneDay }
+    app.use express.errorHandler()
+    app.use express.staticCache()
+    app.use express.static __dirname + '/public', { maxAge: oneDay }
 
 # Routes
 app.get '/', routes.index
