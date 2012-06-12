@@ -204,6 +204,7 @@ Something changed since your last visit, %s.
             return renderPage()
 
 exports.getNew = (req, res) ->
+    req.session.flashMessage = 'Flash message test'
     res.render 'new',
         title: 'New Page'
         pageName: '__new_' + new Date().getTime()

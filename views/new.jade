@@ -4,9 +4,15 @@ block content
   header
     div.page-header
       h1= title
-
   div.row-fluid
       div.span5.writer
+        - if (flashMessage)
+          div#flashMessage.alert.alert-error
+            span= flashMessage
+            button(type="button", class="close", data-dismiss="alert") x
+          div.alert.alert-warn.hide#message
+            span#messageText
+            button(type="button", class="close", data-dismiss="alert") x
           form(method="post", id='newpost', action="/wikis/note/pages")
             fieldset
               div.control-group
@@ -18,12 +24,12 @@ block content
                 div.controls
                   textarea(id="body", name="body", rows="15").input-xlarge.textbody
               div
-                input(type="submit", name='save', value="새 페이지 등록").btn-primary
+                input(type="submit", name='save', value="새 페이지 등록").btn.btn-primary
           div
             form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
               label(for="attachment") 첨부할 파일을 선택해 주세요
               input(type='file', name='attachment', id='attachment')
-              input(type="submit", name='attach', value="첨부").btn-primary
+              input(type="submit", name='attach', value="첨부").btn.btn-primary
           div.progress.progress-warning
             div#progressbar.bar
           div#alert.alert.alert-error.fade.out.hide
@@ -109,13 +115,15 @@ block content
           });
       })
 
+  script(src="/socket.io/socket.io.js")
   script(type="text/javascript")
     // for using highlight.js both server and client
     var module = module || {}; //This prevents error on 'module.exports' statements
+    // ToDo: Above code will be a problems in someday. Recommend to fix it!
   script(type="text/javascript", src="/scripts/highlight.js")
   script(type="text/javascript", src="/scripts/highlight-c.js")
   script(type="text/javascript", src="/scripts/showdown.js")
-  script(type="text/javascript", src="/scripts/newpage.js")
+  script(type="text/javascript", src="/scripts/fileupload.js")
   script(type="text/javascript", src="/scripts/keynavi.js")
   script(type="text/javascript", src="/codemirror2/lib/codemirror.js")
   script(type="text/javascript", src="/codemirror2/mode/xml/xml.js")
@@ -134,3 +142,34 @@ block content
     draft.init('n4wiki-new', '#newpost', ['#title', editor]);
     draft.onRestore(preview.update);
     $('#title').focus();
+  script
+    var pageId;
+    $(function(){
+      var socket = io.connect();
+      socket.on('connected', function(id){
+        pageId = id;
+      });
+      socket.on('dupped', function(data){
+        var user = {};
+        if (data.user === "" || data.user === undefined ) {
+          user.id = 'anomynous'
+        } else {
+          user = JSON.parse(data.user);
+        }
+
+        $('#title').popover({title:"Title name is alread exist!", content: "["+ user.id + "] user already working with this title. Try out another page name.", trigger: 'manual'});
+        $('#title').popover('show');
+      });
+
+      socket.on('page name is ok', function(){
+        $('#title').popover('hide');
+      });
+
+      $('#title').keyup(function(){
+        debounce(function(){
+          var title = $('#title').val();
+          socket.emit('page name changed', {name: title, id: pageId, user: '!{JSON.stringify(user)}'});
+        }, 500);
+      });
+    });
+  script(type="text/javascript", src="/scripts/timming.js")

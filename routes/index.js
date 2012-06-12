@@ -12,3 +12,6 @@ exports.addUserForm = function(req, res){
     res.render('user/new', {title: '사용자 등록'});
 }
 
+exports.test = function(req, res){
+    res.render('testpage',{title: 'test page'});
+}
