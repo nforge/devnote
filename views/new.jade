@@ -156,7 +156,7 @@ block content
         user = JSON.parse(data.user);
       }
 
-      $('#title').popover({title:"Title name is alread exist!", content: "["+ user.id + "] user already working with this title. Try out another page name.", trigger: 'manual'});
+      $('#title').popover({title:"Already existed page name!", content: "["+ user.id + "] user already working with this title. Try out another page name.", trigger: 'manual'});
       $('#title').popover('show');
     });
 
