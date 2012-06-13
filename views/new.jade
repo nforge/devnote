@@ -144,32 +144,30 @@ block content
     $('#title').focus();
   script
     var pageId;
-    $(function(){
-      var socket = io.connect();
-      socket.on('connected', function(id){
-        pageId = id;
-      });
-      socket.on('dupped', function(data){
-        var user = {};
-        if (data.user === "" || data.user === undefined ) {
-          user.id = 'anomynous'
-        } else {
-          user = JSON.parse(data.user);
-        }
+    var socket = io.connect();
+    socket.on('connected', function(id){
+      pageId = id;
+    });
+    socket.on('dupped', function(data){
+      var user = {};
+      if (data.user === "" || data.user === undefined ) {
+        user.id = 'anomynous'
+      } else {
+        user = JSON.parse(data.user);
+      }
 
-        $('#title').popover({title:"Title name is alread exist!", content: "["+ user.id + "] user already working with this title. Try out another page name.", trigger: 'manual'});
-        $('#title').popover('show');
-      });
+      $('#title').popover({title:"Title name is alread exist!", content: "["+ user.id + "] user already working with this title. Try out another page name.", trigger: 'manual'});
+      $('#title').popover('show');
+    });
 
-      socket.on('page name is ok', function(){
-        $('#title').popover('hide');
-      });
+    socket.on('page name is ok', function(){
+      $('#title').popover('hide');
+    });
 
-      $('#title').keyup(function(){
-        debounce(function(){
-          var title = $('#title').val();
-          socket.emit('page name changed', {name: title, id: pageId, user: '!{JSON.stringify(user)}'});
-        }, 500);
-      });
+    $('#title').keyup(function(){
+      debounce(function(){
+        var title = $('#title').val();
+        socket.emit('page name changed', {name: title, id: pageId, user: '!{JSON.stringify(user)}'});
+      }, 500);
     });
   script(type="text/javascript", src="/scripts/timming.js")
