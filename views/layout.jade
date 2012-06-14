@@ -9,9 +9,9 @@ html
     link(rel='stylesheet', href='/codemirror2/lib/codemirror.css')
   body
       div
-      - if (message)
+      - if (loginMessage)
           p
-              span.label.label-important= message
+              span.label.label-important= loginMessage
 
         block content
       script(src='/scripts/html5shiv.js')

@@ -19,7 +19,6 @@ users = (req, res) ->
 
 # post login
 exports.postLogin =  (req, res) ->
-    console.log req.session.user
     User.login
         id: req.body.id,
         password: req.body.password
@@ -28,6 +27,7 @@ exports.postLogin =  (req, res) ->
                 req.session.regenerate ->
                     req.session.user = User.findUserById(req.body.id)
                     req.session.success = req.session.user.name + ' logined.'
+                    console.log req.session.success
                     res.redirect '/'
             else
                 req.session.error = err.message

@@ -3,19 +3,21 @@
 # profiler.profile()
 # # profiling code ends here...
 
-util = require 'util'
 
 ###
 Module dependencies.
 ###
-
+util = require 'util'
 express = require 'express'
-routes  = require './routes'
+http = require 'http'
+socket = require 'socket.io'
 
+routes  = require './routes'
 wikiApp = require './wikiApp'
 userApp = require './userApp'
 fileApp = require './fileApp'
 adminApp = require './adminApp'
+workingPage = require './lib/workingPage'
 i18n = require './lib/i18n'
 
 i18n.configure
@@ -26,7 +28,24 @@ process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 WIKINAME = 'note'
 ROOT_PATH = '/wikis/' + WIKINAME
 
-app = express.createServer()
+app = express()
+server = http.createServer app
+io = socket.listen server
+
+io.sockets.on 'connection', (socket)->
+    socket.emit 'connected', socket.id
+    socket.on 'page name changed', (page)->
+        result = workingPage.update page, page.user
+        console.log workingPage.findAll()
+        if result is false
+            console.log( workingPage.findByPageName page.name )
+            socket.emit 'dupped', workingPage.findByPageName page.name
+        else
+            socket.emit 'page name is ok'
+
+    socket.on 'disconnect', ->
+        workingPage.remove socket.id
+
 
 # Configuration
 LISTEN_PORT = 3000
@@ -48,14 +67,20 @@ app.configure ->
 # Session-persisted message middleware
 app.locals.use (req, res) ->
     err = req.session.error
-    msg = req.session.success
-    # delete req.session.error
-    # delete req.session.success
-    res.locals.message = ''
+    loginMessage = req.session.success
+    msg = req.session.flashMessage
+    delete req.session.error
+    #delete req.session.success
+
+    res.locals.user = req.session.user
+    res.locals.flashMessage = ''
+    res.locals.loginMessage = loginMessage || ''
     if err
-        res.locals.message = err
+        res.locals.flashMessage = err
     if msg
-        res.locals.message = msg
+        res.locals.flashMessage = msg
+    if loginMessage
+        res.locals.loginMessage = loginMessage
 
 app.configure 'development', ->
     app.use express.static __dirname + '/public'
@@ -70,6 +95,7 @@ app.configure 'production', ->
 
 # Routes
 app.get '/', routes.index
+app.get '/test', routes.test
 
 # Wiki
 app.get  ROOT_PATH + '/pages', wikiApp.getPages          # get page list
@@ -106,7 +132,7 @@ app.post '/admin/mailconf', adminApp.postMailconf
 
 exports.start = (port, callback) ->
     wikiApp.init WIKINAME
-    app.listen port
+    server.listen port
     console.log "Express server listening on port %d in %s mode", port, app.settings.env
     callback() if callback
 
