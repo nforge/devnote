@@ -70,28 +70,31 @@ draft.init = function(_prefix, form, fields) {
     if (typeof(localStorage) != 'object') {
         return false;
     }
-
-    $(document).ready(function init() {
+    
+    var _init = function() {
         prefix = _prefix;
 
         // notifaction message
         if (existDraft(fields)) {
-            var restoreLink = 
-                $('<a id="restore-draft">Click here</a>')
-                .click(function () {
-                    restoreDraft(fields);
-                    $('#draft-message').css("display", "none");
-                });
+            message = i18n.__(
+                "<span>Unsaved draft exists.</span> Click <a id='restore-draft'>here</a><span> to recover it.</span>");
 
             draft.notification =
                 $('<div id="draft-message"></div>')
                 .addClass('alert').addClass('alert-info')
-                .append('<span>Unsaved draft exists. </span>')
-                .append(restoreLink)
-                .append('<span> to recover it.</span>')
+                .append(message)
                 .insertBefore($(form));
+
+            $('#restore-draft').click(function () {
+                restoreDraft(fields);
+                $('#draft-message').css("display", "none");
+            });
         }
 
         bindFormAndLocalStorage(form, fields);
+    }
+
+    $(function() {
+        i18n.on('ready', _init);
     });
 }

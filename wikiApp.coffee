@@ -7,7 +7,7 @@ mailer = require './lib/mailer'
 User = require('./lib/users').User
 _ = require 'underscore'
 util = require 'util'
-i18n = require 'i18n'
+i18n = require './lib/i18n'
 
 ROOT_PATH = '/wikis/'
 

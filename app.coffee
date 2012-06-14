@@ -16,6 +16,10 @@ wikiApp = require './wikiApp'
 userApp = require './userApp'
 fileApp = require './fileApp'
 adminApp = require './adminApp'
+i18n = require './lib/i18n'
+
+i18n.configure
+    locales: ['en', 'ko']
 
 noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'

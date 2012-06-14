@@ -16,6 +16,24 @@ var cp_async = function(src, dst, callback) {
     util.pump(is, os, callback);
 }
 
+var cp_r_async = function(src, dst, callback) {
+    var self = this;
+    fs.stat(src, function(err, stat) {
+        if (stat.isDirectory()) {
+            fs.mkdir(dst, function(err) {
+                fs.readdir(src, function(err, files) {
+                    async.forEach(files, function(file, cb) {
+                        self.cp_r(pth.join(src, file), pth.join(dst, file), cb);
+                    }, callback);
+                });
+            });
+        } else {
+            cp(src, dst, callback);
+        }
+    });
+}
+
+
 task('build', function() {
     async.parallel([
         async.apply(
@@ -23,17 +41,29 @@ task('build', function() {
             'node_modules/hljs/highlight.js',
             'public/scripts/highlight.js'),
         async.apply(
-            cp_async, 
+            cp_async,
             'node_modules/github-flavored-markdown/scripts/showdown.js',
             'public/scripts/showdown.js'),
         async.apply(
-            cp_async, 
+            cp_async,
             'lib/highlight-c.js',
             'public/scripts/highlight-c.js'),
         async.apply(
-            cp_async, 
+            cp_async,
             'node_modules/hljs/styles/zenburn.css',
             'public/stylesheets/zenburn.css'),
+        async.apply(
+            cp_async,
+            'lib/i18n.js',
+            'public/scripts/i18n.js'),
+        async.apply(
+            cp_async,
+            'node_modules/sprintf/lib/sprintf.js',
+            'public/scripts/sprintf.js'),
+        async.apply(
+            cp_r_async,
+            'locales',
+            'public/locales'),
     ], complete);
     if ( process.platform !== 'win32' ){
         var proc = exec('npm install zombie');
