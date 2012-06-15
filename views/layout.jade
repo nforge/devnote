@@ -2,6 +2,11 @@
 html
   head
     title= title
+    - if (typeof locale === 'string') {
+      meta(http-equiv='Content-Language', content='#{locale}')
+    - } else {
+      meta(http-equiv='Content-Language', content='en')
+    - }
     link(rel='stylesheet', href='/stylesheets/syntax.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.css')
