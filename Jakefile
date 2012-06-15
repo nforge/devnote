@@ -108,7 +108,7 @@ task('testAll', function(){
 
 desc("mocha test in *nix os - run with node")
 task('testnix', function(){
-    var options = {}; 
+    var options = {};
     options.timeout = 5000;
     var mocha = new Mocha(options);
     mocha.reporter('spec').ui('tdd');
