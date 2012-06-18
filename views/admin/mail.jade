@@ -2,31 +2,30 @@ extends ../layout
 
 block content
   if notConfigured
-    div.alert.alert-error
-      span Mail is not configured.#{' '}
-      a(href="/admin/mailconf") Click here
-      span #{' '}to configure.
+    div.alert.alert-error!= messages.notConfigured
 
   div.row-fluid
       div.span5.writer
           form(method="post", action="/admin/mail", id="mailForm")
             fieldset
 
-              h3 Send mail
+              h3= messages.pageTitle
 
               div.control-group
-                label(name="to").control-label to
-                input(name="to", placeholder="receiver@mail.com").input-xlarge.title
+                label(name="to").control-label= messages.to
+                input(name="to", placeholder=messages.toExample).input-xlarge.title
               div.control-group
-                label(name="subject").control-label title
+                label(name="subject").control-label= messages.title
                 input(name="subject").input-xlarge.title
               div.control-group
-                label(name="body").control-label body
+                label(name="body").control-label= messages.body
                 textarea(id="body", name="body", rows="15").input-xlarge.textbody
               div
-                input(type="submit", name="submit", value="Send").btn-primary
+                input(type="submit", name="submit", value=messages.send).btn-primary
 
   script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
   script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
 
+  script(type="text/javascript", src="/scripts/sprintf.js")
+  script(type="text/javascript", src="/scripts/i18n.js")
   script(type="text/javascript", src="/scripts/mail.js")
