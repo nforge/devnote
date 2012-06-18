@@ -15,35 +15,36 @@ if (typeof module !== undefined && typeof exports === 'object') {
 }
 
 var locales = {},
-  defaultLocale = 'en',
-  cookiename = null,
-  debug = false,
-  verbose = false,
-  extension = '.js',
-  directory = './locales';
+    defaultLocale = 'en',
+    cookiename = null,
+    debug = false,
+    verbose = false,
+    extension = '.js',
+    directory = './locales';
 
 if (isServer) {
   // dependencies
   var vsprintf = require('sprintf').vsprintf,
-    fs = require('fs'),
-    url = require('url'),
-    path = require('path');
+      fs = require('fs'),
+      url = require('url'),
+      path = require('path');
 
   // public exports
   var i18n = exports;
 
   // try reading a file
-  var read = function(locale) {
+
+  var read = function (locale) {
     var localeFile = {};
     var file = locate(locale);
     try {
       if (verbose) console.log('read ' + file + ' for locale: ' + locale);
       localeFile = fs.readFileSync(file);
       try {
-        // parsing filecontents to locales[locale]
-        locales[locale] = JSON.parse(localeFile);
+      // parsing filecontents to locales[locale]
+      locales[locale] = JSON.parse(localeFile);
       } catch (e) {
-        console.error('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
+      console.error('unable to parse locales from file (maybe ' + file + ' is empty or invalid json?): ', e);
       }
     } catch (e) {
       // unable to read, so intialize that file
@@ -55,7 +56,8 @@ if (isServer) {
   }
 
   // try writing a file in a created directory
-  var write = function(locale) {
+
+  var write = function (locale) {
     // creating directory if necessary
     try {
       var stats = fs.lstatSync(directory);
@@ -72,14 +74,14 @@ if (isServer) {
     // writing to tmp and rename on success
     try {
       var target = locate(locale),
-        tmp = target + ".tmp";
+          tmp = target + ".tmp";
 
       fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, "\t"), "utf8");
       var Stats = fs.statSync(tmp);
       if (Stats.isFile()) {
-        fs.renameSync(tmp, target);
+      fs.renameSync(tmp, target);
       } else {
-        console.error('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
+      console.error('unable to write locales to file (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
       }
     } catch (e) {
       console.error('unexpected error writing files (either ' + tmp + ' or ' + target + ' are not writeable?): ', e);
@@ -87,26 +89,27 @@ if (isServer) {
   };
 
   // basic normalization of filepath
-  var locate = function(locale) {
+
+  var locate = function (locale) {
     var ext = extension || '.js';
     return path.normalize(directory + '/' + locale + ext);
   };
 } else {
   var i18n = {};
 
-  var read = function(locale) {
-    $.get('/locales/' + locale + '.js', null, function(data) {
+  var read = function (locale) {
+    $.get('/locales/' + locale + '.js', null, function (data) {
       locales[locale] = data;
       i18n.emit('ready');
     }, 'json');
   };
 
-  var write = function(locale) {
+  var write = function (locale) {
     console.log(locale);
     // TODO: tell the server what message is not translated.
   };
 
-  i18n.on = function(ev, fn) {
+  i18n.on = function (ev, fn) {
     if (!this.handlers) {
       this.handlers = {};
     }
@@ -118,12 +121,12 @@ if (isServer) {
     this.handlers[ev].push(fn);
   };
 
-  i18n.emit = function(ev) {
+  i18n.emit = function (ev) {
     var fn;
 
     if (this.handlers) {
       if (this.handlers[ev]) {
-        while (fn = this.handlers[ev].shift()) {
+        while(fn = this.handlers[ev].shift()) {
           fn();
         }
       }
@@ -133,7 +136,7 @@ if (isServer) {
 
 i18n.version = '0.3.5';
 
-i18n.configure = function(opt) {
+i18n.configure = function (opt) {
   // you may register helpers in global scope, up to you
   if (typeof opt.register === 'object') {
     opt.register.__ = i18n.__;
@@ -165,18 +168,16 @@ i18n.configure = function(opt) {
 
   // implicitly read all locales
   if (typeof opt.locales === 'object') {
-    opt.locales.forEach(function(l) {
+    opt.locales.forEach(function (l) {
       read(l);
     });
   }
 };
 
 if (isServer) {
-  i18n.init = function(request, response, next) {
+  i18n.init = function (request, response, next) {
     if (typeof request === 'object') {
-      response.locals({
-        'locale': guessLanguage(request)
-      });
+      response.locals({'locale': guessLanguage(request)});
     }
     if (typeof next === 'function') {
       next();
@@ -202,16 +203,14 @@ if (isServer) {
       locale = defaultLocale;
     }
 
-    i18n.configure({
-      locales: languages
-    });
-    i18n.on('ready', function() {
+    i18n.configure({ locales: languages});
+    i18n.on('ready', function () {
       i18n.setLocale(locale);
     });
   }
 }
 
-i18n.__ = function() {
+i18n.__ = function () {
   var locale;
   if (this && this.scope) {
     locale = this.scope.locale;
@@ -223,7 +222,7 @@ i18n.__ = function() {
   return msg;
 };
 
-i18n.__n = function() {
+i18n.__n = function () {
   var locale;
   if (this && this.scope) {
     locale = this.scope.locale;
@@ -249,9 +248,9 @@ i18n.__n = function() {
 // either gets called like
 // setLocale('en') or like
 // setLocale(req, 'en')
-i18n.setLocale = function(arg1, arg2) {
+i18n.setLocale = function (arg1, arg2) {
   var request = {},
-    target_locale = arg1;
+      target_locale = arg1;
 
   if (arg2 && locales[arg2]) {
     request = arg1;
@@ -265,14 +264,14 @@ i18n.setLocale = function(arg1, arg2) {
   return i18n.getLocale(request);
 };
 
-i18n.getLocale = function(request) {
+i18n.getLocale = function (request) {
   if (request === undefined) {
     return defaultLocale;
   }
   return request.locale;
 };
 
-i18n.overrideLocaleFromQuery = function(req) {
+i18n.overrideLocaleFromQuery = function (req) {
   var urlObj, locale;
 
   if (req == null) {
@@ -300,8 +299,8 @@ i18n.overrideLocaleFromQuery = function(req) {
 function guessLanguage(request) {
   if (typeof request === 'object') {
     var language_header = request.headers['accept-language'],
-      languages = [],
-      regions = [];
+        languages = [],
+        regions = [];
 
     request.languages = [defaultLocale];
     request.regions = [defaultLocale];
@@ -309,7 +308,7 @@ function guessLanguage(request) {
     request.region = defaultLocale;
 
     if (language_header) {
-      language_header.split(',').forEach(function(l) {
+      language_header.split(',').forEach(function (l) {
         header = l.split(';', 1)[0];
         lr = header.split('-', 2);
         if (lr[0]) {

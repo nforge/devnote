@@ -21,7 +21,8 @@ workingPage = require './lib/workingpage'
 i18n = require './lib/i18n'
 
 i18n.configure
-    locales: ['en', 'ko']
+  locales: ['en', 'ko']
+  register: global
 
 noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
@@ -33,18 +34,18 @@ server = http.createServer app
 io = socket.listen server
 
 io.sockets.on 'connection', (socket)->
-    socket.emit 'connected', socket.id
-    socket.on 'page name changed', (page)->
-        result = workingPage.update page, page.user
-        console.log workingPage.findAll()
-        if result is false
-            console.log( workingPage.findByPageName page.name )
-            socket.emit 'dupped', workingPage.findByPageName page.name
-        else
-            socket.emit 'page name is ok'
+  socket.emit 'connected', socket.id
+  socket.on 'page name changed', (page)->
+    result = workingPage.update page, page.user
+    console.log workingPage.findAll()
+    if result is false
+      console.log( workingPage.findByPageName page.name )
+      socket.emit 'dupped', workingPage.findByPageName page.name
+    else
+      socket.emit 'page name is ok'
 
-    socket.on 'disconnect', ->
-        workingPage.remove socket.id
+  socket.on 'disconnect', ->
+    workingPage.remove socket.id
 
 
 # Configuration
@@ -55,68 +56,68 @@ app.set 'view engine', 'jade'
 oneDay = 60*60*1000*24
 
 app.configure ->
-    app.use express.bodyParser
-        uploadDir: uploadDir
-    app.use express.cookieParser 'n4wiki session'
-    app.use express.session()
-    app.use express.methodOverride()
-    app.use i18n.init
-    app.use app.router
-    app.use express.logger 'dev'
+  app.use express.bodyParser
+    uploadDir: uploadDir
+  app.use express.cookieParser 'n4wiki session'
+  app.use express.session()
+  app.use express.methodOverride()
+  app.use i18n.init
+  app.use app.router
+  app.use express.logger 'dev'
 
 # Session-persisted message middleware
 app.locals.use (req, res) ->
-    err = req.session.error
-    loginMessage = req.session.success
-    msg = req.session.flashMessage
-    delete req.session.error
-    #delete req.session.success
+  err = req.session.error
+  loginMessage = req.session.success
+  msg = req.session.flashMessage
+  delete req.session.error
+  #delete req.session.success
 
-    res.locals.user = req.session.user
-    res.locals.flashMessage = ''
-    res.locals.loginMessage = loginMessage || ''
-    if err
-        res.locals.flashMessage = err
-    if msg
-        res.locals.flashMessage = msg
-    if loginMessage
-        res.locals.loginMessage = loginMessage
+  res.locals.user = req.session.user
+  res.locals.flashMessage = ''
+  res.locals.loginMessage = loginMessage || ''
+  if err
+    res.locals.flashMessage = err
+  if msg
+    res.locals.flashMessage = msg
+  if loginMessage
+    res.locals.loginMessage = loginMessage
 
 app.configure 'development', ->
-    app.use express.static __dirname + '/public'
-    app.use express.errorHandler
-        dumpExceptions: true,
-        showStack: true,
+  app.use express.static __dirname + '/public'
+  app.use express.errorHandler
+    dumpExceptions: true,
+    showStack: true,
 
 app.configure 'production', ->
-    app.use express.errorHandler()
-    app.use express.staticCache()
-    app.use express.static __dirname + '/public', { maxAge: oneDay }
+  app.use express.errorHandler()
+  app.use express.staticCache()
+  app.use express.static __dirname + '/public', { maxAge: oneDay }
 
 # Routes
 app.get '/', routes.index
 app.get '/test', routes.test
 
 # Wiki
-app.get  ROOT_PATH + '/pages', wikiApp.getPages          # get page list
-app.get  ROOT_PATH + '/pages/:name', wikiApp.getPage     # get a page
-app.get  ROOT_PATH + '/new', wikiApp.getNew              # get a form to post new wikipage
-app.post ROOT_PATH + '/pages', wikiApp.postNew           # post new wikipage
-app.del  ROOT_PATH + '/pages/:name', wikiApp.postDelete   # delete wikipage
-app.put  ROOT_PATH + '/subscribes/:name', wikiApp.postSubscribe     # subscribe wikipage
-app.del  ROOT_PATH + '/subscribes/:name', wikiApp.postUnsubscribe   # unsubscribe wikipage
-app.post '/api/note/pages/:name', wikiApp.postRollback  # wikipage rollback
+app.get  ROOT_PATH + '/pages', wikiApp.getPages                   # get page list
+app.get  ROOT_PATH + '/pages/:name', wikiApp.getPage              # get a page
+app.get  ROOT_PATH + '/new', wikiApp.getNew                       # get a form to post new wikipage
+app.post ROOT_PATH + '/pages', wikiApp.postNew                    # post new wikipage
+app.del  ROOT_PATH + '/pages/:name', wikiApp.postDelete           # delete wikipage
+app.put  ROOT_PATH + '/subscribes/:name', wikiApp.postSubscribe   # subscribe wikipage
+app.del  ROOT_PATH + '/subscribes/:name', wikiApp.postUnsubscribe # unsubscribe wikipage
+app.post '/api/note/pages/:name', wikiApp.postRollback            # wikipage rollback
 
 # Login & Logout
 app.post ROOT_PATH + '/users/login', userApp.postLogin   # post login
 
 # User
-app.get  ROOT_PATH + '/users', userApp.getUsers          # get user list
-app.get  ROOT_PATH + '/users/new', userApp.getNew        # new user page
-app.post ROOT_PATH + '/users/new', userApp.postNew       # post new user
-app.get  ROOT_PATH + '/user/:id', userApp.getId          # show user information
-app.post ROOT_PATH + '/user/:id', userApp.postId         # change user information (password change)
-app.post ROOT_PATH + '/dropuser', userApp.postDropuser   # drop user
+app.get  ROOT_PATH + '/users', userApp.getUsers        # get user list
+app.get  ROOT_PATH + '/users/new', userApp.getNew      # new user page
+app.post ROOT_PATH + '/users/new', userApp.postNew     # post new user
+app.get  ROOT_PATH + '/user/:id', userApp.getId        # show user information
+app.post ROOT_PATH + '/user/:id', userApp.postId       # change user information (password change)
+app.post ROOT_PATH + '/dropuser', userApp.postDropuser # drop user
 
 # attachment
 app.get  ROOT_PATH + '/pages/:name/attachment', fileApp.getAttachment             # file attachment page
@@ -131,10 +132,10 @@ app.get  '/admin/mailconf', adminApp.mailconf
 app.post '/admin/mailconf', adminApp.postMailconf
 
 exports.start = (port, callback) ->
-    wikiApp.init WIKINAME
-    server.listen port
-    console.log "Express server listening on port %d in %s mode", port, app.settings.env
-    callback() if callback
+  wikiApp.init WIKINAME
+  server.listen port
+  console.log "Express server listening on port %d in %s mode", port, app.settings.env
+  callback() if callback
 
 exports.stop = -> app.close
 

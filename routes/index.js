@@ -1,7 +1,6 @@
-var fs = require('fs')
-var path = require('path')
-var __ = require('../lib/i18n').__;
-
+var fs = require('fs');
+var path = require('path');
+var i18n = require('../lib/i18n');
 /*
  * GET home page.
  */

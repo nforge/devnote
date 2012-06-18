@@ -1,17 +1,17 @@
 extends ../layout
 
 block content
-    h1= title
-    form(method="post", action="/wikis/note/user/#{user.id}")
-        label(for="name") 이름
-        input(name="name", id="name", value="#{user.name}", disabled).uneditable-input
-        label(for="id") id
-        input(name="id", id="id", value="#{user.id}", disabled).uneditable-input
-        label(for="email") email
-        input(name="email", id="email", value="#{user.email}" )
-        label(for="previousPassword") 이전 패스워드
-        input(name="previousPassword", type="password", id="previousPassword")
-        label(for="newPassword") 신규 패스워드
-        input(name="newPassword", type="password", id="newPassword", placeholder="4자리 이상으로 입력해 주세요.")
-        br
-        input(type="submit", name="submit").btn-primary
+  h1= title
+  form(method="post", action="/wikis/note/user/#{user.id}")
+    label(for="name") 이름
+    input(name="name", id="name", value="#{user.name}", disabled).uneditable-input
+    label(for="id") id
+    input(name="id", id="id", value="#{user.id}", disabled).uneditable-input
+    label(for="email") email
+    input(name="email", id="email", value="#{user.email}" )
+    label(for="previousPassword") 이전 패스워드
+    input(name="previousPassword", type="password", id="previousPassword")
+    label(for="newPassword") 신규 패스워드
+    input(name="newPassword", type="password", id="newPassword", placeholder="4자리 이상으로 입력해 주세요.")
+    br
+    input(type="submit", name="submit").btn-primary
