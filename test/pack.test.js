@@ -91,7 +91,6 @@ suite('pack.getObject', function() {
                 pack.getObject('aaa', this);
             },
             function then(err) {
-                if (err) throw err;
                 assert.equal(err.message, expected);
                 done();
             }
