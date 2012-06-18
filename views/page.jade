@@ -1,33 +1,33 @@
 extends layout
 
 block content
-    if oldRevisionNotice
-      div.alert.alert-info!= oldRevisionNotice
+    if messages.oldRevisionNotice
+      div.alert.alert-info!= messages.oldRevisionNotice
 
-    if changesNotice
-      div.alert.alert-info!= changesNotice
+    if messages.changesNotice
+      div.alert.alert-info!= messages.changesNotice
 
     div.page-header
       h1= title
 
     div.row.pull-right
       div.span3
-        a(href=urls.edit).btn.btn-primary Edit
-        a(href=urls.new).btn New
-        a(href=urls.history).btn History
+        a(href=urls.edit).btn.btn-primary= messages.edit
+        a(href=urls.new).btn= messages.new
+        a(href=urls.history).btn= messages.history
       div.span1
         form(method="post", action=urls.delete)
           input(type="hidden", name="_method", id='_method', value="delete")
-          input(type="submit", value="delete", name="submit").btn
+          input(type="submit", value=messages.delete, name="submit").btn
       div.span1
         if loggedIn
           form(method="post", action=urls.subscribe)
             if subscribed
               input(type="hidden", name="_method", id="_method", value="delete")
-              input(type="submit", value="unsubscribe", name="submit").btn
+              input(type="submit", value=messages.unsubscribe, name="submit").btn
             else
               input(type="hidden", name="_method", id="_method", value="put")
-              input(type="submit", value="subscribe", name="submit").btn
+              input(type="submit", value=messages.subscribe, name="submit").btn
 
     div.row
       div.span12

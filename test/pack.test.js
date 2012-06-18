@@ -33,7 +33,10 @@ suite('pack.getObject', function() {
         packId = 'a0e60bd1c3e0b983d3fced8c46fe85758ee52eac';
         gitRoot = 'test/resources/pack.git_fixture';
         pack = new packutil.Pack();
-        pack.init(gitRoot, packId, done);
+        pack.init(gitRoot, packId, function(err) {
+            if (err) throw err;
+            done();
+        });
     });
 
     test('object id로 object 1개를 가져온다.', function(done) {
@@ -49,6 +52,7 @@ suite('pack.getObject', function() {
                 pack.getObject(id, this);
             },
             function then(err, type, actual) {
+                if (err) throw err;
                 assert.equal(actual.toString(), expected);
                 done();
             }
@@ -68,6 +72,7 @@ suite('pack.getObject', function() {
                 pack.getObject(id, this);
             },
             function then(err, type, actual) {
+                if (err) throw err;
                 assert.equal(actual.toString(), expected);
                 done();
             }
