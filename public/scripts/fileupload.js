@@ -32,6 +32,10 @@
             return filename;
         }
 
+        var insertLinkIntoBody = function(){
+          $('.insertInto').trigger('click');
+        }
+
         var _replaceFileInputControl = function(){
           $("#attachment").replaceWith("<input type='file' name='attachment' id='attachment' >");
         }
@@ -58,6 +62,7 @@
                 _replaceFileInputControl();
                 addControlToDeleteFileForm(filename);
                 setProgressBar(100);
+                insertLinkIntoBody();
             },
             uploadProgress: function(event, position, total, percentComplete) {
                 setProgressBar(percentComplete);

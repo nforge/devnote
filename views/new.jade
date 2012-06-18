@@ -51,70 +51,6 @@ block content
   script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
   script(type='text/javascript', src="http://documentcloud.github.com/underscore/underscore.js")
   script(src='/bootstrap/js/bootstrap.js')
-  script(type="text/javascript")
-    $(function(){
-          //JQuery Extension code for insertAtCaret
-          $.fn.extend({
-            insertAtCaret: function(myValue){
-              var obj;
-              if( typeof this[0].name !='undefined' ) obj = this[0];
-              else obj = this;
-
-              if ($.browser.msie) {
-                obj.focus();
-                sel = document.selection.createRange();
-                sel.text = myValue;
-                obj.focus();
-                }
-              else if ($.browser.mozilla || $.browser.webkit) {
-                var startPos = obj.selectionStart;
-                var endPos = obj.selectionEnd;
-                var scrollTop = obj.scrollTop;
-                obj.value = obj.value.substring(0, startPos)+myValue+obj.value.substring(endPos,obj.value.length);
-                obj.focus();
-                obj.selectionStart = startPos + myValue.length;
-                obj.selectionEnd = startPos + myValue.length;
-                obj.scrollTop = scrollTop;
-              } else {
-                obj.value += myValue;
-                obj.focus();
-              }
-            }
-          });
-
-          //JQuery Extension code for selectRange
-          $.fn.selectRange = function(start, end) {
-              return this.each(function() {
-                  if (this.setSelectionRange) {
-                      this.focus();
-                      this.setSelectionRange(start, end);
-                  } else if (this.createTextRange) {
-                      var range = this.createTextRange();
-                      range.collapse(true);
-                      range.moveEnd('character', end);
-                      range.moveStart('character', start);
-                      range.select();
-                  }
-              });
-          };
-
-          //Insert attachments into contents textarea
-          var imageExtensions = ["jpg","png","gif"];
-          $('.insertInto').live("click",function(){
-              var filename = $(this).siblings('input').val();
-              var filetype = filename.substring(filename.lastIndexOf('.') + 1);
-
-              if ( _.include(imageExtensions, filetype) ){
-                filename = '<img src="/attachment/#{pageName}/' + filename + '">'
-              } else {
-                filename = '/attachment/#{pageName}/' + filename
-              }
-
-              $('#body').insertAtCaret(filename);
-              preview.update();
-          });
-      })
-
   script(src="/socket.io/socket.io.js")
   script(type="text/javascript")
     // for using highlight.js both server and client
@@ -123,7 +59,6 @@ block content
   script(type="text/javascript", src="/scripts/highlight.js")
   script(type="text/javascript", src="/scripts/highlight-c.js")
   script(type="text/javascript", src="/scripts/showdown.js")
-  script(type="text/javascript", src="/scripts/fileupload.js")
   script(type="text/javascript", src="/scripts/keynavi.js")
   script(type="text/javascript", src="/codemirror2/lib/codemirror.js")
   script(type="text/javascript", src="/codemirror2/mode/xml/xml.js")
@@ -173,3 +108,29 @@ block content
       }, 500);
     });
   script(type="text/javascript", src="/scripts/timming.js")
+  script(type="text/javascript")
+    $(function(){
+          //JQuery Extension code for insertAtCaret
+          $.fn.extend({
+            insertAtCaret: function(myValue){
+              editor.replaceRange(myValue, editor.getCursor(), editor.getCursor());
+            }
+          });
+
+          //Insert attachments into contents textarea
+          var imageExtensions = ["jpg","png","gif"];
+          $('.insertInto').live("click",function(){
+              var filename = $(this).siblings('input').val();
+              var filetype = filename.substring(filename.lastIndexOf('.') + 1);
+
+              if ( _.include(imageExtensions, filetype) ){
+                filename = '<img src="/attachment/#{pageName}/' + filename + '">'
+              } else {
+                filename = '/attachment/#{pageName}/' + filename
+              }
+
+              $('#body').insertAtCaret(filename);
+              preview.update();
+          });
+      })
+  script(type="text/javascript", src="/scripts/fileupload.js")
