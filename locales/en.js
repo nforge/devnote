@@ -40,5 +40,7 @@
 	"receiver@mail.com": "receiver@mail.com",
 	"Title": "Title",
 	"Body": "Body",
-	"Send": "Send"
+	"Send": "Send",
+	"New Page": "New Page",
+	"Submit": "Submit"
 }

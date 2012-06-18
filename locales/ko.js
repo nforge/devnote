@@ -57,5 +57,10 @@
 	"Rollback": "되돌리기",
 	"Submit": "제출",
 	"New Page": "새 페이지",
-	"Search": "검색"
+	"Search": "검색",
+	"New Note": "New Note",
+	"Note List": "Note List",
+	"Search Notes": "Search Notes",
+	"User List": "User List",
+	"New User": "New User"
 }

@@ -43,8 +43,8 @@ block content
     li
       a(href="?action=history")= __('History')
   form(method="post", action="/wikis/note/pages/"+title)
-      input(type="hidden", name="_method", id='_method', value="delete")
-      input(type="submit", value=__('Delete'), name="submit")
+    input(type="hidden", name="_method", id='_method', value="delete")
+    input(type="submit", value=__('Delete'), name="submit")
 
   script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
   script(type="text/javascript", src="/scripts/rollback.js")

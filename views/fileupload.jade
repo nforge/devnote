@@ -1,62 +1,62 @@
 extends layout
 
 block content
-    style
-        form {margin: 0 0 0px}
-    h1= title
-    div.container
-        div.span4
-            form(method="post", id='fileupload', enctype="multipart/form-data", action="/wikis/note/pages/#{pageName}/attachment")
-                label(for="attachment") 첨부할 파일을 선택해 주세요
-                input(type='file', name='attachment', id='attachment')
-                input(type="submit", name="submit", value="첨부").btn-primary
+  style
+    form {margin: 0 0 0px}
+  h1= title
+  div.container
+    div.span4
+      form(method="post", id='fileupload', enctype="multipart/form-data", action="/wikis/note/pages/#{pageName}/attachment")
+        label(for="attachment") 첨부할 파일을 선택해 주세요
+        input(type='file', name='attachment', id='attachment')
+        input(type="submit", name="submit", value="첨부").btn-primary
 
-        div.span4
-            table.table.table-bordered.table-condensed
-                thead
-                    tr
-                        th(colspan=2) 파일이름
-                tbody
-                    if filelist == ''
-                        tr
-                            td(colspan='2', id='nofile') 첨부 파일이 없습니다.
-                    each filename in filelist
-                        tr
-                            td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
-                            td 
-                                form(method="post", action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
-                                    input(name='filename', type='hidden', id='filename', value='#{filename}')
-                                    input(type="hidden", name="_method", id='_method', value="delete")
-                                    input(type="submit", name="submit", value="삭제").btn-danger
+    div.span4
+      table.table.table-bordered.table-condensed
+        thead
+          tr
+            th(colspan=2) 파일이름
+        tbody
+          if filelist == ''
+            tr
+              td(colspan='2', id='nofile') 첨부 파일이 없습니다.
+          each filename in filelist
+            tr
+              td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
+              td
+                form(method="post", action="/wikis/note/pages/#{pageName}/attachment/#{filename}")
+                  input(name='filename', type='hidden', id='filename', value='#{filename}')
+                  input(type="hidden", name="_method", id='_method', value="delete")
+                  input(type="submit", name="submit", value="삭제").btn-danger
 
-    div#alert.alert.alert-error.fade.out.span3
-        h4.alert-heading 
+  div#alert.alert.alert-error.fade.out.span3
+    h4.alert-heading
 
-    script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
-    script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
-    script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
-    script(type="text/javascript")
-        $(function() {
-            var options = { 
-                beforeSubmit: function() { 
-                    $('#').removeClass('out');
-                    $('#alert').addClass('in');
-                    if ( $('#attachment').val() === "" ) {
-                        $('.alert-heading').html('업로드할 파일을 선택해 주세요');
-                        $('#alert').show();
-                        return false;
-                    }
-                    return true;
-                },
-                success: function(statusText){
-                    $('.alert-heading').html('파일이 업로드 되었습니다.');
-                    $('#alert').show();
-                }
-            }
-            
-            $('#fileupload').ajaxForm(options); 
+  script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
+  script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
+  script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
+  script(type="text/javascript")
+    $(function() {
+      var options = {
+        beforeSubmit: function() {
+          $('#').removeClass('out');
+          $('#alert').addClass('in');
+          if ( $('#attachment').val() === "" ) {
+            $('.alert-heading').html('업로드할 파일을 선택해 주세요');
+            $('#alert').show();
+            return false;
+          }
+          return true;
+        },
+        success: function(statusText){
+          $('.alert-heading').html('파일이 업로드 되었습니다.');
+          $('#alert').show();
+        }
+      }
 
-            $('#fileupload').change(function(event){
-                $('#alert').hide();
-            });
-        })
+      $('#fileupload').ajaxForm(options);
+
+      $('#fileupload').change(function(event){
+        $('#alert').hide();
+      });
+    })

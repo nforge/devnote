@@ -5,23 +5,23 @@ block content
     div.alert.alert-error!= __("Mail is not configured. <a href='%s'>Click here</a> to configure.", urls.mailConf)
 
   div.row-fluid
-      div.span5.writer
-          form(method="post", action="/admin/mail", id="mailForm")
-            fieldset
+    div.span5.writer
+      form(method="post", action="/admin/mail", id="mailForm")
+        fieldset
 
-              h3= __('Send mail')
+          h3= __('Send mail')
 
-              div.control-group
-                label(name="to").control-label= __('To')
-                input(name="to", placeholder=__('receiver@mail.com')).input-xlarge.title
-              div.control-group
-                label(name="subject").control-label= __('Title')
-                input(name="subject").input-xlarge.title
-              div.control-group
-                label(name="body").control-label= __('Body')
-                textarea(id="body", name="body", rows="15").input-xlarge.textbody
-              div
-                input(type="submit", name="submit", value=__('Send')).btn-primary
+          div.control-group
+            label(name="to").control-label= __('To')
+            input(name="to", placeholder=__('receiver@mail.com')).input-xlarge.title
+          div.control-group
+            label(name="subject").control-label= __('Title')
+            input(name="subject").input-xlarge.title
+          div.control-group
+            label(name="body").control-label= __('Body')
+            textarea(id="body", name="body", rows="15").input-xlarge.textbody
+          div
+            input(type="submit", name="submit", value=__('Send')).btn-primary
 
   script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
   script(type="text/javascript", src="/bootstrap/js/bootstrap.js")

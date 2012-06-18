@@ -13,10 +13,10 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/codemirror2/lib/codemirror.css')
   body
-      div
-      - if (loginMessage)
-          p
-              span.label.label-important= loginMessage
+    div
+    - if (loginMessage)
+        p
+          span.label.label-important= loginMessage
 
-        block content
-      script(src='/scripts/html5shiv.js')
+      block content
+    script(src='/scripts/html5shiv.js')

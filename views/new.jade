@@ -5,47 +5,47 @@ block content
     div.page-header
       h1= __('New Page')
   div.row-fluid
-      div.span5.writer
-        - if (flashMessage)
-          div#flashMessage.alert.alert-error
-            span= flashMessage
-            button(type="button", class="close", data-dismiss="alert") x
-          div.alert.alert-warn.hide#message
-            span#messageText
-            button(type="button", class="close", data-dismiss="alert") x
-          form(method="post", id='newpost', action="/wikis/note/pages")
-            fieldset
-              div.control-group
-                label(name="name").control-label= __('Title')
-                div.controls
-                  input(id="title", name="name").input-xlarge.title
-              div.control-group
-                label(name="body").control-label= __('Body')
-                div.controls
-                  textarea(id="body", name="body", rows="15").input-xlarge.textbody
-              div
-                input(type="submit", name='save', value="새 페이지 등록").btn.btn-primary
-          div
-            form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
-              label(for="attachment") 첨부할 파일을 선택해 주세요
-              input(type='file', name='attachment', id='attachment')
-              input(type="submit", name='attach', value="첨부").btn.btn-primary
-          div.progress.progress-warning
-            div#progressbar.bar
-          div#alert.alert.alert-error.fade.out.hide
-            h4.alert-heading 업로드할 파일을 선택해 주세요
-          div
-            table.table.table-bordered.table-condensed
-                thead
-                    tr
-                        th(colspan=2) 첨부 파일
-                tbody#filelist
-                    if filelist == ''
-                        tr
-                            td(colspan=2) 첨부 파일이 없습니다.
+    div.span5.writer
+      - if (flashMessage)
+        div#flashMessage.alert.alert-error
+          span= flashMessage
+          button(type="button", class="close", data-dismiss="alert") x
+        div.alert.alert-warn.hide#message
+          span#messageText
+          button(type="button", class="close", data-dismiss="alert") x
+        form(method="post", id='newpost', action="/wikis/note/pages")
+          fieldset
+            div.control-group
+              label(name="name").control-label= __('Title')
+              div.controls
+                input(id="title", name="name").input-xlarge.title
+            div.control-group
+              label(name="body").control-label= __('Body')
+              div.controls
+                textarea(id="body", name="body", rows="15").input-xlarge.textbody
+            div
+              input(type="submit", name='save', value="새 페이지 등록").btn.btn-primary
+        div
+          form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
+            label(for="attachment") 첨부할 파일을 선택해 주세요
+            input(type='file', name='attachment', id='attachment')
+            input(type="submit", name='attach', value="첨부").btn.btn-primary
+        div.progress.progress-warning
+          div#progressbar.bar
+        div#alert.alert.alert-error.fade.out.hide
+          h4.alert-heading 업로드할 파일을 선택해 주세요
+        div
+          table.table.table-bordered.table-condensed
+              thead
+                  tr
+                      th(colspan=2) 첨부 파일
+              tbody#filelist
+                  if filelist == ''
+                      tr
+                          td(colspan=2) 첨부 파일이 없습니다.
 
-      div(id="preview").previewer.span6
-      div(id="result")
+    div(id="preview").previewer.span6
+    div(id="result")
 
   script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js")
   script(type="text/javascript", src="http://malsup.github.com/jquery.form.js")
@@ -110,27 +110,27 @@ block content
   script(type="text/javascript", src="/scripts/timming.js")
   script(type="text/javascript")
     $(function(){
-          //JQuery Extension code for insertAtCaret
-          $.fn.extend({
-            insertAtCaret: function(myValue){
-              editor.replaceRange(myValue, editor.getCursor(), editor.getCursor());
-            }
-          });
+      //JQuery Extension code for insertAtCaret
+      $.fn.extend({
+        insertAtCaret: function(myValue){
+          editor.replaceRange(myValue, editor.getCursor(), editor.getCursor());
+        }
+      });
 
-          //Insert attachments into contents textarea
-          var imageExtensions = ["jpg","png","gif"];
-          $('.insertInto').live("click",function(){
-              var filename = $(this).siblings('input').val();
-              var filetype = filename.substring(filename.lastIndexOf('.') + 1);
+      //Insert attachments into contents textarea
+      var imageExtensions = ["jpg","png","gif"];
+      $('.insertInto').live("click",function(){
+        var filename = $(this).siblings('input').val();
+        var filetype = filename.substring(filename.lastIndexOf('.') + 1);
 
-              if ( _.include(imageExtensions, filetype) ){
-                filename = '<img src="/attachment/#{pageName}/' + filename + '">'
-              } else {
-                filename = '/attachment/#{pageName}/' + filename
-              }
+        if ( _.include(imageExtensions, filetype) ){
+          filename = '<img src="/attachment/#{pageName}/' + filename + '">';
+        } else {
+          filename = '/attachment/#{pageName}/' + filename;
+        }
 
-              $('#body').insertAtCaret(filename);
-              preview.update();
-          });
-      })
+        $('#body').insertAtCaret(filename);
+        preview.update();
+      });
+    })
   script(type="text/javascript", src="/scripts/fileupload.js")
