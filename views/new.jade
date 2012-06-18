@@ -3,7 +3,7 @@ extends layout
 block content
   header
     div.page-header
-      h1= title
+      h1= __('New Page')
   div.row-fluid
       div.span5.writer
         - if (flashMessage)
@@ -16,11 +16,11 @@ block content
           form(method="post", id='newpost', action="/wikis/note/pages")
             fieldset
               div.control-group
-                label(name="name").control-label title
+                label(name="name").control-label= __('Title')
                 div.controls
                   input(id="title", name="name").input-xlarge.title
               div.control-group
-                label(name="body").control-label body
+                label(name="body").control-label= __('Body')
                 div.controls
                   textarea(id="body", name="body", rows="15").input-xlarge.textbody
               div

@@ -2,6 +2,7 @@ wiki = require './lib/wiki'
 mailer = require './lib/mailer'
 config = require './lib/config'
 _ = require 'underscore'
+i18n = require './lib/i18n'
 
 exports.mailconf = (req, res) ->
     options = (config.get 'mail') or {}
@@ -41,6 +42,8 @@ exports.mail = (req, res) ->
     res.render 'admin/mail.jade'
         notConfigured: !(config.get 'mail')
         title: 'Mail'
+        urls:
+            mailConf: '/admin/mailconf'
 
 exports.postMail = (req, res) ->
     mailer.send

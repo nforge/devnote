@@ -22,6 +22,7 @@ i18n = require './lib/i18n'
 
 i18n.configure
     locales: ['en', 'ko']
+    register: global
 
 noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'

@@ -1,33 +1,33 @@
 extends layout
 
 block content
-    if oldRevisionNotice
-      div.alert.alert-info!= oldRevisionNotice
+    if isOld
+      div.alert.alert-info!= __("This is an old revision of this page, as edited by %s at %s. It may differ significantly from the <a href='%s'>current revision</a>.", commit.author.name, new Date(commit.author.unixtime * 100), urls.view)
 
-    if changesNotice
-      div.alert.alert-info!= changesNotice
+    if lastVisit
+      div.alert.alert-info!= __("Something changed since your last visit, %s. <a href='%s'>Click here</a> to see the difference.", lastVisit.date, urls.diffSinceLastVisit)
 
     div.page-header
       h1= title
 
     div.row.pull-right
       div.span3
-        a(href=urls.edit).btn.btn-primary Edit
-        a(href=urls.new).btn New
-        a(href=urls.history).btn History
+        a(href=urls.edit).btn.btn-primary= __('Edit')
+        a(href=urls.new).btn= __('New')
+        a(href=urls.history).btn= __('History')
       div.span1
         form(method="post", action=urls.delete)
           input(type="hidden", name="_method", id='_method', value="delete")
-          input(type="submit", value="delete", name="submit").btn
+          input(type="submit", value=__('Delete'), name="submit").btn
       div.span1
         if loggedIn
           form(method="post", action=urls.subscribe)
             if subscribed
               input(type="hidden", name="_method", id="_method", value="delete")
-              input(type="submit", value="unsubscribe", name="submit").btn
+              input(type="submit", value=__('Unsubscribe'), name="submit").btn
             else
               input(type="hidden", name="_method", id="_method", value="put")
-              input(type="submit", value="subscribe", name="submit").btn
+              input(type="submit", value=__('subscribe'), name="submit").btn
 
     div.row
       div.span12

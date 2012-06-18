@@ -2,32 +2,32 @@ extends layout
 
 block content
     h1= title
-    p Welcome to #{title}
+    p= __('Welcome to %s', title)
 
-    h2 Note
+    h2= __('Note')
     a(href='/wikis/note/pages/frontpage') frontpage
     p
-    a(href='/wikis/note/new') new note
+    a(href='/wikis/note/new')= __('New note')
     p
-    a(href='/wikis/note/pages') note list
+    a(href='/wikis/note/pages')= __('Note list')
     p
-    a(href='/wikis/note/pages?action=search') search notes
+    a(href='/wikis/note/pages?action=search')= __('Search notes')
     p
     a(href='/wikis/note/pages/today/attachment') file attachment at page name 'today'
     p
-    h2 user
+    h2= __('User')
     p
-    a(href='/wikis/note/users?action=login') login
+    a(href='/wikis/note/users?action=login')= __('Login')
     p
-    a(href='/wikis/note/users') user list
+    a(href='/wikis/note/users')= __('User list')
     p
-    a(href='/wikis/note/users/new') new user
+    a(href='/wikis/note/users/new')= __('New user')
     p
-    h2 admin
+    h2= __('Administration')
     p
-    a(href='/admin/mailconf') Configure mail
+    a(href='/admin/mailconf')= __('Configure mail')
     p
-    a(href='/admin/mail') Send mail
+    a(href='/admin/mail')= __('Send mail')
     p
     span hello#{' '}
     a(href='aa') hoho

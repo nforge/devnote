@@ -142,38 +142,24 @@ view = (name, req, res) ->
 
         urls = commandUrls name
 
-        if page.isOld
-            oldRevisionNotice = i18n.__ "
-This is an old revision of this page, as edited by %s at %s.
- It may differ significantly from the <a href='%s'>current revision</a>.",
-                page.commit.author.name,
-                new Date(page.commit.author.unixtime * 100),
-                urls.view
-
         renderPage = (lastVisit) ->
             if lastVisit
-                urlDiffSinceLastVisit = url.format
+                urls.diffSinceLastVisit = url.format
                     pathname: ROOT_PATH + '/pages/' + name,
                     query:
                         action: 'diff',
                         a: lastVisit.id,
                         b: page.commitId,
 
-                changesNotice = i18n.__ "
-Something changed since your last visit, %s.
- <a href='%s'>Click here</a> to see the difference.",
-                    lastVisit.date, urlDiffSinceLastVisit
-
             options =
                 title: name
                 content: wiki.render page.content
                 commit: page.commit
-                commitId: page.commitId
-                oldRevisionNotice: oldRevisionNotice
+                isOld: page.isOld
                 subscribed: subscribed
                 loggedIn: !!req.session.user
                 urls: urls
-                changesNotice: changesNotice
+                lastVisit: lastVisit
 
             res.render 'page', options
 

@@ -2,11 +2,11 @@ extends layout
 
 block content
     div.page-header
-      h1= title
+      h1= __('Search notes')
       
     form.well
       input(name="keyword").search-query
-      input(type="submit", name="action", value="search").btn
+      input(type="submit", name="action", value=__('Search')).btn
     ul
       each content, name in pages
         li

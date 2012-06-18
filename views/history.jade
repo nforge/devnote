@@ -1,16 +1,16 @@
 extends layout
 
 block content
-  h1= title
+  h1= __('History')
   form(method="get", action="/wikis/note/pages/"+title)
     table
       thead
         tr
-          td Author
-          td Date
+          td= __('Author')
+          td= __('Date')
           td
-            input(type="submit", value="diff", name="action")
-          td Message
+            input(type="submit", value=__('Diff'), name="action")
+          td= __('Message')
       tbody(id="commits")
         - var first = commits.ids[0];
         - var last = commits.ids[commits.length - 1];
@@ -24,27 +24,27 @@ block content
               input(type="radio", value=commits.ids[index], name="b")
             td= commit.message
             td
-              a(href="/wikis/note/pages/" + title + "?rev=" + commits.ids[index], name=title) Show
+              a(href="/wikis/note/pages/" + title + "?rev=" + commits.ids[index], name=title)= __('Show')
             td
-              a(href="#", class="rollback-button", name=title, id=commits.ids[index]) Rollback
+              a(href="#", class="rollback-button", name=title, id=commits.ids[index])= __('Rollback')
         - });
 
   ul(class="pager")
     li
-      a(href="/wikis/note/pages/" + title + "?action=history&until=" + first + "&offset=-" + limit) « Newer
+      a(href="/wikis/note/pages/" + title + "?action=history&until=" + first + "&offset=-" + limit)= __('« Newer')
     li
-      a(href="/wikis/note/pages/" + title + "?action=history&until=" + last + "&offset=1") Older »
+      a(href="/wikis/note/pages/" + title + "?action=history&until=" + last + "&offset=1")= __('Older »')
 
   ul
     li
-      a(href="?") View
+      a(href="?")= __('View')
     li
-      a(href="?action=edit") Edit
+      a(href="?action=edit")= __('Edit')
     li
-      a(href="?action=history") History
+      a(href="?action=history")= __('History')
   form(method="post", action="/wikis/note/pages/"+title)
       input(type="hidden", name="_method", id='_method', value="delete")
-      input(type="submit", value="delete", name="submit")
+      input(type="submit", value=__('Delete'), name="submit")
 
   script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
   script(type="text/javascript", src="/scripts/rollback.js")

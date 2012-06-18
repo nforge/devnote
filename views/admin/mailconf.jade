@@ -6,18 +6,18 @@ block content
           form(method="post", action="/admin/mailconf", id="mailForm").form-horizontal
             fieldset
 
-              h3 Mail configuration
+              h3= __('Mail configuration')
 
               div.control-group
-                label(name="from", for="from").control-label from
+                label(name="from", for="from").control-label= __('From')
                 div.controls
                   input(name="from", id="from", class="required email", value=options.from, placeholder="yourname@mail.com").input-xlarge
 
               div.control-group.warning
-                label(name="password").control-label password
+                label(name="password").control-label= __('Password')
                 div.controls
                   input(name="password", id="password", type="password").input-xlarge
-                  span(id="password-warning").help-inline This will be stored as a plain text in your disk.
+                  span(id="password-warning").help-inline= __('This will be stored as a plain text in the server.')
 
 
               div(id="auto-config-alert", style="display: none").alert.alert-success
@@ -27,37 +27,38 @@ block content
 
               div(id="detailed").in
                 div.control-group
-                  label(name="host").control-label host
+                  label(name="host").control-label= __('Host')
                   div.controls
-                    input(name="host", id="host", value=options.host, placeholder="smtp.mail.com").input-xlarge
+                    input(name="host", id="host", value=options.host, placeholder=__('smtp.mail.com')).input-xlarge
                 div.control-group
-                  label(name="port").control-label port
+                  label(name="port").control-label= __('Port')
                   div.controls
-                    input(name="port", id="port", value=options.port, placeholder="25, 587 or 465").input-xlarge
+                    input(name="port", id="port", value=options.port, placeholder=__('25, 587 or 465')).input-xlarge
                 div.control-group
-                  label(name="username").control-label username
+                  label(name="username").control-label= __('Username')
                   div.controls
                     input(name="username", id="username", value=options.username, placeholder="yourname").input-xlarge
                 div.control-group
-                  label(name="ssl").control-label ssl
+                  label(name="ssl").control-label= __('SSL')
                   div.controls
                     input(name="ssl", id="ssl", checked=options.ssl, type="checkbox").input-xlarge
 
                 div.control-group
-                  label(name="tls").control-label tls
+                  label(name="tls").control-label= __('TLS')
                   div.controls
                     input(name="tls", id="tls", checked=options.tls, type="checkbox").input-xlarge
 
                 div.control-group
-                  label(name="authMethod").control-label authentication method
+                  label(name="authMethod").control-label= __('Authentication method')
                   div.controls
-                    input(name="authMethod", id="authMethod", value=options.authMethod, placeholder="LOGIN or PLAIN").input-xlarge
+                    input(name="authMethod", id="authMethod", value=options.authMethod, placeholder=__('LOGIN or PLAIN')).input-xlarge
 
               div.form-actions
-                button(type="submit").btn.btn-primary Save Changes
-                button.btn Cancel
+                button(type="submit").btn.btn-primary= __('Save Changes')
+                button.btn= __('Cancel')
 
   script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
   script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
 
+  script(type="text/javascript", src="/scripts/i18n.js")
   script(type="text/javascript", src="/scripts/mail.js")
