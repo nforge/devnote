@@ -13,7 +13,6 @@ var blue  = '\u001b[34m';
 var green = '\u001b[32m';
 var reset = '\u001b[0m';
 var cp_async = function(src, dst, callback) {
-<<<<<<< HEAD
     var stream = fs.createReadStream(src);
     stream.pipe(fs.createWriteStream(dst));
     stream.on("end", function() {
@@ -66,88 +65,27 @@ task('build', function() {
     });
     
     if ( process.platform !== 'win32' ){
-        var proc = exec('npm install zombie');
-        proc.on('exit', function(){
-            console.log('end~~~~~~~~~~~~')
-            jake.Task['test'].invoke();
+        var proc;
+        fs.stat('node_modules/zombie', function(err, stat) {
+            if (err) {
+                console.log(green, 'installing zombie test module. please be patient!');
+                proc = exec('npm install zombie');
+
+                proc.on('exit', function(){
+                    console.log(green, '....build end');
+                    jake.Task['test'].invoke();
+                });
+                proc.stdout.on('data', function(data){
+                    console.log(data);
+                });
+                proc.stderr.on('data', function(data){
+                    console.log(data)
+                });
+            } else {
+                jake.Task['test'].invoke();
+            }
         });
-        proc.stdout.on('data', function(data){
-        console.log(data);
-        })
-        proc.stderr.on('data', function(data){
-            console.log(data)
-        })
     }
-=======
-  var is = fs.createReadStream(src);
-  var os = fs.createWriteStream(dst);
-  util.pump(is, os, callback);
-}
-
-var cp_r_async = function(src, dst, callback) {
-  var self = this;
-  fs.stat(src, function(err, stat) {
-   if (stat.isDirectory()) {
-      fs.mkdir(dst, function(err) {
-        fs.readdir(src, function(err, files) {
-          async.forEach(files, function(file, cb) {
-            cp_r_async(path.join(src, file), path.join(dst, file), cb);
-          }, callback);
-        });
-      });
-    } else {
-      cp_async(src, dst, callback);
-    }
-  });
-}
-
-
-task('build', function() {
-  async.parallel([
-    async.apply(
-      cp_async,
-      'node_modules/hljs/highlight.js',
-      'public/scripts/highlight.js'),
-    async.apply(
-      cp_async,
-      'node_modules/github-flavored-markdown/scripts/showdown.js',
-      'public/scripts/showdown.js'),
-    async.apply(
-      cp_async,
-      'lib/highlight-c.js',
-      'public/scripts/highlight-c.js'),
-    async.apply(
-      cp_async,
-      'node_modules/hljs/styles/zenburn.css',
-      'public/stylesheets/zenburn.css'),
-    async.apply(
-      cp_async,
-      'lib/i18n.js',
-      'public/scripts/i18n.js'),
-    async.apply(
-      cp_async,
-      'node_modules/sprintf/lib/sprintf.js',
-      'public/scripts/sprintf.js'),
-    async.apply(
-      cp_r_async,
-      'locales',
-      'public/locales'),
-  ], complete);
-  if ( process.platform !== 'win32' ){
-    var proc = exec('npm install zombie');
-    proc.on('exit', function(){
-      console.log('end~~~~~~~~~~~~')
-      jake.Task['test'].invoke();
-      process.exit();
-    });
-    proc.stdout.on('data', function(data){
-    console.log(data);
-    })
-    proc.stderr.on('data', function(data){
-      console.log(data)
-    })
-  }
->>>>>>> 8413d8b46437e39d8dda797de39f5c32b236cf74
 }, true);
 
 task('start', function() {
