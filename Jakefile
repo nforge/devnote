@@ -13,29 +13,29 @@ var blue  = '\u001b[34m';
 var green = '\u001b[32m';
 var reset = '\u001b[0m';
 var cp_async = function(src, dst, callback) {
-    var stream = fs.createReadStream(src);
-    stream.pipe(fs.createWriteStream(dst));
-    stream.on("end", function() {
-      console.log(src, "is copied to", dst);
-    });
+  var stream = fs.createReadStream(src);
+  stream.pipe(fs.createWriteStream(dst));
+  stream.on("end", function() {
+    console.log(src, "is copied to", dst);
+  });
 }
 
 var cp_r_async = function(src, dst, callback) {
-    var self = this;
-    fs.stat(src, function(err, stat) {
-        if (err) throw err;
-        if (stat.isDirectory()) {
-            fs.mkdir(dst, function(err) {
-                fs.readdir(src, function(err, files) {
-                    async.forEach(files, function(file, cb) {
-                        cp_r_async(path.join(src, file), path.join(dst, file), cb);
-                    }, callback);
-                });
-            });
-        } else {
-            cp_async(src, dst, callback);
-        }
-    });
+  var self = this;
+  fs.stat(src, function(err, stat) {
+    if (err) throw err;
+    if (stat.isDirectory()) {
+      fs.mkdir(dst, function(err) {
+        fs.readdir(src, function(err, files) {
+          async.forEach(files, function(file, cb) {
+            cp_r_async(path.join(src, file), path.join(dst, file), cb);
+          }, callback);
+        });
+      });
+    } else {
+      cp_async(src, dst, callback);
+    }
+  });
 };
 
 task('default', function (params) {
@@ -44,48 +44,48 @@ task('default', function (params) {
 
 
 task('build', function() {
-    console.log(green,'Reqfuired files is being copied', reset);
+  console.log(green,'Required files are being copied', reset);
 
-   var targetsToCopy = [
-            {from: 'node_modules/hljs/highlight.js', to: 'public/scripts/highlight.js'},
-            {from: 'node_modules/github-flavored-markdown/scripts/showdown.js', to: 'public/scripts/showdown.js'},
-            {from: 'lib/highlight-c.js', to: 'public/scripts/highlight-c.js'},
-            {from: 'node_modules/hljs/styles/zenburn.css', to: 'public/stylesheets/zenburn.css'},
-            {from: 'lib/i18n.js', to: 'public/scripts/i18n.js'},
-            {from: 'node_modules/i18n/node_modules/sprintf/lib/sprintf.js', to: 'public/scripts/sprintf.js'},
-            {from: 'locales', to: 'public/locales'}
-        ];
+  var targetsToCopy = [
+    {from: 'node_modules/hljs/highlight.js', to: 'public/scripts/highlight.js'},
+    {from: 'node_modules/github-flavored-markdown/scripts/showdown.js', to: 'public/scripts/showdown.js'},
+    {from: 'lib/highlight-c.js', to: 'public/scripts/highlight-c.js'},
+    {from: 'node_modules/hljs/styles/zenburn.css', to: 'public/stylesheets/zenburn.css'},
+    {from: 'lib/i18n.js', to: 'public/scripts/i18n.js'},
+    {from: 'node_modules/i18n/node_modules/sprintf/lib/sprintf.js', to: 'public/scripts/sprintf.js'},
+    {from: 'locales', to: 'public/locales'}
+  ];
 
-    var fileCount = targetsToCopy.length;
-    targetsToCopy.forEach(function(element, index){
-        cp_r_async(element.from, element.to, function(err){
-            if (err) throw new Error('copy failed');
-            fileCount--;
-        })
-    });
-    
-    if ( process.platform !== 'win32' ){
-        var proc;
-        fs.stat('node_modules/zombie', function(err, stat) {
-            if (err) {
-                console.log(green, 'installing zombie test module. please be patient!');
-                proc = exec('npm install zombie');
+  var fileCount = targetsToCopy.length;
+  targetsToCopy.forEach(function(element, index){
+      cp_r_async(element.from, element.to, function(err){
+        if (err) throw new Error('copy failed');
+        fileCount--;
+      })
+  });
+  
+  if ( process.platform !== 'win32' ){
+    var proc;
+    fs.stat('node_modules/zombie', function(err, stat) {
+      if (err) {
+        console.log(green, 'installing zombie test module. please be patient!');
+        proc = exec('npm install zombie');
 
-                proc.on('exit', function(){
-                    console.log(green, '....build end');
-                    jake.Task['test'].invoke();
-                });
-                proc.stdout.on('data', function(data){
-                    console.log(data);
-                });
-                proc.stderr.on('data', function(data){
-                    console.log(data)
-                });
-            } else {
-                jake.Task['test'].invoke();
-            }
+        proc.on('exit', function(){
+          console.log(green, '....build end');
+          jake.Task['test'].invoke();
         });
-    }
+        proc.stdout.on('data', function(data){
+          console.log(data);
+        });
+        proc.stderr.on('data', function(data){
+          console.log(data)
+        });
+      } else {
+        jake.Task['test'].invoke();
+      }
+    });
+  }
 }, true);
 
 task('start', function() {
