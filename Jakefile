@@ -52,7 +52,7 @@ task('build', function() {
     {from: 'lib/highlight-c.js', to: 'public/scripts/highlight-c.js'},
     {from: 'node_modules/hljs/styles/zenburn.css', to: 'public/stylesheets/zenburn.css'},
     {from: 'lib/i18n.js', to: 'public/scripts/i18n.js'},
-    {from: 'node_modules/i18n/node_modules/sprintf/lib/sprintf.js', to: 'public/scripts/sprintf.js'},
+    {from: 'lib/sprintf.js', to: 'public/scripts/sprintf.js'},
     {from: 'locales', to: 'public/locales'}
   ];
 
