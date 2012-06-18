@@ -28,7 +28,9 @@
     "diff": ">= 1.0.3",
     "debug": "*",
     "winston": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+	"i18n": "*",
+	"sprintf": "*"
   },
   "devDependencies": {
     "mocha"      : "*",
@@ -47,7 +49,9 @@
     "debug": "*",
     "winston": "*",
     "nodetime": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+	"i18n": "*",
+	"sprintf": "*"
   },
   "noAnalyze": true,
   "contributors": [

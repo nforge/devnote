@@ -7,19 +7,23 @@ var util = require('util');
 var async = require('async');
 var path = require('path');
 
-task('default', function (params) {
-  console.log('This is the default task.');
-});
-
+//ansi color set
+var red   = '\u001b[31m';
+var blue  = '\u001b[34m';
+var green = '\u001b[32m';
+var reset = '\u001b[0m';
 var cp_async = function(src, dst, callback) {
-    var is = fs.createReadStream(src);
-    var os = fs.createWriteStream(dst);
-    util.pump(is, os, callback);
+    var stream = fs.createReadStream(src);
+    stream.pipe(fs.createWriteStream(dst));
+    stream.on("end", function() {
+      console.log(src, "is copied to", dst);
+    });
 }
 
 var cp_r_async = function(src, dst, callback) {
     var self = this;
     fs.stat(src, function(err, stat) {
+        if (err) throw err;
         if (stat.isDirectory()) {
             fs.mkdir(dst, function(err) {
                 fs.readdir(src, function(err, files) {
@@ -32,46 +36,39 @@ var cp_r_async = function(src, dst, callback) {
             cp_async(src, dst, callback);
         }
     });
-}
+};
+
+task('default', function (params) {
+  console.log('This is the default task.');
+});
 
 
 task('build', function() {
-    async.parallel([
-        async.apply(
-            cp_async,
-            'node_modules/hljs/highlight.js',
-            'public/scripts/highlight.js'),
-        async.apply(
-            cp_async,
-            'node_modules/github-flavored-markdown/scripts/showdown.js',
-            'public/scripts/showdown.js'),
-        async.apply(
-            cp_async,
-            'lib/highlight-c.js',
-            'public/scripts/highlight-c.js'),
-        async.apply(
-            cp_async,
-            'node_modules/hljs/styles/zenburn.css',
-            'public/stylesheets/zenburn.css'),
-        async.apply(
-            cp_async,
-            'lib/i18n.js',
-            'public/scripts/i18n.js'),
-        async.apply(
-            cp_async,
-            'node_modules/sprintf/lib/sprintf.js',
-            'public/scripts/sprintf.js'),
-        async.apply(
-            cp_r_async,
-            'locales',
-            'public/locales'),
-    ], complete);
+    console.log(green,'Reqfuired files is being copied', reset);
+
+   var targetsToCopy = [
+            {from: 'node_modules/hljs/highlight.js', to: 'public/scripts/highlight.js'},
+            {from: 'node_modules/github-flavored-markdown/scripts/showdown.js', to: 'public/scripts/showdown.js'},
+            {from: 'lib/highlight-c.js', to: 'public/scripts/highlight-c.js'},
+            {from: 'node_modules/hljs/styles/zenburn.css', to: 'public/stylesheets/zenburn.css'},
+            {from: 'lib/i18n.js', to: 'public/scripts/i18n.js'},
+            {from: 'node_modules/i18n/node_modules/sprintf/lib/sprintf.js', to: 'public/scripts/sprintf.js'},
+            {from: 'locales', to: 'public/locales'}
+        ];
+
+    var fileCount = targetsToCopy.length;
+    targetsToCopy.forEach(function(element, index){
+        cp_r_async(element.from, element.to, function(err){
+            if (err) throw new Error('copy failed');
+            fileCount--;
+        })
+    });
+    
     if ( process.platform !== 'win32' ){
         var proc = exec('npm install zombie');
         proc.on('exit', function(){
             console.log('end~~~~~~~~~~~~')
             jake.Task['test'].invoke();
-            process.exit();
         });
         proc.stdout.on('data', function(data){
         console.log(data);
