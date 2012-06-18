@@ -2,7 +2,8 @@ wiki = require './lib/wiki'
 mailer = require './lib/mailer'
 config = require './lib/config'
 _ = require 'underscore'
-i18n = require './lib/i18n'
+__ = (require './lib/i18n').__
+
 
 exports.mailconf = (req, res) ->
     options = (config.get 'mail') or {}
