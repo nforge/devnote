@@ -6,18 +6,18 @@ block content
           form(method="post", action="/admin/mailconf", id="mailForm").form-horizontal
             fieldset
 
-              h3= messages.title
+              h3 Mail configuration
 
               div.control-group
-                label(name="from", for="from").control-label= messages.from
+                label(name="from", for="from").control-label from
                 div.controls
                   input(name="from", id="from", class="required email", value=options.from, placeholder="yourname@mail.com").input-xlarge
 
               div.control-group.warning
-                label(name="password").control-label= messages.password
+                label(name="password").control-label password
                 div.controls
                   input(name="password", id="password", type="password").input-xlarge
-                  span(id="password-warning").help-inline= messages.passwordWarning
+                  span(id="password-warning").help-inline This will be stored as a plain text in your disk.
 
 
               div(id="auto-config-alert", style="display: none").alert.alert-success
@@ -27,38 +27,37 @@ block content
 
               div(id="detailed").in
                 div.control-group
-                  label(name="host").control-label= messages.host
+                  label(name="host").control-label host
                   div.controls
-                    input(name="host", id="host", value=options.host, placeholder=messages.hostExample).input-xlarge
+                    input(name="host", id="host", value=options.host, placeholder="smtp.mail.com").input-xlarge
                 div.control-group
-                  label(name="port").control-label= messages.port
+                  label(name="port").control-label port
                   div.controls
-                    input(name="port", id="port", value=options.port, placeholder=messages.portExample).input-xlarge
+                    input(name="port", id="port", value=options.port, placeholder="25, 587 or 465").input-xlarge
                 div.control-group
-                  label(name="username").control-label= messages.username
+                  label(name="username").control-label username
                   div.controls
-                    input(name="username", id="username", value=options.username, placeholder=messages.usernameExample).input-xlarge
+                    input(name="username", id="username", value=options.username, placeholder="yourname").input-xlarge
                 div.control-group
-                  label(name="ssl").control-label= messages.ssl
+                  label(name="ssl").control-label ssl
                   div.controls
                     input(name="ssl", id="ssl", checked=options.ssl, type="checkbox").input-xlarge
 
                 div.control-group
-                  label(name="tls").control-label= messages.tls
+                  label(name="tls").control-label tls
                   div.controls
                     input(name="tls", id="tls", checked=options.tls, type="checkbox").input-xlarge
 
                 div.control-group
-                  label(name="authMethod").control-label= messages.authMethod
+                  label(name="authMethod").control-label authentication method
                   div.controls
-                    input(name="authMethod", id="authMethod", value=options.authMethod, placeholder=messages.authMethodExample).input-xlarge
+                    input(name="authMethod", id="authMethod", value=options.authMethod, placeholder="LOGIN or PLAIN").input-xlarge
 
               div.form-actions
-                button(type="submit").btn.btn-primary= messages.save
-                button.btn= messages.cancel
+                button(type="submit").btn.btn-primary Save Changes
+                button.btn Cancel
 
   script(type="text/javascript", src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js")
   script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
-  script(type="text/javascript", src="/scripts/sprintf.js")
-  script(type="text/javascript", src="/scripts/i18n.js")
+
   script(type="text/javascript", src="/scripts/mail.js")

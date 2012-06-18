@@ -114,7 +114,6 @@ edit = (name, req, res) ->
                 title: 'Edit Page',
                 name: name,
                 content: page.content
-                messages: commandMessages()
 
 commandUrls = (name) ->
     view: ROOT_PATH + '/pages/' + name,
@@ -132,29 +131,6 @@ commandUrls = (name) ->
     subscribe: url.format
         pathname: ROOT_PATH + '/subscribes/' + name,
 
-commandMessages = () ->
-    new: i18n.__ 'New'
-    edit: i18n.__ 'Edit'
-    history: i18n.__ 'History'
-    delete: i18n.__ 'Delete'
-    subscribe: i18n.__ 'Subscribe'
-    unsubscribe: i18n.__ 'Unsubscribe'
-    view: i18n.__ 'View'
-
-mailMessages = () ->
-    title: i18n.__ 'Mail configuration'
-    from: i18n.__ 'From'
-    password: i18n.__ 'Password'
-    passwordWarning: i18n.__ 'This will be stored as a plain text in your disk.'
-    host: i18n.__ 'Host'
-    port: i18n.__ 'Port'
-    messages: i18n.__ 'Username'
-    ssl: i18n.__ 'SSL'
-    tls: i18n.__ 'TLS'
-    authMethod: i18n.__ 'Authentication method'
-    save: i18n.__ 'Save Changes'
-    cancel: i18n.__ 'Cancel'
-
 view = (name, req, res) ->
     wiki.getPage name, req.query.rev, (err, page) ->
         if err
@@ -165,10 +141,9 @@ view = (name, req, res) ->
             req.session.user.id in subscribers[name]
 
         urls = commandUrls name
-        messages = commandMessages()
 
         if page.isOld
-            messages.oldRevisionNotice = i18n.__ "
+            oldRevisionNotice = i18n.__ "
 This is an old revision of this page, as edited by %s at %s.
  It may differ significantly from the <a href='%s'>current revision</a>.",
                 page.commit.author.name,
@@ -184,7 +159,7 @@ This is an old revision of this page, as edited by %s at %s.
                         a: lastVisit.id,
                         b: page.commitId,
 
-                messages.changesNotice = i18n.__ "
+                changesNotice = i18n.__ "
 Something changed since your last visit, %s.
  <a href='%s'>Click here</a> to see the difference.",
                     lastVisit.date, urlDiffSinceLastVisit
@@ -194,10 +169,11 @@ Something changed since your last visit, %s.
                 content: wiki.render page.content
                 commit: page.commit
                 commitId: page.commitId
+                oldRevisionNotice: oldRevisionNotice
                 subscribed: subscribed
                 loggedIn: !!req.session.user
                 urls: urls
-                messages: messages
+                changesNotice: changesNotice
 
             res.render 'page', options
 

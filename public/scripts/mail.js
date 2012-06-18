@@ -70,7 +70,7 @@ var _clearUsingServiceMessage = function() {
 
 var _updateUsingServiceMessage = function(service) {
     $("#using-wellknown-service-message")
-        .html(i18n.__('Your email will be sent using <b>%s</b>.', service));
+        .html('Your email will be sent using <b>' + service + '</b>.');
 }
 
 // Hide using-wellknown-service-message if configured host differs from selected service's.
@@ -82,23 +82,21 @@ var updateUsingServiceMessage = function() {
     }
 }
 
-$(function() {
-    i18n.on('ready', function() {
-        $("#from").keyup(guessMailConfig);
-        $("#host").keyup(updateUsingServiceMessage);
+$(document).ready(function init() {
+    $("#from").keyup(guessMailConfig);
+    $("#host").keyup(updateUsingServiceMessage);
 
-        $("#detailed").on("hide", function() {
-            $("#detailed-toggle-message").text(i18n.__(' If you want to see the detailed configuration and/or fix it, '));
-            $("#detailed-toggle-link").text(i18n.__('click here.'));
-        });
-        $("#detailed").on("hidden", function() {
-            // Don't display #detailed so that tab key ignores it, for user's convenience.
-            $("#detailed").css("display", "none");
-        });
-        $("#detailed").on("show", function() {
-            $("#detailed").css("display", "block");
-            $("#detailed-toggle-message").text(i18n.__(" If you want to hide the detailed configuration, "));
-            $("#detailed-toggle-link").text(i18n.__('click here.'));
-        });
+    $("#detailed").on("hide", function() {
+        $("#detailed-toggle-message").text(" If you want to see the detailed configuration and/or fix it, ");
+        $("#detailed-toggle-link").text('click here.');
+    });
+    $("#detailed").on("hidden", function() {
+        // Don't display #detailed so that tab key ignores it, for user's convenience.
+        $("#detailed").css("display", "none");
+    });
+    $("#detailed").on("show", function() {
+        $("#detailed").css("display", "block");
+        $("#detailed-toggle-message").text(" If you want to hide the detailed configuration, ");
+        $("#detailed-toggle-link").text('click here.');
     });
 });

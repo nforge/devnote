@@ -2,32 +2,32 @@ extends layout
 
 block content
     h1= title
-    p= messages.welcome
+    p Welcome to #{title}
 
-    h2= messages.note
-    a(href='/wikis/note/pages/frontpage')= messages.frontpage
+    h2 Note
+    a(href='/wikis/note/pages/frontpage') frontpage
     p
-    a(href='/wikis/note/new')= messages.newNote
+    a(href='/wikis/note/new') new note
     p
-    a(href='/wikis/note/pages')= messages.noteList
+    a(href='/wikis/note/pages') note list
     p
-    a(href='/wikis/note/pages?action=search')= messages.searchNotes
+    a(href='/wikis/note/pages?action=search') search notes
     p
     a(href='/wikis/note/pages/today/attachment') file attachment at page name 'today'
     p
-    h2= messages.user
+    h2 user
     p
-    a(href='/wikis/note/users?action=login')= messages.login
+    a(href='/wikis/note/users?action=login') login
     p
-    a(href='/wikis/note/users')= messages.userList
+    a(href='/wikis/note/users') user list
     p
-    a(href='/wikis/note/users/new')= messages.newUser
+    a(href='/wikis/note/users/new') new user
     p
-    h2= messages.admin
+    h2 admin
     p
-    a(href='/admin/mailconf')= messages.configureMail
+    a(href='/admin/mailconf') Configure mail
     p
-    a(href='/admin/mail')= messages.sendMail
+    a(href='/admin/mail') Send mail
     p
     span hello#{' '}
     a(href='aa') hoho

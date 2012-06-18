@@ -11,10 +11,10 @@ block content
     input(type="submit", name="save").btn-primary
 
   div.btn-group
-    a(href="?").btn= messages.view
+    a(href="?").btn View
     form(method="post", action="/wikis/note/pages/"+title)
       input(type="hidden", name="_method", id='_method', value="delete")
-      input(type="submit", value=messages.delete, name="submit").btn
+      input(type="submit", value="delete", name="submit").btn
   br
   br
   br
