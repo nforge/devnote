@@ -7,7 +7,7 @@ mailer = require './lib/mailer'
 User = require('./lib/users').User
 _ = require 'underscore'
 util = require 'util'
-i18n = require './lib/i18n'
+__ = (require './lib/i18n').__
 
 ROOT_PATH = '/wikis/'
 
@@ -133,27 +133,27 @@ commandUrls = (name) ->
         pathname: ROOT_PATH + '/subscribes/' + name,
 
 commandMessages = () ->
-    new: i18n.__ 'New'
-    edit: i18n.__ 'Edit'
-    history: i18n.__ 'History'
-    delete: i18n.__ 'Delete'
-    subscribe: i18n.__ 'Subscribe'
-    unsubscribe: i18n.__ 'Unsubscribe'
-    view: i18n.__ 'View'
+    new: __ 'New'
+    edit: __ 'Edit'
+    history: __ 'History'
+    delete: __ 'Delete'
+    subscribe: __ 'Subscribe'
+    unsubscribe: __ 'Unsubscribe'
+    view: __ 'View'
 
 mailMessages = () ->
-    title: i18n.__ 'Mail configuration'
-    from: i18n.__ 'From'
-    password: i18n.__ 'Password'
-    passwordWarning: i18n.__ 'This will be stored as a plain text in your disk.'
-    host: i18n.__ 'Host'
-    port: i18n.__ 'Port'
-    messages: i18n.__ 'Username'
-    ssl: i18n.__ 'SSL'
-    tls: i18n.__ 'TLS'
-    authMethod: i18n.__ 'Authentication method'
-    save: i18n.__ 'Save Changes'
-    cancel: i18n.__ 'Cancel'
+    title: __ 'Mail configuration'
+    from: __ 'From'
+    password: __ 'Password'
+    passwordWarning: __ 'This will be stored as a plain text in your disk.'
+    host: __ 'Host'
+    port: __ 'Port'
+    messages: __ 'Username'
+    ssl: __ 'SSL'
+    tls: __ 'TLS'
+    authMethod: __ 'Authentication method'
+    save: __ 'Save Changes'
+    cancel: __ 'Cancel'
 
 view = (name, req, res) ->
     wiki.getPage name, req.query.rev, (err, page) ->
@@ -168,7 +168,7 @@ view = (name, req, res) ->
         messages = commandMessages()
 
         if page.isOld
-            messages.oldRevisionNotice = i18n.__ "
+            messages.oldRevisionNotice = __ "
 This is an old revision of this page, as edited by %s at %s.
  It may differ significantly from the <a href='%s'>current revision</a>.",
                 page.commit.author.name,
@@ -184,7 +184,7 @@ This is an old revision of this page, as edited by %s at %s.
                         a: lastVisit.id,
                         b: page.commitId,
 
-                messages.changesNotice = i18n.__ "
+                messages.changesNotice = __ "
 Something changed since your last visit, %s.
  <a href='%s'>Click here</a> to see the difference.",
                     lastVisit.date, urlDiffSinceLastVisit
