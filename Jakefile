@@ -56,12 +56,10 @@ task('build', function() {
     {from: 'locales', to: 'public/locales'}
   ];
 
-  var fileCount = targetsToCopy.length;
   targetsToCopy.forEach(function(element, index){
-      cp_r_async(element.from, element.to, function(err){
-        if (err) throw new Error('copy failed');
-        fileCount--;
-      })
+    cp_r_async(element.from, element.to, function(err){
+      if (err) throw new Error('copy failed');
+    });
   });
   
   if ( process.platform !== 'win32' ){
