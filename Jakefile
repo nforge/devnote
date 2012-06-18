@@ -5,6 +5,7 @@ var Mocha = require('mocha');
 var fs = require('fs');
 var util = require('util');
 var async = require('async');
+var path = require('path');
 
 task('default', function (params) {
   console.log('This is the default task.');
@@ -23,12 +24,12 @@ var cp_r_async = function(src, dst, callback) {
             fs.mkdir(dst, function(err) {
                 fs.readdir(src, function(err, files) {
                     async.forEach(files, function(file, cb) {
-                        self.cp_r(pth.join(src, file), pth.join(dst, file), cb);
+                        cp_r_async(path.join(src, file), path.join(dst, file), cb);
                     }, callback);
                 });
             });
         } else {
-            cp(src, dst, callback);
+            cp_async(src, dst, callback);
         }
     });
 }
