@@ -30,7 +30,6 @@
     "winston": "*",
     "socket.io": "*",
 	"i18n": "*",
-	"sprintf": "*"
   },
   "devDependencies": {
     "mocha"      : "*",
@@ -51,7 +50,6 @@
     "nodetime": "*",
     "socket.io": "*",
 	"i18n": "*",
-	"sprintf": "*"
   },
   "noAnalyze": true,
   "contributors": [
