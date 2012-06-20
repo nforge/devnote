@@ -62,5 +62,6 @@
 	"Note List": "Note List",
 	"Search Notes": "Search Notes",
 	"User List": "User List",
-	"New User": "New User"
+	"ID": "아이디",
+	"Searching result": "검색 결과"
 }
