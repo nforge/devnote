@@ -1,6 +1,7 @@
+var libpath = process.env['LIB_COV'] ? '../lib-cov' : '../lib';
 var assert = require('assert');
 var step = require('step');
-var workingPage = require('../lib/workingpage.js');
+var workingPage = require(libpath +'/workingpage.js');
 var HASH = new(require('jshashes').SHA512)();
 
 suite('workingpage', function() {

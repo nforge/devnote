@@ -1,6 +1,7 @@
+var libpath = process.env['LIB_COV'] ? '../lib-cov' : '../lib';
 var assert = require('assert');
-var wiki = require('../lib/wiki');
-var fileutils = require('../lib/fileutils');
+var wiki = require(libpath + '/wiki');
+var fileutils = require(libpath + '/fileutils');
 var step = require('step');
 var async = require('async');
 var _ = require('underscore');
@@ -170,7 +171,7 @@ suite('wiki', function() {
   });
 
   teardown(function(done) {
-    fileutils.rm_rf(WIKINAME + '.pages.git');
+    fileutils.rm_rf(wiki.getRepoPath());
     done();
   });
 });

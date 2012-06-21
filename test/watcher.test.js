@@ -1,4 +1,5 @@
-var watcher = require('../lib/watcher')
+var libpath = process.env['LIB_COV'] ? '../lib-cov' : '../lib';
+var watcher = require(libpath + '/watcher')
 var assert = require('assert')
 var fs = require('fs');
 var step = require('step');

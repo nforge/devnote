@@ -1,12 +1,13 @@
+var libpath = process.env['LIB_COV'] ? '../lib-cov' : '../lib';
 var assert = require('assert');
-var gitfs = require('../lib/gitfs');
+var gitfs = require(libpath + '/gitfs');
 var async = require('async');
 var fs = require('fs');
 var step = require('step');
 var crypto = require('crypto');
 var path = require('path');
 var zlib = require('zlib');
-var fileutils = require('../lib/fileutils');
+var fileutils = require(libpath + '/fileutils');
 var util = require('util');
 
 // var WIKINAME = 'note';

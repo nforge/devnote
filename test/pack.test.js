@@ -1,12 +1,13 @@
+var libpath = process.env['LIB_COV'] ? '../lib-cov' : '../lib';
 var assert = require('assert');
 var async = require('async');
 var step = require('step');
-var fileutils = require('../lib/delta');
+var fileutils = require(libpath + '/delta');
 var fs = require('fs');
 var zlib = require('zlib');
 var path = require('path');
-var packutil = require('../lib/packutil');
-var gitfs = require('../lib/gitfs');
+var packutil = require(libpath + '/packutil');
+var gitfs = require(libpath + '/gitfs');
 
 // TODO: test REF_DELTA
 suite('pack.getObjectIds', function() {

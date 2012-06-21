@@ -1,7 +1,7 @@
-var LIB_PATH = '../lib';
+var libpath = process.env['LIB_COV'] ? '../lib-cov' : '../lib';
 
 var assert = require('assert');
-var User = require(LIB_PATH + '/users').User;
+var User = require(libpath + '/users').User;
 var util = require('util');
 
 suite("User", function() {
@@ -93,4 +93,49 @@ suite("User", function() {
       }
     });
   })
+  suite("login", function() {
+    var userA;
+    setup(function() {
+      //Given
+      userA = {
+        name: "nekure",
+        id: "racoon",
+        email: "nekure@gmail.com",
+        password: "rrrr"
+      };
+      User.add(userA);
+    });
+    test("정상 로그인", function() {
+      //When
+      User.login({
+          id: 'racoon',
+          password: 'rrrr'
+      }, function(err, findUser) {
+        //Then
+        assert.deepEqual(findUser, userA);
+      });
+    });
+    test("비밀번호 틀림", function() {
+      //When
+      User.login({
+          id: 'racoon',
+          password: 'rrrR'
+      }, function(err, findUser) {
+        //Then
+        assert.equal(err.message, "User id or password is not valid!");
+      });
+    });
+    test("아이디 틀림", function() {
+      //When
+      User.login({
+          id: 'racon',
+          password: 'rrrr'
+      }, function(err, findUser) {
+        //Then
+        assert.equal(err.message, "User id or password is not valid!");
+      });
+    });
+  });
 });
+
+// vim:et:sts=2:sw=2
