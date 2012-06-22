@@ -28,6 +28,7 @@ noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 WIKINAME = 'note'
 ROOT_PATH = '/wikis/' + WIKINAME
+API_ROOT_PATH = '/apis/' + WIKINAME
 
 app = express()
 server = http.createServer app
@@ -106,7 +107,7 @@ app.post ROOT_PATH + '/pages', wikiApp.postNew                    # post new wik
 app.del  ROOT_PATH + '/pages/:name', wikiApp.postDelete           # delete wikipage
 app.put  ROOT_PATH + '/subscribes/:name', wikiApp.postSubscribe   # subscribe wikipage
 app.del  ROOT_PATH + '/subscribes/:name', wikiApp.postUnsubscribe # unsubscribe wikipage
-app.post '/api/note/pages/:name', wikiApp.postRollback            # wikipage rollback
+app.post API_ROOT_PATH + '/pages/:name', wikiApp.postRollback     # wikipage rollback
 
 # Login & Logout
 app.post ROOT_PATH + '/users/login', userApp.postLogin   # post login
