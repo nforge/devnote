@@ -58,6 +58,23 @@ history = (name, req, res) ->
   else
     wiki.getHistory name, LIMIT, handler
 
+renderDiff = (diff, inlineCss) ->
+  diff.forEach (seg) ->
+    klass = 'added' if seg.added
+    klass = 'removed' if seg.removed
+    if klass
+      if (inlineCss)
+        color = {'added': '#DFD', 'removed': '#FDD'}[klass]
+        attr = "style = 'background-color: #{color}" if color
+      else
+        attr = "class = '#{klass}'"
+
+    result = _.reduce seg.value.split('\n'),
+      (a, b) -> a + '<p ' + (attr or '') + '>' + b + '</p>',
+      result
+
+  return result or ''
+
 diff = (name, req, res) ->
   wiki.diff name, [req.query.a, req.query.b], (err, diff) ->
     if err
@@ -66,8 +83,47 @@ diff = (name, req, res) ->
       res.render 'diff'
         title: 'Diff'
         name: name
-        diff: wiki.renderDiff(diff)
+        diff: renderDiff(diff)
 
+# wiki.search 의 검색결과를 HTML로 렌더링한다.
+# @param searched wiki.search 의 결과값
+# @return result {
+#     <pagename>: <html>,
+#     ...,
+# }
+#
+renderSearch = (searched) ->
+  LIMIT = 120
+  result = {}
+
+  for name, matched of searched
+    rendered = ''
+
+    if matched instanceof Array
+      keyword = matched[0]
+      input = matched.input
+      index = matched.index
+      begin = Math.max(0, index - Math.floor((LIMIT - keyword.length) / 2))
+      end = Math.max(begin + LIMIT, begin + keyword.length)
+
+      if begin > 0 then rendered += '...'
+
+      rendered +=
+        input.substr(begin, index - begin) +
+        '<span class="matched">' + keyword +
+        '</span>' +
+        input.substr(index + keyword.length, end - (index + keyword.length))
+
+      if end < input.length then rendered += '...'
+    else
+      if LIMIT < matched.length
+        rendered = matched.substr(0, LIMIT) + '...'
+      else
+        rendered = matched
+
+    result[name] = rendered
+
+  return result
 
 search = (req, res) ->
   keyword = req.query.keyword
@@ -80,7 +136,7 @@ search = (req, res) ->
       throw err if err
       res.render 'search',
         title: 'Search'
-        pages: wiki.renderSearch(pages)
+        pages: renderSearch(pages)
 
 exports.getPages = (req, res) ->
   switch req.query.action
@@ -224,7 +280,7 @@ exports.postNew = (req, res) ->
           to: to
           subject: subject
           text: diff['unified']
-          html: wiki.renderDiff(diff['json'], true)
+          html: renderDiff(diff['json'], true)
 
     res.redirect ROOT_PATH + '/pages/' + name
 
