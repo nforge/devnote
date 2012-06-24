@@ -29,7 +29,8 @@
     "debug": "*",
     "winston": "*",
     "socket.io": "*",
-	"i18n": "*",
+	  "i18n": "*",
+    "mkdirp": "*"
   },
   "devDependencies": {
     "mocha"      : "*",
@@ -49,7 +50,8 @@
     "winston": "*",
     "nodetime": "*",
     "socket.io": "*",
-	"i18n": "*",
+	  "i18n": "*",
+    "mkdirp": "*"
   },
   "noAnalyze": true,
   "contributors": [
