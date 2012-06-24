@@ -21,6 +21,7 @@
     "underscore" : ">= 1.3.1",
     "express": ">=3.0",
     "jade": ">= 0.0.1",
+    "jake": ">= 0.2.32",
     "markdown-js": "*",
     "jshashes": ">= 0.1.3b",
     "github-flavored-markdown": ">= 1.0.1",
@@ -29,8 +30,9 @@
     "debug": "*",
     "winston": "*",
     "socket.io": "*",
-	  "i18n": "*",
-    "mkdirp": "*"
+    "i18n": "*",
+    "mkdirp": "*",
+    "mocha": "*"
   },
   "devDependencies": {
     "mocha"      : "*",
@@ -50,7 +52,7 @@
     "winston": "*",
     "nodetime": "*",
     "socket.io": "*",
-	  "i18n": "*",
+    "i18n": "*",
     "mkdirp": "*"
   },
   "noAnalyze": true,
