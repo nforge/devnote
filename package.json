@@ -33,7 +33,7 @@
 
     "i18n": "*",
     "mkdirp": "*",
-    "mocha": "*"
+    "mocha": "*",
     "coffee-script": "*",
     "nodemailer": "*"
   },
@@ -56,7 +56,7 @@
     "nodetime": "*",
     "socket.io": "*",
     "i18n": "*",
-    "mkdirp": "*"
+    "mkdirp": "*",
     "coffee-script": "*",
     "nodemailer": "*"
   },
