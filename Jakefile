@@ -159,3 +159,15 @@ task('testWin', function(){
   runner.on('fail', function(test){
   });
 })
+
+desc("mocha test - build coverage report")
+task('testCov', function(){
+  // spawn('mocha', ['-t', '5000', '-R', 'spec', '-u', 'tdd', '--compilers', 'coffee:coffee-script'], {customFds: [0, 1, 2]});
+  exec('jscoverage --no-highlight lib lib-cov').on('exit', function() {
+    process.env['LIB_COV'] = 1;
+    var proc = exec('mocha --colors -t 5000 -R html-cov -u tdd');
+    proc.on('exit', process.exit);
+    proc.stdout.pipe(process.stdout, { end: false });
+    proc.stderr.pipe(process.stderr, { end: false });
+  });
+}, {async: true})
