@@ -733,7 +733,7 @@ suite('gitfs.add', function(){
 
         //Then
         var status = gitfs.status(user);
-        assert.deepEqual(Object.keys(status), [target.path + ":" + target.name]);
+        assert.deepEqual(Object.keys(status), [target.path + "/" + target.name]);
     });
 
     test('여러 개의 커밋대상을 추가하기',function(){
@@ -751,10 +751,10 @@ suite('gitfs.add', function(){
         };
 
         var user = {
-            name: "채수원",
-            email: "dorrtts@gmail.com",
-            id: "doortts",
-            password: "1234"
+          name: "nekure",
+          id: "racoon",
+          email: "nekure@gmail.com",
+          timezone: '+0900'
         };
 
         //When
@@ -763,7 +763,49 @@ suite('gitfs.add', function(){
 
         //Then
         var status = gitfs.status(user);
-        assert.deepEqual(Object.keys(status), [targetA.path + ":" + targetA.name, targetB.path + ":" + targetB.name]);
-        assert.deepEqual(status[targetA.path + ":" + targetA.name], targetA);
-    })
+        assert.deepEqual(Object.keys(status), [targetA.path + "/" + targetA.name, targetB.path + "/" + targetB.name]);
+        assert.deepEqual(status[targetA.path + "/" + targetA.name], targetA);
+    });
+});
+
+suite('gitfs.commitAll', function(){
+  test('커밋대상으로 지정되어 있던 파일들을 커밋하기', function(done){
+    //Given
+    var targetA = {
+      path: "note",
+      name: "Welcome",
+      content: "batch commit #1"
+    };
+
+    var targetB = {
+      path: "note",
+      name: "Diary",
+      content: "batch commit #2"
+    };
+
+    var user = {
+      name: "nekure",
+      id: "racoon",
+      email: "nekure@gmail.com",
+      timezone: '+0900'
+    };
+
+    gitfs.add(user, targetA);
+    gitfs.add(user, targetB);
+
+    //When
+    step(
+      function when(){
+        gitfs.commitAll(user, this);
+      },
+      function then(err, commitId){
+        var expectedCommitId = commitId;
+        gitfs.getCommitIdFromHEAD(function(err, commitId){
+          assert.notDeepEqual(commitId, undefined);
+          assert.equal(commitId, expectedCommitId);
+          done();
+        });
+      }
+    );
+  });
 });
