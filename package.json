@@ -30,9 +30,12 @@
     "debug": "*",
     "winston": "*",
     "socket.io": "*",
+
     "i18n": "*",
     "mkdirp": "*",
     "mocha": "*"
+    "coffee-script": "*",
+    "nodemailer": "*"
   },
   "devDependencies": {
     "mocha"      : "*",
@@ -54,6 +57,8 @@
     "socket.io": "*",
     "i18n": "*",
     "mkdirp": "*"
+    "coffee-script": "*",
+    "nodemailer": "*"
   },
   "noAnalyze": true,
   "contributors": [
