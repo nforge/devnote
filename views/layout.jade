@@ -45,13 +45,17 @@ html(lang="ko")
             = __('Search')
         form(action="").search
           input(type="search", required).si
-          button(type="submit").sb
-            i.icon-search
-            = __('Search')
+          button(type="submit").sb: i.icon-search  = __('Search')
         // ToDo: Feedback 링크 위치 수정할 것!
         p.feedback.pull-left
           i
           a(href="#")= __('Feedback')
-      // /HEADER
+      // HEADER
       block content
+
+      // /FOOTER
+      footer.nFoot
+        p.nforge nforge
+        p.nhn © NHN Corp
     script(src='/scripts/html5shiv.js')
+    script(src='/scripts/custom.js')

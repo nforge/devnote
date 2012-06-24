@@ -70,18 +70,15 @@ app.configure ->
 app.locals.use (req, res) ->
   err = req.session.error
   loginMessage = req.session.success
-  msg = req.session.flashMessage
   delete req.session.error
   #delete req.session.success
 
   res.locals.user = req.session.user
-  res.locals.flashMessage = ''
+
   res.locals.loginMessage = loginMessage || ''
   res.locals.wikiName = 'note'
   if err
     res.locals.flashMessage = err
-  if msg
-    res.locals.flashMessage = msg
   if loginMessage
     res.locals.loginMessage = loginMessage
 
