@@ -30,7 +30,7 @@
     "debug": "*",
     "winston": "*",
     "socket.io": "*",
-
+    "step": "*",
     "i18n": "*",
     "mkdirp": "*",
     "mocha": "*",
@@ -81,9 +81,8 @@
     "node": ">=0.6"
   },
   "scripts": {
-    "postinstall": "jake build",
-    "test"  : "jake test",
-    "build" : "uglify mycode.js",
+    "postinstall": "node node_modules/jake/bin/cli.js test",
+    "test"  : "node node_modules/jake/bin/cli.js test",
     "start" : "jake start"
   }
 }
