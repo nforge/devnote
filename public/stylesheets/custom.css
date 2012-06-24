@@ -1,0 +1,169 @@
+@charset "utf-8";
+/* HTML Reset */
+body{ padding:0 10px; background:url(/images/body.bg.gif) repeat-x 0 0}
+body, table, input, textarea, button, select{ font-family:나눔고딕, NanumGothic, 돋움, Dotum, Arial, Helvetica, sans-serif}
+@media all and (min-width:768px) {
+@font-face{ font-family:NG; src:url(../font/NanumGothic.eot); src:local(※), url(../font/NanumGothic.woff) format('woff');}
+body, table, input, textarea, button, select{ font-family:나눔고딕, NanumGothic, NG, 돋움, Dotum, Arial, Helvetica, sans-serif}
+}
+menu{ margin:0; padding:0}
+
+/* Bootstrap Override */
+.btn{ line-height:15px; border-radius:2px}
+.btn-group > .btn:first-child{ border-radius:2px 0 0 2px }
+.btn-group > .btn:last-child{ border-radius:0 2px 2px 0}
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input{ border-radius:0}
+
+/* Layout */
+.container{ position:relative}
+.skip{ display:block; margin:0}
+.skip a{position:absolute; z-index:10; width:1px; height:1px; overflow:hidden}
+.skip a:active,
+.skip a:focus{display:block;width:100%;height:auto; line-height:79px;background:#fff;border-radius:5px;text-align:center; font-weight:bold; color:#333}
+.nHead,
+.nBody,
+.nFoot{ zoom:1}
+.nHead{ position:relative; text-shadow:1px 1px 0 #fff;text-align:right}
+.nBody{ outline:none}
+.nFoot{ padding:15px 0; border-top:1px solid #e3e3e4}
+.nHead:after,
+.nBody:after,
+.nFoot:after{ content:""; display:block; clear:both}
+
+/* nHead */
+.nHead h1{ float:left; font-size:24px}
+.nHead h1 a{display:inline-block;line-height:79px; padding:0 15px 0 0; color:#333; text-decoration:none; font-family:Arial, Helvetica, sans-serif}
+.gnb{ float:left; margin:0 -100% 0 0}
+.gnb ul{ margin:0; padding:0; list-style:none; border-left:1px solid #f7f8f9; border-right:1px solid #d7d8da; zoom:1}
+.gnb ul:after{ content:""; display:block; clear:both}
+.gnb a{ padding:0 14px; line-height:39px; display:block; text-decoration:none; color:#222326; font-weight:bold; border-left:1px solid #d7d8da; border-right:1px solid #f7f8f9; border-top:1px solid #d7d8da}
+.gnb li:first-child a{ border-top:0}
+.nHead .account *,
+.nHead .search *{ vertical-align:top;}
+.nHead .account{ display:inline; white-space:nowrap; position:relative; top:8px}
+.nHead .author{ display:block; font:11px/31px 돋움,Dotum,Tahoma,Geneva,sans-serif; vertical-align:top;}
+.nHead .author a{ text-decoration:none;font:bold 12px/31px Tahoma,Geneva,sans-serif;}
+.nHead .btn{padding:9px 8px 6px; width:13px; overflow:hidden; color:#565960;border-radius:2px;font:11px/14px 돋움,Dotum,Tahoma,Geneva,sans-serif; letter-spacing:-1px}
+.nHead .tog{ display:inline-block; width:31px}
+.nHead .btn i{ position:relative;top:-1px;margin:0 5px 0 0;opacity:.7;filter:alpha(opacity=70)}
+.nHead .search{ position:relative; top:30px; display:none; margin:0; white-space:nowrap}
+.nHead .search.open{ height:36px; z-index:2; display:block; margin:0 45px 0 0; padding:0 0 10px 0}
+.nHead .search .si,
+.nHead .search .sb{ position:absolute; top:0;}
+.nHead .search .si{ left:0; padding:4px 34px 4px 9px; width:100%; height:26px; font-size:12px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);}
+.nHead .search .sb{ right:-45px; background-color:transparent; border:0; margin:0; padding:10px; width:36px; height:36px;background-position:-44px 4px; opacity:.7; filter:alpha(opacity=70)}
+.nHead .search .sb i{ margin:0 10px 0 0}
+.nHead .feedback{ position:absolute; z-index:1; top:90px; right:1px;}
+.nHead .feedback i{ display:inline-block; width:0; height:0; border:3px solid; border-left-color:#b8b8b8; border-top-color:#fff; border-bottom-color:#fff; border-right:0; vertical-align:middle}
+.nHead .feedback a{ color:#565960; font:11px 돋움, Dotum, Tahoma, Geneva, sans-serif; vertical-align:middle; text-decoration:underline; letter-spacing:-1px}
+@media all and (min-width:480px) {
+.nHead h1{ margin:0 40px 0 0}
+.nHead .author{ display:inline; margin:0 4px 0 0}
+.nHead .account{ top:24px}
+.nHead .search.open{ top:61px; padding:0 0 41px 0}
+}
+@media all and (min-width:600px) {
+.gnb li{ float:left}
+.gnb a{ line-height:79px; border-top:0;padding:0 24px;}
+}
+@media all and (min-width:700px) {
+.nHead .account,
+.nHead .search{ display:inline-block; height:23px}
+.nHead .account{ top:28px}
+.nHead .author,
+.nHead .author *{ line-height:23px !important}
+.nHead .btn{ padding:5px 4px 2px;}
+.nHead .btn i{ margin:0}
+.nHead .tog{ width:23px; display:none}
+.nHead .search{ top:28px; margin:0 0 0 6px; border-left:1px solid #cbcdd1; padding:0 0 0 10px}
+.nHead .search .si{ position:static; padding:4px 24px 4px 4px; width:110px; height:13px; margin:0 -31px 0 0}
+.nHead .search .sb{ position:static; padding:4px 4px 2px; width:27px; height:23px;}
+}
+@media all and (min-width:979px) {
+.nHead .btn{padding:5px 8px 2px; width:auto}
+.nHead .btn i{margin:0 0 0 -4px;opacity:.4;filter:alpha(opacity=40)}
+.nHead .search .si{ width:190px}
+}
+/* nFoot */
+.nFoot .nforge{ float:left; width:54px; height:0; padding:17px 0 0 0; overflow:hidden; background:url(../img/foot.nforge.gif) no-repeat}
+.nFoot .nhn{ float:right; color:#444; font:bold 10px Tahoma, Geneva, sans-serif}
+
+/* nBody */
+.page-header{ border-bottom:2px solid #231f20; margin:35px 0 20px 0}
+.page-header h1{ font-size:20px}
+
+/* Write */
+.write {}
+@media all and (min-width:600px) {
+.write { border:1px solid #e3e3e4; background:#f9f9f9; padding:19px 28px}
+}
+.write menu{ text-align:right; margin:0 0 10px 0}
+.write menu .btn-group{ display:inline}
+.write .wTitle,
+.write .wText{ margin:0 10px 10px 0}
+.write .wTitle input,
+.write .wText textarea{ margin:0; width:100%}
+
+/* Text Area */
+.tx{margin:20px 0 30px 0; font-size:14px; line-height:1.5}
+@media all and (min-width:600px) {
+.tx{ padding:25px 30px; border:1px solid #e3e3e4; background:#f9f9f9;}
+}
+.tx img,
+.tx video,
+.tx audio,
+.tx object,
+.tx embed{ max-width:100%; height:auto}
+.tx q:before{ content:open-quote}
+.tx q:after{content:close-quote}
+.tx,
+.tx p,
+.tx table,
+.tx input,
+.tx textarea,
+.tx button,
+.tx select{ font-size:14px}
+.tx *:first-child{ margin-top:0}
+.tx h1,
+.tx h2,
+.tx h3,
+.tx h4,
+.tx h5,
+.tx h6,
+.tx p{ margin:.5em 0; color:#333}
+.tx h1{ font-size:30px}
+.tx h2{ font-size:26px}
+.tx h3{ font-size:22px}
+.tx h4{ font-size:18px}
+.tx h5{ font-size:14px}
+.tx h6{ font-size:12px}
+.tx ul,
+.tx ol,
+.tx dl,
+.tx blockquote,
+.tx pre{ margin-top:1em; margin-bottom:1em;}
+.tx ul ul,
+.tx ul ol,
+.tx ol ol,
+.tx ol ul{ margin-top:0; margin-bottom:0;}
+.tx dd{ margin-bottom:.5em}
+.tx blockquote{ border-left:4px solid #ddd}
+.tx blockquote blockquote{ border-left:3px solid #ddd}
+.tx blockquote>code:only-child{ white-space:pre}
+.tx a[href^='#']:after{ content:"†"; color:#f00; font:12px Arial, Helvetica, sans-serif}
+.tx a[href^='http']:after{ content:"↗"; color:#f00; font:12px Arial, Helvetica, sans-serif}

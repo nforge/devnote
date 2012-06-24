@@ -1,14 +1,12 @@
 extends layout
 
+// BODY
 block content
   if isOld
     div.alert.alert-info!= __("This is an old revision of this page, as edited by %s at %s. It may differ significantly from the <a href='%s'>current revision</a>.", commit.author.name, new Date(commit.author.unixtime * 100), urls.view)
 
   if lastVisit
     div.alert.alert-info!= __("Something changed since your last visit, %s. <a href='%s'>Click here</a> to see the difference.", lastVisit.date, urls.diffSinceLastVisit)
-
-  div.page-header
-    h1= title
 
   div.row.pull-right
     div.span3
@@ -29,9 +27,13 @@ block content
             input(type="hidden", name="_method", id="_method", value="put")
             input(type="submit", value=__('subscribe'), name="submit").btn
 
-  div.row
-    div.span12
-      != content
+  section(id="content", tabindex="0").nBody
+    article.article
+      hgroup.page-header
+        h1= title
+      // Text
+      article.tx
+        != content
 
   script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/scripts/keynavi.js")

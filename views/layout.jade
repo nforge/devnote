@@ -1,22 +1,57 @@
 !!!5
-html
+html(lang="ko")
   head
+    meta(charset="utf-8")
     title= title
     - if (typeof locale === 'string') {
       meta(http-equiv='Content-Language', content='#{locale}')
     - } else {
       meta(http-equiv='Content-Language', content='en')
     - }
+    meta(name="viewport", content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1")
     link(rel='stylesheet', href='/stylesheets/syntax.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/custom.css')
     link(rel='stylesheet', href='/codemirror2/lib/codemirror.css')
+    // [if ie 9]><link rel="stylesheet" href="css/custom.ie9.css"><![endif]
+    // [if lt ie 9]><script src="js/html5.rwd.js"></script><![endif]
   body
-    div
-    - if (loginMessage)
-        p
-          span.label.label-important= loginMessage
-
+    div.container
+      p.skip: a(href="#content") Skip to Content
+      // HEADER
+      header.nHead
+        h1: a(href="index.html")= title
+        nav.gnb
+          ul
+            li: a(href="/wikis/#{wikiName}/new")= __('New note')
+            li: a(href="/wikis/#{wikiName}/notes")= __('Note list')
+        div.account
+          if user
+            span.author: a(href="#")= __('Welcome, %s', user.name)
+            a(href="#").btn
+              i.icon-cog
+              = __('Administration')
+            a(href="#").btn
+              i.icon-user
+              = __('Logout')
+          else
+            a(href="/wikis/#{wikiName}/users?action=login").btn
+              i.icon-user
+              = __('Login')
+          button(type="button").btn.tog
+            i.icon-search
+            = __('Search')
+        form(action="").search
+          input(type="search", required).si
+          button(type="submit").sb
+            i.icon-search
+            = __('Search')
+        // ToDo: Feedback 링크 위치 수정할 것!
+        p.feedback.pull-left
+          i
+          a(href="#")= __('Feedback')
+      // /HEADER
       block content
     script(src='/scripts/html5shiv.js')

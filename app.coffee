@@ -76,12 +76,14 @@ app.locals.use (req, res) ->
   res.locals.user = req.session.user
   res.locals.flashMessage = ''
   res.locals.loginMessage = loginMessage || ''
+  res.locals.wikiName = 'note'
   if err
     res.locals.flashMessage = err
   if msg
     res.locals.flashMessage = msg
   if loginMessage
     res.locals.loginMessage = loginMessage
+
 
 app.configure 'development', ->
   app.use express.static __dirname + '/public'
