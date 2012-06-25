@@ -22,11 +22,11 @@ html(lang="ko")
       p.skip: a(href="#content") Skip to Content
       // HEADER
       header.nHead
-        h1: a(href="index.html")= title
+        h1: a(href="/") n4wiki
         nav.gnb
           ul
             li: a(href="/wikis/#{wikiName}/new")= __('New note')
-            li: a(href="/wikis/#{wikiName}/notes")= __('Note list')
+            li: a(href="/wikis/#{wikiName}/pages")= __('Note list')
         div.account
           if user
             span.author: a(href="#")= __('Welcome, %s', user.name)
