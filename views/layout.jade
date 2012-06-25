@@ -43,8 +43,9 @@ html(lang="ko")
           button(type="button").btn.tog.bt-small
             i.icon-search
             = __('Search')
-        form(action="").search
-          input(type="search", required).si
+        form(action="/wikis/#{wikiName}/pages").search
+          input(type="hidden", name="action", value='search').btn
+          input(type="search", name="keyword", required).si
           button(type="submit").sb
             i.icon-search
             = __('Search')
