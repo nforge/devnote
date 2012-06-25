@@ -58,10 +58,16 @@
 	"Submit": "제출",
 	"New Page": "새 페이지",
 	"Search": "검색",
-	"New Note": "New Note",
-	"Note List": "Note List",
 	"Search Notes": "Search Notes",
-	"User List": "User List",
+	"User List": "사용자 목록",
 	"ID": "아이디",
-	"Searching result": "검색 결과"
+	"Searching result": "검색 결과",
+	"Feedback": "의견보내기",
+	"Editing": "작성하기",
+	"Preview": "미리보기",
+	"Save": "저장하기",
+	"Title here": "제목을 입력하세요.",
+	"Fill this form": "내용을 입력하세요.",
+	"Welcome, %s": "%s 님",
+	"Logout": "로그아웃"
 }
