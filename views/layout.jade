@@ -30,22 +30,24 @@ html(lang="ko")
         div.account
           if user
             span.author: a(href="#")= __('Welcome, %s', user.name)
-            a(href="#").btn
+            a(href="#").btn.btn-small
               i.icon-cog
               = __('Administration')
-            a(href="#").btn
+            a(href="#").btn.btn-small
               i.icon-user
               = __('Logout')
           else
-            a(href="/wikis/#{wikiName}/users?action=login").btn
+            a(href="/wikis/#{wikiName}/users?action=login").btn.btn-small
               i.icon-user
               = __('Login')
-          button(type="button").btn.tog
+          button(type="button").btn.tog.bt-small
             i.icon-search
             = __('Search')
         form(action="").search
           input(type="search", required).si
-          button(type="submit").sb: i.icon-search  = __('Search')
+          button(type="submit").sb
+            i.icon-search
+            = __('Search')
         // ToDo: Feedback 링크 위치 수정할 것!
         p.feedback.pull-left
           i

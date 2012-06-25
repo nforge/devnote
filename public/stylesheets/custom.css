@@ -9,9 +9,10 @@ body, table, input, textarea, button, select{ font-family:나눔고딕, NanumGot
 menu{ margin:0; padding:0}
 
 /* Bootstrap Override */
-.btn{ line-height:15px; border-radius:2px}
 .btn-group > .btn:first-child{ border-radius:2px 0 0 2px }
 .btn-group > .btn:last-child{ border-radius:0 2px 2px 0}
+.btn{ line-height:15px; border-radius:2px}
+.btn-small{color:#565960;border-radius:2px;font:11px/14px 돋움,Dotum,Tahoma,Geneva,sans-serif; letter-spacing:-1px}
 textarea,
 input[type="text"],
 input[type="password"],
@@ -58,9 +59,9 @@ input[type="color"],
 .nHead .account{ display:inline; white-space:nowrap; position:relative; top:8px}
 .nHead .author{ display:block; font:11px/31px 돋움,Dotum,Tahoma,Geneva,sans-serif; vertical-align:top;}
 .nHead .author a{ text-decoration:none;font:bold 12px/31px Tahoma,Geneva,sans-serif;}
-.nHead .btn{padding:9px 8px 6px; width:13px; overflow:hidden; color:#565960;border-radius:2px;font:11px/14px 돋움,Dotum,Tahoma,Geneva,sans-serif; letter-spacing:-1px}
+.nHead .btn-small{padding:9px 8px 6px; width:13px; overflow:hidden; }
+.nHead .btn-small i{ position:relative;top:-1px;margin:0 5px 0 0;opacity:.7;filter:alpha(opacity=70)}
 .nHead .tog{ display:inline-block; width:31px}
-.nHead .btn i{ position:relative;top:-1px;margin:0 5px 0 0;opacity:.7;filter:alpha(opacity=70)}
 .nHead .search{ position:relative; top:30px; display:none; margin:0; white-space:nowrap}
 .nHead .search.open{ height:36px; z-index:2; display:block; margin:0 45px 0 0; padding:0 0 10px 0}
 .nHead .search .si,
@@ -87,16 +88,16 @@ input[type="color"],
 .nHead .account{ top:28px}
 .nHead .author,
 .nHead .author *{ line-height:23px !important}
-.nHead .btn{ padding:5px 4px 2px;}
-.nHead .btn i{ margin:0}
+.nHead .btn-small{ padding:5px 4px 2px;}
+.nHead .btn-small i{ margin:0}
 .nHead .tog{ width:23px; display:none}
 .nHead .search{ top:28px; margin:0 0 0 6px; border-left:1px solid #cbcdd1; padding:0 0 0 10px}
 .nHead .search .si{ position:static; padding:4px 24px 4px 4px; width:110px; height:13px; margin:0 -31px 0 0}
 .nHead .search .sb{ position:static; padding:4px 4px 2px; width:27px; height:23px;}
 }
-@media all and (min-width:979px) {
-.nHead .btn{padding:5px 8px 2px; width:auto}
-.nHead .btn i{margin:0 0 0 -4px;opacity:.4;filter:alpha(opacity=40)}
+@media all and (min-width:980px) {
+.nHead .btn-small{padding:5px 8px 2px; width:auto}
+.nHead .btn-small i{margin:0 0 0 -4px;opacity:.4;filter:alpha(opacity=40)}
 .nHead .search .si{ width:190px}
 }
 /* nFoot */
@@ -108,9 +109,8 @@ input[type="color"],
 .page-header h1{ font-size:20px}
 
 /* Write */
-.write {}
 @media all and (min-width:600px) {
-.write { border:1px solid #e3e3e4; background:#f9f9f9; padding:19px 28px}
+.write { position:relative; border:1px solid #e3e3e4; background:#f9f9f9; padding:19px 28px}
 }
 .write menu{ text-align:right; margin:0 0 10px 0}
 .write menu .btn-group{ display:inline}
@@ -118,6 +118,11 @@ input[type="color"],
 .write .wText{ margin:0 10px 10px 0}
 .write .wTitle input,
 .write .wText textarea{ margin:0; width:100%}
+.write .tog{ display:none}
+@media all and (min-width:980px) {
+.write .tog{ display:block; position:absolute; top:50%; right:-1px; height:46px; width:13px; padding:0; margin:-23px 0 0 0; overflow:hidden; background:#fff; border:1px solid #e3e3e4; border-right:0; border-radius:3px 0 0 3px; white-space:nowrap; box-shadow:0 1px 1px #e6e6e6}
+.write .tog i{ display:inline-block; width:13px; height:8px; background:url(/images/custom.icon.gif) no-repeat 4px 0}
+}
 
 /* Text Area */
 .tx{margin:20px 0 30px 0; font-size:14px; line-height:1.5}
