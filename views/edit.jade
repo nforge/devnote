@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  form(id="editpage", method="post", action="/wikis/note/pages")
+  form(id="editpage", method="post", action="/wikis/#{wikiName}/pages")
     div.page-header
       input(id="pagename", name="name", value=name).input-xlarge
 
@@ -12,7 +12,7 @@ block content
 
   div.btn-group
     a(href="?").btn= __('View')
-    form(method="post", action="/wikis/note/pages/"+title)
+    form(method="post", action="/wikis/#{wikiName}/pages/#{title}")
       input(type="hidden", name="_method", id='_method', value="delete")
       input(type="submit", value=__('Delete'), name="submit").btn
   br

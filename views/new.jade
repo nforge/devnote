@@ -5,7 +5,7 @@ block content
     article.article
       hgroup.page-header
         h1= __('New Page')
-      form(method="post", id='newpost', action="/wikis/note/pages").write
+      form(method="post", id='newpost', action="/wikis/#{wikiName}/pages").write
         menu
           div.btn-group
             button(type="button").btn.active: strong= __('Editing')
@@ -16,7 +16,7 @@ block content
         div.wText
           textarea(name="body", placeholder=__('Fill this form'), required="", rows="16", cols="32")#body
       div
-        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/note/pages/#{pageName}/attachment.partial")
+        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{pageName}/attachment.partial")
           label(for="attachment") 첨부할 파일을 선택해 주세요
           input(type='file', name='attachment', id='attachment')
           input(type="submit", name='attach', value="첨부").btn.btn-primary
@@ -62,7 +62,7 @@ block content
       mode: 'markdown',
       lineNumbers: true,
       matchBrackets: true,
-      theme: "default",
+      theme: "default"
     });
     activateSubmitKey(function(handler) { editor.setOption('onKeyEvent', handler); });
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });

@@ -59,11 +59,13 @@ history = (name, req, res) ->
     wiki.getHistory name, LIMIT, handler
 
 renderDiff = (diff, inlineCss) ->
+  result = ''
+
   diff.forEach (seg) ->
     klass = 'added' if seg.added
     klass = 'removed' if seg.removed
     if klass
-      if (inlineCss)
+      if inlineCss
         color = {'added': '#DFD', 'removed': '#FDD'}[klass]
         attr = "style = 'background-color: #{color}" if color
       else
@@ -73,7 +75,7 @@ renderDiff = (diff, inlineCss) ->
       (a, b) -> a + '<p ' + (attr or '') + '>' + b + '</p>',
       result
 
-  return result or ''
+  return result
 
 diff = (name, req, res) ->
   wiki.diff name, [req.query.a, req.query.b], (err, diff) ->
@@ -171,22 +173,6 @@ edit = (name, req, res) ->
         name: name,
         content: page.content
 
-commandUrls = (name) ->
-  view: ROOT_PATH + '/pages/' + name,
-  new: ROOT_PATH + '/new',
-  edit: url.format
-    pathname: ROOT_PATH + '/pages/' + name,
-    query:
-      action: 'edit',
-  history: url.format
-    pathname: ROOT_PATH + '/pages/' + name,
-    query:
-      action: 'history',
-  delete: url.format
-    pathname: ROOT_PATH + '/pages/' + name,
-  subscribe: url.format
-    pathname: ROOT_PATH + '/subscribes/' + name,
-
 view = (name, req, res) ->
   wiki.getPage name, req.query.rev, (err, page) ->
     if err
@@ -196,25 +182,13 @@ view = (name, req, res) ->
       subscribers[name] and
       req.session.user.id in subscribers[name]
 
-    urls = commandUrls name
-
     renderPage = (lastVisit) ->
-      if lastVisit
-        urls.diffSinceLastVisit = url.format
-          pathname: ROOT_PATH + '/pages/' + name,
-          query:
-            action: 'diff',
-            a: lastVisit.id,
-            b: page.commitId,
-
       options =
         title: name
         content: wiki.render page.content
-        commit: page.commit
-        isOld: page.isOld
+        page: page
         subscribed: subscribed
         loggedIn: !!req.session.user
-        urls: urls
         lastVisit: lastVisit
 
       res.render 'page', options

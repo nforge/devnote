@@ -5,23 +5,23 @@ block content
   p= __('Welcome to %s', title)
 
   h2= __('Note')
-  a(href='/wikis/note/pages/frontpage') frontpage
+  a(href='/wikis/#{wikiName}/pages/frontpage') frontpage
   p
-  a(href='/wikis/note/new')= __('New note')
+  a(href='/wikis/#{wikiName}/new')= __('New note')
   p
-  a(href='/wikis/note/pages')= __('Note list')
+  a(href='/wikis/#{wikiName}/pages')= __('Note list')
   p
-  a(href='/wikis/note/pages?action=search')= __('Search notes')
+  a(href='/wikis/#{wikiName}/pages?action=search')= __('Search notes')
   p
-  a(href='/wikis/note/pages/today/attachment') file attachment at page name 'today'
+  a(href='/wikis/#{wikiName}/pages/today/attachment') file attachment at page name 'today'
   p
   h2= __('User')
   p
-  a(href='/wikis/note/users?action=login')= __('Login')
+  a(href='/wikis/#{wikiName}/users?action=login')= __('Login')
   p
-  a(href='/wikis/note/users')= __('User list')
+  a(href='/wikis/#{wikiName}/users')= __('User list')
   p
-  a(href='/wikis/note/users/new')= __('New user')
+  a(href='/wikis/#{wikiName}/users/new')= __('New user')
   p
   h2= __('Administration')
   p

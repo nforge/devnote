@@ -5,4 +5,4 @@ block content
   h3
     each item in content
       li= item
-      a(href="/wikis/note/pages/"+item)= __('View')
+      a(href="/wikis/#{wikiName}/pages/"+item)= __('View')

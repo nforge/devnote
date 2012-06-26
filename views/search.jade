@@ -11,5 +11,5 @@ block content
   ul
     each content, name in pages
       li
-        a(href="/wikis/note/pages/"+name)= name
+        a(href="/wikis/#{wikiName}/pages/"+name)= name
         p!= content

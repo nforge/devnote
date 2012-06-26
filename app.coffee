@@ -19,6 +19,7 @@ fileApp = require './fileApp'
 adminApp = require './adminApp'
 workingPage = require './lib/workingpage'
 i18n = require './lib/i18n'
+path = require 'path'
 
 i18n.configure
   locales: ['en', 'ko']
@@ -82,6 +83,8 @@ app.locals.use (req, res) ->
   if loginMessage
     res.locals.loginMessage = loginMessage
 
+  res.locals.wikiName = WIKINAME
+  res.locals.joinPath = path.join
 
 app.configure 'development', ->
   app.use express.static __dirname + '/public'

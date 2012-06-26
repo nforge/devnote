@@ -1,8 +1,10 @@
 extends layout
 
 block content
+  urlToPage = joinPath('wikis', wikiName, 'pages', title)
+
   h1= __('History')
-  form(method="get", action="/wikis/note/pages/"+title)
+  form(method="get", action=urlToPage)
     table
       thead
         tr
@@ -24,16 +26,16 @@ block content
               input(type="radio", value=commits.ids[index], name="b")
             td= commit.message
             td
-              a(href="/wikis/note/pages/" + title + "?rev=" + commits.ids[index], name=title)= __('Show')
+              a(href="#{urlToPage}?rev=#{commits.ids[index]}", name=title)= __('Show')
             td
               a(href="#", class="rollback-button", name=title, id=commits.ids[index])= __('Rollback')
         - });
 
   ul(class="pager")
     li
-      a(href="/wikis/note/pages/" + title + "?action=history&until=" + first + "&offset=-" + limit)= __('« Newer')
+      a(href="#{urlToPage}?action=history&until=#{first}&offset=-#{limit}")= __('« Newer')
     li
-      a(href="/wikis/note/pages/" + title + "?action=history&until=" + last + "&offset=1")= __('Older »')
+      a(href="#{urlToPage}?action=history&until=#{last}&offset=1")= __('Older »')
 
   ul
     li
@@ -42,7 +44,7 @@ block content
       a(href="?action=edit")= __('Edit')
     li
       a(href="?action=history")= __('History')
-  form(method="post", action="/wikis/note/pages/"+title)
+  form(method="post", action=urlToPage)
     input(type="hidden", name="_method", id='_method', value="delete")
     input(type="submit", value=__('Delete'), name="submit")
 
