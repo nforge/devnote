@@ -29,8 +29,8 @@ suite '웹 인터페이스', ->
         fill('body', 'Welcome to n4wiki!').
         pressButton 'save', ->
           assert.ok browser.success
-          assert.equal browser.text('h1'), 'FrontPage'
-          assert.equal browser.text('p'), 'Welcome to n4wiki!'
+          assert.equal browser.text('.nBody h1'), 'FrontPage'
+          assert.equal browser.text('.nBody article.tx'), 'Welcome to n4wiki!'
           done()
 
   test '등록한 페이지 열어보기 - GET /wikis/note/pages/:name', (done) ->
@@ -42,8 +42,8 @@ suite '웹 인터페이스', ->
         pressButton 'save', ->
           browser.visit getUrl('/wikis/note/pages/FrontPage'), ->
             assert.ok browser.success
-            assert.equal browser.text('h1'), 'FrontPage'
-            assert.equal browser.text('p'), 'Welcome to n4wiki!'
+            assert.equal browser.text('.nBody h1'), 'FrontPage'
+            assert.equal browser.text('.nBody article.tx'), 'Welcome to n4wiki!'
             done()
 
   test '등록하지 않은 페이지 열어보기 - GET /wikis/note/pages/:name', (done) ->
@@ -73,8 +73,8 @@ suite '웹 인터페이스', ->
               pressButton 'save', ->
                 browser.visit getUrl('/wikis/note/pages/FrontPage'), ->
                   assert.ok browser.success
-                  assert.equal browser.text('h1'), 'FrontPage'
-                  assert.equal browser.text('p'), 'n4wiki updated!'
+                  assert.equal browser.text('.nBody h1'), 'FrontPage'
+                  assert.equal browser.text('.nBody article.tx'), 'n4wiki updated!'
                   done()
 
   test '등록한 페이지 삭제하기 - DELETE /wikis/note/pages/:name', (done) ->
