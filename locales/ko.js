@@ -1,5 +1,5 @@
 {
-	"Something changed since your last visit, %s. <a href='%s'>Click here</a> to see the difference.": "지난번 페이지를 방문한 이후에 무언가 <a href='%s'>변경된 것</a>이 있습니다.",
+	"Something changed since your last visit, %s. <a href='%s'>Click here</a> to see the difference.": "지난번 페이지를 방문한 %s 이후에 무언가 <a href='%s'>변경된 것</a>이 있습니다.",
 	"This is an old revision of this page, as edited by %s at %s. It may differ significantly from the <a href='%s'>current revision</a>.": "지금 보시는 페이지는 %s이(가) %s에 고친 버전입니다. <a href='%s'>최신 버전</a>과 차이가 있을 수 있습니다.",
 	"<span>Unsaved draft exists.</span> Click <a id='restore-draft'>here</a><span> to recover it.</span>": "<span>저장되지 않은 draft가 있습니다. </span><a id='restore-draft'>여기</a><span>를 클릭하시면 불러옵니다.</span>",
 	"New": "새 페이지",
