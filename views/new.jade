@@ -14,7 +14,7 @@ block content
         div.wTitle
           input(type="text", name="name", placeholder=__('Title here'), required="")#title
         div.wText
-          textarea(name="body", placeholder=__('Fill this form'), required="", rows="16", cols="32")#body
+          textarea(name="body", placeholder=__('Fill this form'), rows="16", cols="32")#body
       div
         form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{pageName}/attachment.partial")
           label(for="attachment") 첨부할 파일을 선택해 주세요
