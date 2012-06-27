@@ -29,7 +29,7 @@ noop = ->
 process.env.uploadDir = uploadDir = __dirname + '/public/attachment'
 WIKINAME = 'note'
 ROOT_PATH = '/wikis/' + WIKINAME
-API_ROOT_PATH = '/apis/' + WIKINAME
+API_ROOT_PATH = '/api/' + WIKINAME
 
 app = express()
 server = http.createServer app

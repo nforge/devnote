@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  urlToPage = joinPath('wikis', wikiName, 'pages', title)
+  urlToPage = joinPath('/wikis', wikiName, 'pages', title)
 
   h1= __('History')
   form(method="get", action=urlToPage)
@@ -11,7 +11,8 @@ block content
           td= __('Author')
           td= __('Date')
           td
-            input(type="submit", value=__('Diff'), name="action")
+            input(type="hidden", value='diff', name="action")
+            input(type="submit", value=__('Diff'))
           td= __('Message')
       tbody(id="commits")
         - var first = commits.ids[0];
@@ -49,4 +50,7 @@ block content
     input(type="submit", value=__('Delete'), name="submit")
 
   script(type="text/javascript", src="/scripts/jquery.js")
+  script(type="text/javascript", src="/scripts/i18n.js")
   script(type="text/javascript", src="/scripts/rollback.js")
+  script(type="text/javascript")
+    rollback.init('#{wikiName}');
