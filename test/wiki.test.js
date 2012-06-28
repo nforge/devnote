@@ -101,9 +101,11 @@ suite('wiki', function() {
       if (err) throw err;
       var next = this;
       wiki.getHistory(name, null, function(err, commits) {
+        if (err) throw err;
         wiki.getPage(name, commits.ids[1], next);
       });
     }, function then(err, page) {
+      if (err) throw err;
       assert.equal(page.content, 'hello');
       done();
     });
