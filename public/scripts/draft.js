@@ -98,6 +98,6 @@ draft.init = function(_prefix, form, fields) {
   }
 
   $(function() {
-    i18n.on('ready', _init);
+    i18n.onReady(_init);
   });
 }
