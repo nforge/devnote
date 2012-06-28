@@ -29,9 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 Changelog:
-2010.11.07 - 0.7-beta1-node
-  - converted it to a node.js compatible module
-
 2010.09.06 - 0.7-beta1
   - features: vsprintf, support for named placeholders
   - enhancements: format cache, reduced global namespace pollution
@@ -185,5 +182,7 @@ var vsprintf = function(fmt, argv) {
 	return sprintf.apply(null, argv);
 };
 
-exports.sprintf = sprintf;
-exports.vsprintf = vsprintf;
+if (typeof module !== undefined && typeof exports === 'object') {
+    exports.sprintf = sprintf;
+    exports.vsprintf = vsprintf;
+}
