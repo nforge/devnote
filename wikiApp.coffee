@@ -10,6 +10,7 @@ util = require 'util'
 __ = (require './lib/i18n').__
 
 ROOT_PATH = '/wikis/'
+HISTORY_LIMIT = 30
 
 lastVisits = {}
 subscribers = {}
@@ -37,7 +38,6 @@ error500 = (err, req, res, next) ->
   error: err.message,
 
 history = (name, req, res) ->
-  LIMIT = 30
   handler = (err, commits) ->
     if err
       console.log err
@@ -46,17 +46,17 @@ history = (name, req, res) ->
       res.render 'history',
         title: name
         commits: commits
-        limit: LIMIT
+        limit: HISTORY_LIMIT
   if req.query.until
     offset = parseInt(req.query.offset or 0)
     wiki.queryHistory
       filename: name
       until: req.query.until
       offset: offset
-      limit: LIMIT
+      limit: HISTORY_LIMIT
       handler
   else
-    wiki.getHistory name, LIMIT, handler
+    wiki.getHistory name, HISTORY_LIMIT, handler
 
 renderDiff = (diff, inlineCss) ->
   result = ''
@@ -268,7 +268,7 @@ exports.postDelete = (req, res) ->
 exports.postRollback = (req, res) ->
   name = req.params.name
   wiki.rollback name, req.body.id, (err) ->
-    wiki.getHistory name, (err, commits) ->
+    wiki.getHistory name, HISTORY_LIMIT, (err, commits) ->
       if err
         error404 err, req, res
       else
