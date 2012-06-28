@@ -42,5 +42,13 @@
 	"Body": "Body",
 	"Send": "Send",
 	"New Page": "New Page",
-	"Submit": "Submit"
+	"Submit": "Submit",
+	"Search": "Search",
+	"Feedback": "Feedback",
+	"Editing": "Editing",
+	"Preview": "Preview",
+	"Save": "Save",
+	"Title here": "Title here",
+	"Fill this form": "Fill this form",
+	"Welcome to %s": "Welcome to %s"
 }
