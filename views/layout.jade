@@ -18,6 +18,7 @@ html(lang="ko")
     // [if ie 9]><link rel="stylesheet" href="css/custom.ie9.css"><![endif]
     // [if lt ie 9]><script src="js/html5.rwd.js"></script><![endif]
   body
+    div.top
     div.container
       p.skip: a(href="#content") Skip to Content
       // HEADER
@@ -30,16 +31,18 @@ html(lang="ko")
         div.account
           if user
             span.author: a(href="#")= __('Welcome, %s', user.name)
-            a(href="#").btn.btn-small
-              i.icon-cog
-              = __('Administration')
-            a(href="#").btn.btn-small
-              i.icon-user
-              = __('Logout')
+            span.btn-group
+              a(href="#").btn.btn-small
+                i.icon-cog
+                = __('Administration')
+              a(href="#").btn.btn-small
+                i.icon-user
+                = __('Logout')
           else
-            a(href="/wikis/#{wikiName}/users?action=login").btn.btn-small
-              i.icon-user
-              = __('Login')
+            span.btn-group
+              a(href="/wikis/#{wikiName}/users?action=login").btn.btn-small
+                i.icon-user
+                = __('Login')
           button(type="button").btn.tog.bt-small
             i.icon-search
             = __('Search')
@@ -50,9 +53,8 @@ html(lang="ko")
             i.icon-search
             = __('Search')
         // ToDo: Feedback 링크 위치 수정할 것!
-        p.feedback.pull-left
-          i
-          a(href="#")= __('Feedback')
+        p.feedback
+          a(href="#", title= __('Feedback')) ?
       // HEADER
       block content
 
