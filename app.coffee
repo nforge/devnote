@@ -85,6 +85,7 @@ app.locals.use (req, res) ->
 
   res.locals.wikiName = WIKINAME
   res.locals.joinPath = path.join
+  res.locals.sprintf = require('./lib/sprintf').sprintf
 
 app.configure 'development', ->
   app.use express.static __dirname + '/public'

@@ -93,9 +93,14 @@ list = (req, res) ->
     if err
       error404 err, req, res
     else
-      res.render 'pages',
-        title: 'Pages',
-        content: pages
+      pageName = req.query.page or pages[0].name
+
+      wiki.getPage pageName, (err, page) ->
+        res.render 'pages',
+          title: 'Pages'
+          pages: pages
+          selectedPageName: pageName
+          selectedPageContent: renderer.markdown page.content
 
 exports.getPage = (req, res) ->
   name = req.params.name

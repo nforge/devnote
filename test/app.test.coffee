@@ -29,7 +29,7 @@ suite '웹 인터페이스', ->
         fill('body', 'Welcome to n4wiki!').
         pressButton 'save', ->
           assert.ok browser.success
-          assert.equal browser.text('.nBody h1'), 'FrontPage'
+          assert.equal browser.text('.nBody .page-header h1'), 'FrontPage'
           assert.equal browser.text('.nBody article.tx'), 'Welcome to n4wiki!'
           done()
 
@@ -42,7 +42,7 @@ suite '웹 인터페이스', ->
         pressButton 'save', ->
           browser.visit getUrl('/wikis/note/pages/FrontPage'), ->
             assert.ok browser.success
-            assert.equal browser.text('.nBody h1'), 'FrontPage'
+            assert.equal browser.text('.nBody .page-header h1'), 'FrontPage'
             assert.equal browser.text('.nBody article.tx'), 'Welcome to n4wiki!'
             done()
 
@@ -73,7 +73,7 @@ suite '웹 인터페이스', ->
               pressButton 'save', ->
                 browser.visit getUrl('/wikis/note/pages/FrontPage'), ->
                   assert.ok browser.success
-                  assert.equal browser.text('.nBody h1'), 'FrontPage'
+                  assert.equal browser.text('.nBody .page-header h1'), 'FrontPage'
                   assert.equal browser.text('.nBody article.tx'), 'n4wiki updated!'
                   done()
 
