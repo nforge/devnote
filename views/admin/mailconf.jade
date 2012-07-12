@@ -1,63 +1,62 @@
 extends ../layout
 
 block content
-  div.row-fluid
-   div.span5
-     form(method="post", action="/admin/mailconf", id="mailForm").form-horizontal
-       fieldset
+  section(id="content", tabindex="0").nBody
+    div.row.task
+      selected = 'mailconf'
 
-         h3= __('Mail configuration')
+      include admin
 
-         div.control-group
-           label(name="from", for="from").control-label= __('From')
-           div.controls
-             input(name="from", id="from", class="required email", value=options.from, placeholder="yourname@mail.com").input-xlarge
+      form(method="post", action="/admin/mailconf", id="mailForm").span9.form-horizontal
+        div.page-header
+          h1= __('Mail configuration')
 
-         div.control-group.warning
-           label(name="password").control-label= __('Password')
-           div.controls
-             input(name="password", id="password", type="password").input-xlarge
-             span(id="password-warning").help-inline= __('This will be stored as a plain text in the server.')
+        div.control-group
+          label(name="from", for="from").control-label= __('From')
+          div.controls
+            input(type="text", name="from", id="from", value=options.from, required, placeholder="yourname@mail.com")
 
+        div.control-group
+          label(name="password").control-label= __('Password')
+          div.controls
+            input(type="password", name="password", id="password", required, placeholder=__('This will be stored as a plain text in the server.'))
 
-         div(id="auto-config-alert", style="display: none").alert.alert-success
-           span(id="using-wellknown-service-message")
-           span(id="detailed-toggle-message")
-           a(href="#", id="detailed-toggle-link", data-toggle="collapse", data-target="#detailed")
+        div(id="auto-config-alert", style="display: none").alert.alert-success
+          span(id="using-wellknown-service-message")
+          span(id="detailed-toggle-message")
+          a(href="#", id="detailed-toggle-link", data-toggle="collapse", data-target="#detailed")
 
-         div(id="detailed").in
-           div.control-group
-             label(name="host").control-label= __('Host')
-             div.controls
-               input(name="host", id="host", value=options.host, placeholder=__('smtp.mail.com')).input-xlarge
-           div.control-group
-             label(name="port").control-label= __('Port')
-             div.controls
-               input(name="port", id="port", value=options.port, placeholder=__('25, 587 or 465')).input-xlarge
-           div.control-group
-             label(name="username").control-label= __('Username')
-             div.controls
-               input(name="username", id="username", value=options.username, placeholder="yourname").input-xlarge
-           div.control-group
-             label(name="ssl").control-label= __('SSL')
-             div.controls
-               input(name="ssl", id="ssl", checked=options.ssl, type="checkbox").input-xlarge
+        div(id="detailed").collapse.in
+          div.control-group
+            label(name="host").control-label= __('Host')
+            div.controls
+              input(type="text", name="host", id="host", value=options.host, placeholder=__('smtp.mail.com'))
+          div.control-group
+            label(name="port").control-label= __('Port')
+            div.controls
+              input(type="text", name="port", id="port", value=options.port, placeholder=__('25, 587 or 465'))
+          div.control-group
+            label(name="username").control-label= __('Username')
+            div.controls
+              input(type="text", name="username", id="username", value=options.username, placeholder="yourname")
+          div.control-group
+            label(name="ssl").control-label= __('SSL')
+            div.controls
+              input(type="text", name="ssl", id="ssl", checked=options.ssl, type="checkbox")
 
-           div.control-group
-             label(name="tls").control-label= __('TLS')
-             div.controls
-               input(name="tls", id="tls", checked=options.tls, type="checkbox").input-xlarge
+          div.control-group
+            label(name="tls").control-label= __('TLS')
+            div.controls
+              input(name="tls", id="tls", checked=options.tls, type="checkbox")
 
-           div.control-group
-             label(name="authMethod").control-label= __('Authentication method')
-             div.controls
-               input(name="authMethod", id="authMethod", value=options.authMethod, placeholder=__('LOGIN or PLAIN')).input-xlarge
+          div.control-group
+            label(name="authMethod").control-label= __('Authentication method')
+            div.controls
+              input(type="text", name="authMethod", id="authMethod", value=options.authMethod, placeholder=__('LOGIN or PLAIN'))
 
-         div.form-actions
-           button(type="submit").btn.btn-primary= __('Save Changes')
-           button.btn= __('Cancel')
+        button(type="submit").btn.btn-primary= __('Save Changes')
 
-  script(type="text/javascript", src="/scripts/jquery.min.js")
+  script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/bootstrap/js/bootstrap.js")
 
   script(type="text/javascript", src="/scripts/sprintf.js")

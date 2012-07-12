@@ -1,27 +1,32 @@
 extends ../layout
 
 block content
-  if notConfigured
-    div.alert.alert-error!= __("Mail is not configured. <a href='%s'>Click here</a> to configure.", urls.mailConf)
+  section(id="content", tabindex="0").nBody
+    div.row.task
+      selected = 'mail'
 
-  div.row-fluid
-    div.span5.writer
-      form(method="post", action="/admin/mail", id="mailForm")
-        fieldset
+      include admin
 
-          h3= __('Send mail')
-
-          div.control-group
-            label(name="to").control-label= __('To')
+      form(method="post", action="/admin/mail", id="mailForm").span9.form-horizontal
+        div.page-header
+          h1= __('Send mail')
+        if notConfigured
+          div.alert.alert-error!= __("Mail is not configured. <a href='%s'>Click here</a> to configure.", urls.mailConf)
+        div.control-group
+          label(name="to").control-label= __('To')
+          div.controls
             input(name="to", placeholder=__('receiver@mail.com')).input-xlarge.title
-          div.control-group
-            label(name="subject").control-label= __('Title')
-            input(name="subject").input-xlarge.title
-          div.control-group
-            label(name="body").control-label= __('Body')
-            textarea(id="body", name="body", rows="15").input-xlarge.textbody
-          div
-            input(type="submit", name="submit", value=__('Send')).btn-primary
+        div(style="margin-right: 10px").control-group
+          label(name="subject").control-label= __('Subject')
+          div.controls
+            input(name="subject")
+        div(style="margin-right: 10px").control-group
+          label(name="body").control-label= __('Body')
+          div.controls
+            textarea(id="body", name="body", cols=32, rows="16").input-xlarge.textbody
+        div
+          button(type="submit").btn.btn-primary
+            strong= __('Send')
 
   script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/bootstrap/js/bootstrap.js")

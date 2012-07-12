@@ -81,7 +81,7 @@ var updateUsingServiceMessage = function() {
 }
 
 $(function() {
-  i18n.on('ready', function() {
+  i18n.onReady(function() {
     $("#from").keyup(guessMailConfig);
     $("#host").keyup(updateUsingServiceMessage);
 

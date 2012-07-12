@@ -69,5 +69,6 @@
 	"Title here": "제목을 입력하세요.",
 	"Fill this form": "내용을 입력하세요.",
 	"Welcome, %s": "%s 님",
-	"Logout": "로그아웃"
+	"Logout": "로그아웃",
+	"Subject": "제목"
 }
