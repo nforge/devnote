@@ -1,0 +1,33 @@
+extends ../layout
+
+block section
+  div.row.task
+    nav.lnb.span3
+      block nav
+        div.tob
+          h1
+            i.icon-cog
+            = __('Administration')
+          ul
+            li
+              if selected == 'new'
+                strong= __('New user')
+              else
+                a(href="/wikis/#{wikiName}/users/new")= __('New user')
+            li
+              if selected == 'users'
+                strong= __('User list')
+              else
+                a(href="/wikis/#{wikiName}/users")= __('User list')
+            li
+              if selected == 'mailconf'
+                strong= __('Configure mail')
+              else
+                a(href="/admin/mailconf")= __('Configure mail')
+            li
+              if selected == 'mail'
+                strong= __('Send mail')
+              else
+                a(href="/admin/mail")= __('Send mail')
+
+    block content

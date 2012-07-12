@@ -23,44 +23,57 @@ html(lang="ko")
       p.skip: a(href="#content") Skip to Content
       // HEADER
       header.nHead
-        h1: a(href="/") n4wiki
-        nav.gnb
-          ul
-            li: a(href="/wikis/#{wikiName}/new")= __('New note')
-            li: a(href="/wikis/#{wikiName}/pages")= __('Note list')
-        div.account
-          if user
-            span.author: a(href="#")= __('Welcome, %s', user.name)
-            span.btn-group
-              a(href="#").btn.btn-small
-                i.icon-cog
-                = __('Administration')
-              a(href="#").btn.btn-small
-                i.icon-user
-                = __('Logout')
-          else
-            span.btn-group
-              a(href="/wikis/#{wikiName}/users?action=login").btn.btn-small
-                i.icon-user
-                = __('Login')
-          button(type="button").btn.tog.btn-small
-            i.icon-search
-            = __('Search')
-        form(action="/wikis/#{wikiName}/pages").search
-          input(type="hidden", name="action", value='search').btn
-          input(type="search", name="keyword", required).si
-          button(type="submit").sb
-            i.icon-search
-            = __('Search')
-        // ToDo: Feedback 링크 위치 수정할 것!
-        p.feedback
-          a(href="#", title= __('Feedback')) ?
-      // HEADER
-      block content
+        block header
+          h1: a(href="/") n4wiki
+          nav.gnb
+            ul
+              li: a(href="/wikis/#{wikiName}/new")= __('New note')
+              li: a(href="/wikis/#{wikiName}/pages")= __('Note list')
+          div.account
+            if user
+              span.author: a(href="#")= __('Welcome, %s', user.name)
+              span.btn-group
+                a(href="#").btn.btn-small
+                  i.icon-cog
+                  = __('Administration')
+                a(href="#").btn.btn-small
+                  i.icon-user
+                  = __('Logout')
+            else
+              span.btn-group
+                a(href="/wikis/#{wikiName}/users?action=login").btn.btn-small
+                  i.icon-user
+                  = __('Login')
+            button(type="button").btn.tog.btn-small
+              i.icon-search
+              = __('Search')
+          form(action="/wikis/#{wikiName}/pages").search
+            input(type="hidden", name="action", value='search').btn
+            input(type="search", name="keyword", required).si
+            button(type="submit").sb
+              i.icon-search
+              = __('Search')
+          // ToDo: Feedback 링크 위치 수정할 것!
+          p.feedback
+            a(href="#", title= __('Feedback')) ?
+        // HEADER
+
+      section(id="content", tabindex="0").nBody
+        block section
+          block content
 
       // /FOOTER
       footer.nFoot
-        p.nforge nforge
-        p.nhn © NHN Corp
-    script(src='/scripts/html5shiv.js')
-    script(src='/scripts/custom.js')
+        block footer
+          p.nforge nforge
+          p.nhn © NHN Corp
+
+    block script
+      script(src='/scripts/html5shiv.js')
+      script(src='/scripts/yepnope.js')
+      script
+        yepnope({
+          test: jQuery,
+          yep: '/scripts/custom.js',
+          nope: ['/scripts/jquery.js', '/scripts/custom.js']
+        });
