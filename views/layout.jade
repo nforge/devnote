@@ -75,7 +75,7 @@ html(lang="ko")
       script(src='/scripts/yepnope.js')
       script
         yepnope({
-          test: jQuery,
+          test: (typeof jQuery !== 'undefined'),
           yep: '/scripts/custom.js',
           nope: ['/scripts/jquery.js', '/scripts/custom.js']
         });
