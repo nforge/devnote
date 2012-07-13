@@ -12,9 +12,8 @@ login = (req, res) ->
 # get userlist
 users = (req, res) ->
   userlist = User.findAll()
-  res.render 'user/userlist',
+  res.render 'admin/userlist',
     title: 'User List',
-    content: "등록된 사용자 " + Object.keys(userlist).length + "명",
     userlist: userlist
 
 # post login
@@ -34,7 +33,7 @@ exports.postLogin =  (req, res) ->
         res.redirect '/'
 
 exports.getNew = (req, res) ->
-  res.render 'user/new'
+  res.render 'admin/adduser'
     title: 'new user'
 
 exports.postNew = (req, res) ->
@@ -45,14 +44,14 @@ exports.postNew = (req, res) ->
     password: req.body.password
   userInfo = User.findUserById req.body.id
 
-  res.render 'user/user',
+  res.render 'admin/user',
     title: '사용자가 등록되었습니다.',
     content: "사용자 정보",
     userInfo: userInfo
 
 exports.getId = (req, res) ->
   userInfo = User.findUserById req.params.id
-  res.render 'user/edit',
+  res.render 'admin/edituser',
     title: 'User information',
     content: "사용자 정보",
     user: userInfo
@@ -65,7 +64,7 @@ exports.postId = (req, res) ->
   User.save targetUser if isValid
 
   userInfo = User.findUserById req.params.id
-  res.render 'user/user',
+  res.render 'admin/user',
     title: '사용자 정보가 변경되었습니다.',
     content: "사용자 정보",
     userInfo: userInfo

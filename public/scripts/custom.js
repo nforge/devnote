@@ -1,23 +1,20 @@
 jQuery(function($){
 	// Search
 	var $search = $('.nHead>.search');
-	var $feedback = $('.feedback');
-	var $lnb = $('.lnb');
+	var $lnbtog = $('.lnb>.tog');
 	$('.nHead>.account>.btn-group>.tog').click(function(){
 		$(this).parents('.account').eq(0).next('.search').toggleClass('open');
 		if($search.hasClass('open')){
-			$search.next($feedback).hide();
-			$lnb.hide();
+			$lnbtog.css('top','-95px');
 		} else {
-			$search.next($feedback).show();
-			$lnb.show();
+			$lnbtog.css('top','-49px');
 		}
 	});
 	$(window).resize(function(){
 		var $ww = $(window).width();
-		if($ww >= 700){
-			$search.removeClass('open').next($feedback).show();
-			$lnb.show();
+		if($ww >= 768){
+			$search.removeClass('open');
+			$lnbtog.css('top','-49px');
 		}
 	}).resize();
 	// Write 
@@ -74,4 +71,9 @@ jQuery(function($){
 			$checkbox.removeAttr('checked');
 		}
 	});
+	// Firefox IMG max-width Bugfix
+	$(window).resize(function(){
+		var pcWth = $('.write>.span6').width();
+		$('.write>.span6>.pc>.tx').width(pcWth);
+	}).resize().click(function(){$(this).resize();});
 });
