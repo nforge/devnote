@@ -242,6 +242,7 @@ input[type="color"],
 .write .files .e{font:10px Tahoma, Geneva, sans-serif}
 .write .files .close{width:24px;height:24px;font-size:15px;line-height:1;float:none}
 .write .attach progress{border:0;height:3px;vertical-align:middle;opacity:.5}
+.fileuploadProgress {border:0;height:3px;vertical-align:middle;opacity:.5;width: 100%}
 @media all and (min-width:600px) {
 .write .ic {position:relative;border:1px solid #e3e3e4;background:#f9f9f9;padding:19px 28px;border-radius:4px}
 }
