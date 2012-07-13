@@ -29,3 +29,7 @@ img {
 .inline {
     display: inline;
 }
+
+.no-margin {
+    margin: 0px;
+}

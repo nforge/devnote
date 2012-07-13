@@ -70,5 +70,12 @@
 	"Fill this form": "내용을 입력하세요.",
 	"Welcome, %s": "%s 님",
 	"Logout": "로그아웃",
-	"Subject": "제목"
+	"Subject": "제목",
+	"User name": "사용자 이름",
+	"Id": "아이디",
+	"Email": "이메일",
+	"At least 4 characters in length.": "4자리 이상으로 입력해 주세요.",
+	"Total <strong>%s</strong>": "전체: <strong>%s</strong>명",
+	"Delete all": "전체 삭제",
+	"Add user": "새 사용자 등록",
 }

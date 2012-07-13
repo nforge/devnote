@@ -10,12 +10,12 @@ block section
             = __('Administration')
           ul
             li
-              if selected == 'new'
+              if selected == 'adduser'
                 strong= __('New user')
               else
                 a(href="/wikis/#{wikiName}/users/new")= __('New user')
             li
-              if selected == 'users'
+              if selected == 'userlist'
                 strong= __('User list')
               else
                 a(href="/wikis/#{wikiName}/users")= __('User list')

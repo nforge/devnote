@@ -1,0 +1,31 @@
+extends adminLayout
+
+block prepend nav
+  selected = 'adduser'
+
+block content
+    form(method="post", action="/wikis/note/users/new").span9.form-horizontal
+      div.page-header
+        h1= __('New user')
+
+      div.control-group
+        label(for="name").control-label= __('User name')
+        div.controls
+          input(type="text", name="name", id="name", required)
+
+      div.control-group
+        label(for="id").control-label= __('Id')
+        div.controls
+          input(type="text", name="id", id="id", required)
+
+      div.control-group
+        label(for="email").control-label= __('Email')
+        div.controls
+          input(type="text", name="email", id="email", required)
+
+      div.control-group
+        label(for="password").control-label= __('Password')
+        div.controls
+          input(type="password", name="password", id="password", placeholder=__("At least 4 characters in length."), required)
+
+      button(type="submit").btn.btn-primary: strong= __('Save')
