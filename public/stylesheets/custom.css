@@ -83,7 +83,7 @@ input[type="color"],
 /* Custom Icon */
 .nHead .gnb li strong i,
 .write .tog i,
-.write .mdHelp{background-image:url(../img/custom.icon.gif);background-repeat:no-repeat}
+.write .mdHelp{background-image:url(/images/custom.icon.gif);background-repeat:no-repeat}
 
 /* Layout */
 .top{height:100px;border-top:2px solid #2f83c5;border-bottom:1px solid #e6e6e6;margin:0 -10px -103px -10px;background:#fafafa}
@@ -162,7 +162,7 @@ input[type="color"],
 }
 
 /* nFoot */
-.nFoot .nforge{float:left;width:54px;height:0;padding:17px 0 0 0;overflow:hidden;background:url(../img/foot.nforge.gif) no-repeat}
+.nFoot .nforge{float:left;width:54px;height:0;padding:17px 0 0 0;overflow:hidden;background:url(/images/foot.nforge.gif) no-repeat}
 .nFoot .nhn{float:right;color:#444;font:bold 10px Tahoma,Geneva,sans-serif}
 
 /* nBody */
