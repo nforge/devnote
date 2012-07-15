@@ -99,7 +99,7 @@ app.configure 'production', ->
   app.use express.static __dirname + '/public', { maxAge: oneDay }
 
 # Routes
-app.get '/', routes.index
+app.get '/', wikiApp.getPages
 app.get '/test', routes.test
 
 # Wiki
