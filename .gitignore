@@ -8,7 +8,3 @@ public/stylesheets/zenburn.css
 public/attachment
 nohup.out
 public/locales/*.js
-
-# I have made some changes to nodemailer, for supporting Naver mail.
-# The changes are merged into upstream, but new version is not released yet.
-!node_modules/nodemailer
