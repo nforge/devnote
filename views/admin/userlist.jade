@@ -27,9 +27,9 @@ block content
             td= user.email
             td: a(href='/wikis/note/user/#{user.id}')= user.id
             td: span.pw= user.password
-            td 
+            td
               form(method="post", action="/wikis/note/dropuser").no-margin
                 input(name='id', type='hidden', value=user.id)
                 button(type="submit", name="submit").label.label-warning= __('Delete')
 
-    div.ctrl: button(type="submit").btn.btn-danger: strong= __('Delete all') 
+    div.ctrl: button(type="submit").btn.btn-danger: strong= __('Delete all')
