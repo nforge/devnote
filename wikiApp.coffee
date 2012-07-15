@@ -121,10 +121,13 @@ edit = (name, req, res) ->
     if err
       error404 err, req, res
     else
-      res.render 'edit',
-        title: 'Edit Page',
-        name: name,
-        content: page.content
+      res.render 'new',
+        title: 'Edit Page'
+        pageName: name
+        attachDir: name
+        body: page.content
+        filelist: []
+        newPage: false
 
 view = (name, req, res) ->
   wiki.getPage name, req.query.rev, (err, page) ->
@@ -176,8 +179,10 @@ exports.getNew = (req, res) ->
   req.session.flashMessage = 'Flash message test'
   res.render 'new',
     title: 'New Page'
-    pageName: '__new_' + new Date().getTime()
+    pageName: ''
+    attachDir: '__new_' + new Date().getTime()
     filelist: []
+    newPage: true
 
 exports.postNew = (req, res) ->
   name = req.body.name

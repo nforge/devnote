@@ -14,9 +14,11 @@ block content
           // ic: input container
           div.ic
             div.wTitle
-              input(type="text", name="name", placeholder=__('Title here'), required="")#title
+              input(type="text", id="pagename", name="name", placeholder=__('Title here'), required="", value=pageName)#title
             div.wText
               textarea(name="body", placeholder=__('Fill this form'), rows="16", cols="32")#body
+                if typeof body != 'undefined'
+                  = body
             section.md
               button(type='button').mdHelp= __('Markdown')
               div.mdSyntax
@@ -63,7 +65,7 @@ block content
               = __('Preview')
 
       div.attach.ic
-        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{pageName}/attachment.partial")
+        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{attachDir}/attachment.partial")
           label(for="attachment") 첨부할 파일을 선택해 주세요
           input(type='file', name='attachment', id='attachment')
           input(type="submit", name='attach', value="첨부").btn.btn-primary
@@ -120,9 +122,16 @@ block prepend script
     });
     activateSubmitKey(function(handler) { editor.setOption('onKeyEvent', handler); });
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
-    draft.init('n4wiki-new', '#newpost', ['#title', editor]);
-    draft.onRestore(preview.update);
-    $('#title').focus();
+  if newPage
+    script(type="text/javascript")
+      draft.init('n4wiki-new', '#newpost', ['#title', editor]);
+      draft.onRestore(preview.update);
+      $('#title').focus();
+  else
+    script(type="text/javascript")
+      draft.init('n4wiki-edit-' + $('#pagename').val(), '#newpost', [editor]);
+      draft.onRestore(preview.update);
+      $('#body').focus();
   script
     var pageId;
     var socket = io.connect();
@@ -168,9 +177,9 @@ block prepend script
         var filetype = filename.substring(filename.lastIndexOf('.') + 1);
 
         if ( _.include(imageExtensions, filetype) ){
-          filename = '<img src="/attachment/#{pageName}/' + filename + '">';
+          filename = '<img src="/attachment/#{attachDir}/' + filename + '">';
         } else {
-          filename = '/attachment/#{pageName}/' + filename;
+          filename = '/attachment/#{attachDir}/' + filename;
         }
 
         $('#body').insertAtCaret(filename);
