@@ -12,11 +12,11 @@ block content
     div.control-group
       label(name="to").control-label= __('To')
       div.controls
-        input(name="to", placeholder=__('receiver@mail.com')).input-xlarge.title
+        input(type="text", name="to", required, placeholder=__('receiver@mail.com'))
     div(style="margin-right: 10px").control-group
       label(name="subject").control-label= __('Subject')
       div.controls
-        input(name="subject")
+        input(type="text", name="subject", style="width:100%")
     div(style="margin-right: 10px").control-group
       label(name="body").control-label= __('Body')
       div.controls
