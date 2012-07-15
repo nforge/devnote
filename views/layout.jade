@@ -34,7 +34,7 @@ html(lang="ko")
               span.author: a(href="#")= __('Welcome, %s', user.name)
             span.btn-group
               if user
-                a(href="#").btn.btn-small
+                a(href="/wikis/#{wikiName}/users").btn.btn-small
                   i.icon-cog
                   = __('Administration')
                 form(method="post", action="/wikis/#{wikiName}/users/logout").inline
