@@ -32,6 +32,15 @@ exports.postLogin =  (req, res) ->
         req.session.error = err.message
         res.redirect '/'
 
+# post logout
+exports.postLogout =  (req, res) ->
+  if req.session.user
+    name = req.session.user.name
+    delete req.session.user
+    delete req.session.success
+    console.log name + ' logout.'
+  res.redirect req.header('Referrer')
+
 exports.getNew = (req, res) ->
   res.render 'admin/adduser'
     title: 'new user'

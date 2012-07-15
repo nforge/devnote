@@ -114,6 +114,7 @@ app.post API_ROOT_PATH + '/pages/:name', wikiApp.postRollback     # wikipage rol
 
 # Login & Logout
 app.post ROOT_PATH + '/users/login', userApp.postLogin   # post login
+app.post ROOT_PATH + '/users/logout', userApp.postLogout   # post logout
 
 # User
 app.get  ROOT_PATH + '/users', userApp.getUsers        # get user list
