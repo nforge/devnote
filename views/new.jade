@@ -115,7 +115,8 @@ block prepend script
       mode: 'markdown',
       lineNumbers: true,
       matchBrackets: true,
-      theme: "default"
+      theme: "default",
+      lineWrapping: true
     });
     activateSubmitKey(function(handler) { editor.setOption('onKeyEvent', handler); });
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
