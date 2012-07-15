@@ -105,6 +105,7 @@ list = (req, res) ->
           pages: pages
           selectedPageName: pageName
           selectedPageContent: renderer.markdown page.content
+          deletedPageName: req.query.deletedPageName
           subscribed: subscribed
 
 exports.getPage = (req, res) ->
@@ -212,10 +213,7 @@ exports.postNew = (req, res) ->
 
 exports.postDelete = (req, res) ->
   wiki.deletePage req.params.name, (err) ->
-    res.render 'deleted',
-      title: req.body.name
-      message: req.params.name
-      content: 'Page deleted'
+    res.redirect ROOT_PATH + '/pages?deletedPageName=' + req.params.name
 
 exports.postRollback = (req, res) ->
   name = req.params.name
