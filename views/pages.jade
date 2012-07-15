@@ -38,7 +38,7 @@ block content
               input(type="hidden", name="_method", id='_method', value="delete")
               input(type="submit", value=__('Delete'), name="submit").btn
             if user
-              form(method="post", action='#{urlToWiki}/subscribes/#{title}').inline
+              form(method="post", action='#{urlToWiki}/subscribes/#{selectedPageName}').inline
                 if subscribed
                   input(type="hidden", name="_method", id="_method", value="delete")
                   input(type="submit", value=__('Unsubscribe'), name="submit").btn

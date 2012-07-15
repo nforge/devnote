@@ -96,11 +96,16 @@ list = (req, res) ->
       pageName = req.query.page or pages[0].name
 
       wiki.getPage pageName, (err, page) ->
+        subscribed = req.session.user and
+          subscribers[pageName] and
+          req.session.user.id in subscribers[pageName]
+
         res.render 'pages',
           title: 'Pages'
           pages: pages
           selectedPageName: pageName
           selectedPageContent: renderer.markdown page.content
+          subscribed: subscribed
 
 exports.getPage = (req, res) ->
   name = req.params.name
