@@ -80,7 +80,7 @@ search = (req, res) ->
       throw err if err
       res.render 'search',
         title: 'Search'
-        pages: renderer.search pages
+        pages: renderer.search pages, keyword
 
 exports.getPages = (req, res) ->
   switch req.query.action
