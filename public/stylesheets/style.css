@@ -6,7 +6,6 @@
     width: 100%;
 }
 
-.
 .writer {
     float: left;
     position: fixed;
@@ -21,9 +20,22 @@ img {
     max-width: 100%;
 }
 
+/*
+ * Make CodeMirror to look like textarea which is defined in custom.css.
+ */
 .CodeMirror {
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 2px 2px 2px 2px;
+    padding: 4px;
+}
+
+/*
+ * custom.css gave 10px right margin to .wText for the textarea as its child to
+ * have full-width. But with CodeMirror, We don't need to do that because its
+ * layout consists with div tag not textarea.
+ */
+.write .ic .wText {
+    margin-right: 0px !important;
 }
 
 .inline {
