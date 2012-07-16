@@ -34,12 +34,14 @@ html(lang="ko")
               span.author: a(href="#")= __('Welcome, %s', user.name)
             span.btn-group
               if user
-                a(href="#").btn.btn-small
+                a(href="/wikis/#{wikiName}/users").btn.btn-small
                   i.icon-cog
                   = __('Administration')
-                a(href="#").btn.btn-small
-                  i.icon-user
-                  = __('Logout')
+                form(method="post", action="/wikis/#{wikiName}/users/logout").inline
+                  input(type="hidden", name="_method", id='_method', value="post")
+                  button(type="submit").btn.btn-small
+                    i.icon-user
+                    = __('Logout')
               else
                 a(href="/wikis/#{wikiName}/users?action=login").btn.btn-small
                   i.icon-user

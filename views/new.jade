@@ -1,84 +1,97 @@
 extends layout
 
 block content
-  section(tabindex="0")#content.nBody
-    div.write.row.io
-      //io: input only | ip: input preview | po: preview only
-      div.span6
-        fieldset.ic
-          form(method="post", id='newpost', action="/wikis/#{wikiName}/pages")
+  div.io.write.row
+    div.span6
+      form(method="post", id='newpost', action="/wikis/#{wikiName}/pages")
+        // io: input only | ip: input preview | po: preview only
+        fieldset
           menu
             div.btn-group
               button(type="button").btn.btnWrite.active: strong= __('Editing')
               button(type="button").btn.btnPreview: strong= __('Preview')
             button(type="submit", name='save').btn.btn-primary: strong= __('Save')
-          div.wTitle
-            input(type="text", name="name", placeholder=__('Title here'), required="")#title
-          div.wText
-            textarea(name="body", placeholder=__('Fill this form'), rows="16", cols="32")#body
-          section.md
-            button(type='button').mdHelp= __('Markdown')
-            div.mdSyntax
-              h1 Syntax Cheatsheet
-              dl
-                dt Headers
-                dd # Header 1
-                  br
-                  = '###### Header 6'
-                dt Lists
-                dd 1. Ordered item
-                dd * Unordered item
-                dt Phrase Emphasis
-                dd *italic* | **bold**
-                dt Links
-                dd [example](http://url.com/)
-                dt Code Spans
-                dd '''inline code''' 
-                dt Preformatted Code Blocks
-                dd 
-                  i &nbsp;
-                  i &nbsp;
-                  i &nbsp;
-                  i &nbsp;
-                  = '4 spaces or 1 tab.'
-                dt Blockquotes
-                dd &gt; Quotation block
-                dt Images
-                dd ![alt text](/path/img.jpg)
-                dt Horizontal Rules
-                dd ---
-                dt Manual Line Breaks
-                dd End a line with two or more spaces.
-                  i &nbsp;
-                  i &nbsp;
-              p.more
-                i
-                a(href="http://daringfireball.net/projects/markdown/syntax", target="_blank")= __('show more details')
-              button(type='button', title=__('close markdown help')).close &times;
-              i.ar
-          p.attach
-            form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{pageName}/attachment.partial")
-            label(for="attachment") 첨부할 파일을 선택해 주세요
-            input(type='file', name='attachment', id='attachment')
-            input(type="submit", name='attach', value="첨부").btn.btn-primary
-            progress(vlaue='50', max='100').fileuploadProgress
-              strong 20
-              = '%'
-          div.progress.progress-warning
-            div#progressbar.bar
-          div#alert.alert.alert-error.fade.out.hide
-            h4.alert-heading 업로드할 파일을 선택해 주세요
-          div
-            table.table.table-bordered.table-condensed
-                thead
-                    tr
-                        th(colspan=2) 첨부 파일
-                tbody#filelist
-                  include fileuploadPartial
+          // ic: input container
+          div.ic
+            div.wTitle
+              input(type="text", id="pagename", name="name", placeholder=__('Title here'), required="", value=pageName)#title
+            div.wText
+              textarea(name="body", placeholder=__('Fill this form'), rows="16", cols="32")#body
+                if typeof body != 'undefined'
+                  = body
+            section.md
+              button(type='button').mdHelp= __('Markdown')
+              div.mdSyntax
+                h1 Syntax Cheatsheet
+                dl
+                  dt Headers
+                  dd # Header 1
+                    br
+                    = '###### Header 6'
+                  dt Lists
+                  dd 1. Ordered item
+                  dd * Unordered item
+                  dt Phrase Emphasis
+                  dd *italic* | **bold**
+                  dt Links
+                  dd [example](http://url.com/)
+                  dt Code Spans
+                  dd '''inline code''' 
+                  dt Preformatted Code Blocks
+                  dd 
+                    i &nbsp;
+                    i &nbsp;
+                    i &nbsp;
+                    i &nbsp;
+                    = '4 spaces or 1 tab.'
+                  dt Blockquotes
+                  dd &gt; Quotation block
+                  dt Images
+                  dd ![alt text](/path/img.jpg)
+                  dt Horizontal Rules
+                  dd ---
+                  dt Manual Line Breaks
+                  dd End a line with two or more spaces.
+                    i &nbsp;
+                    i &nbsp;
+                p.more
+                  i
+                  a(href="http://daringfireball.net/projects/markdown/syntax", target="_blank")= __('show more details')
+                button(type='button', title=__('Close markdown help')).close &times;
+                i.ar
 
-    div(id="preview").previewer.span6
-    div(id="result")
+            button(type="button").tog
+              i
+              = __('Preview')
 
+      div.attach.ic
+        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{attachDir}/attachment.partial")
+          label(for="attachment") 첨부할 파일을 선택해 주세요
+          input(type='file', name='attachment', id='attachment')
+          input(type="submit", name='attach', value="첨부").btn.btn-primary
+          progree(vlaue='20', max='100')
+            strong 20
+            = '%'
+        div.progress.progress-warning
+          div#progressbar.bar
+        div#alert.alert.alert-error.fade.out.hide
+          h4.alert-heading 업로드할 파일을 선택해 주세요
+        div
+          table.table.table-bordered.table-condensed
+            thead
+              tr
+                th(colspan=2) 첨부 파일
+            tbody#filelist
+              if filelist == ''
+                tr
+                  td(colspan=2) 첨부 파일이 없습니다.
+
+    div.span6
+      fieldset.pc
+        // pc: preview container
+        article.tx#preview
+
+block prepend script
   script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/scripts/jquery.form.js")
   script(type='text/javascript', src="/scripts/underscore.js")
@@ -104,14 +117,22 @@ block content
       mode: 'markdown',
       lineNumbers: true,
       matchBrackets: true,
-      theme: "default"
+      theme: "default",
+      lineWrapping: true
     });
     activateSubmitKey(function(handler) { editor.setOption('onKeyEvent', handler); });
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
-    draft.init('n4wiki-new', '#newpost', ['#title', editor]);
-    draft.onRestore(preview.update);
-    $('#title').focus();
-  script(type="text/javascript")
+  if newPage
+    script(type="text/javascript")
+      draft.init('n4wiki-new', '#newpost', ['#title', editor]);
+      draft.onRestore(preview.update);
+      $('#title').focus();
+  else
+    script(type="text/javascript")
+      draft.init('n4wiki-edit-' + $('#pagename').val(), '#newpost', [editor]);
+      draft.onRestore(preview.update);
+      $('#body').focus();
+  script
     var pageId;
     var socket = io.connect();
     socket.on('connected', function(id){
@@ -156,9 +177,9 @@ block content
         var filetype = filename.substring(filename.lastIndexOf('.') + 1);
 
         if ( _.include(imageExtensions, filetype) ){
-          filename = '<img src="/attachment/#{pageName}/' + filename + '">';
+          filename = '<img src="/attachment/#{attachDir}/' + filename + '">';
         } else {
-          filename = '/attachment/#{pageName}/' + filename;
+          filename = '/attachment/#{attachDir}/' + filename;
         }
 
         $('#body').insertAtCaret(filename);

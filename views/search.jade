@@ -4,8 +4,8 @@ block content
   div.page-header
     h1= __('Searching result')
 
-  ul
-    each content, name in pages
+  ul.result
+    each rendered, name in pages
       li
-        a(href="/wikis/#{wikiName}/pages/#{name}")= name
-        p!= content
+        p.title: a(href="/wikis/#{wikiName}/pages/#{name}")!= rendered.title
+        p.text!= rendered.body

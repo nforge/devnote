@@ -4,7 +4,7 @@ extends layout
 block content
   urlToWiki  = joinPath('/wikis', wikiName)
   urlToPages = joinPath('/wikis', wikiName, 'pages')
-  urlToPage  = joinPath('/wikis', wikiName, 'pages', title)
+  urlToPage  = joinPath('/wikis', wikiName, 'pages', selectedPageName)
 
   section(id="content", tabindex="0").nBody
     div.row.task
@@ -29,6 +29,9 @@ block content
                         time= date
 
       article.article.span9
+        if typeof deletedPageName != 'undefined'
+          div.alert.alert-success= __("'%s' page has been deleted.", deletedPageName)
+
         hgroup.page-header
           h1= selectedPageName
           menu.btn-group
@@ -38,7 +41,7 @@ block content
               input(type="hidden", name="_method", id='_method', value="delete")
               input(type="submit", value=__('Delete'), name="submit").btn
             if user
-              form(method="post", action='#{urlToWiki}/subscribes/#{title}').inline
+              form(method="post", action='#{urlToWiki}/subscribes/#{selectedPageName}').inline
                 if subscribed
                   input(type="hidden", name="_method", id="_method", value="delete")
                   input(type="submit", value=__('Unsubscribe'), name="submit").btn

@@ -99,7 +99,7 @@ app.configure 'production', ->
   app.use express.static __dirname + '/public', { maxAge: oneDay }
 
 # Routes
-app.get '/', routes.index
+app.get '/', wikiApp.getPages
 app.get '/test', routes.test
 
 # Wiki
@@ -114,6 +114,7 @@ app.post API_ROOT_PATH + '/pages/:name', wikiApp.postRollback     # wikipage rol
 
 # Login & Logout
 app.post ROOT_PATH + '/users/login', userApp.postLogin   # post login
+app.post ROOT_PATH + '/users/logout', userApp.postLogout   # post logout
 
 # User
 app.get  ROOT_PATH + '/users', userApp.getUsers        # get user list

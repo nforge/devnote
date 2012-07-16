@@ -55,8 +55,12 @@ suite('wiki', function() {
       wiki.getPages(this);
     }, function then(err, pages) {
       assert.equal(pages.length, 2);
-      assert.ok(_.include(pages, 'frontpage'));
-      assert.ok(_.include(pages, 'secondPage'));
+      assert.ok(_.any(pages, function(page) {
+        return page.name == 'frontpage';
+      }));
+      assert.ok(_.any(pages, function(page) {
+        return page.name == 'secondPage';
+      }));
       done();
     });
   });

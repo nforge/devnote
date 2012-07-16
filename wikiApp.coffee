@@ -80,7 +80,7 @@ search = (req, res) ->
       throw err if err
       res.render 'search',
         title: 'Search'
-        pages: renderer.search pages
+        pages: renderer.search pages, keyword
 
 exports.getPages = (req, res) ->
   switch req.query.action
@@ -96,11 +96,17 @@ list = (req, res) ->
       pageName = req.query.page or pages[0].name
 
       wiki.getPage pageName, (err, page) ->
+        subscribed = req.session.user and
+          subscribers[pageName] and
+          req.session.user.id in subscribers[pageName]
+
         res.render 'pages',
           title: 'Pages'
           pages: pages
           selectedPageName: pageName
           selectedPageContent: renderer.markdown page.content
+          deletedPageName: req.query.deletedPageName
+          subscribed: subscribed
 
 exports.getPage = (req, res) ->
   name = req.params.name
@@ -115,10 +121,13 @@ edit = (name, req, res) ->
     if err
       error404 err, req, res
     else
-      res.render 'edit',
-        title: 'Edit Page',
-        name: name,
-        content: page.content
+      res.render 'new',
+        title: 'Edit Page'
+        pageName: name
+        attachDir: name
+        body: page.content
+        filelist: []
+        newPage: false
 
 view = (name, req, res) ->
   wiki.getPage name, req.query.rev, (err, page) ->
@@ -169,8 +178,10 @@ view = (name, req, res) ->
 exports.getNew = (req, res) ->
   res.render 'new',
     title: 'New Page'
-    pageName: '__new_' + new Date().getTime()
+    pageName: ''
+    attachDir: '__new_' + new Date().getTime()
     filelist: []
+    newPage: true
 
 exports.postNew = (req, res) ->
   name = req.body.name
@@ -206,10 +217,7 @@ exports.postNew = (req, res) ->
 
 exports.postDelete = (req, res) ->
   wiki.deletePage req.params.name, (err) ->
-    res.render 'deleted',
-      title: req.body.name
-      message: req.params.name
-      content: 'Page deleted'
+    res.redirect ROOT_PATH + '/pages?deletedPageName=' + req.params.name
 
 exports.postRollback = (req, res) ->
   name = req.params.name
