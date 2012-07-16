@@ -54,7 +54,7 @@ _renderFileuploadPartial = (req, res) ->
     winston.info(filelist)
     filelist = filelist or []
     winston.info('filelist', filelist)
-    res.render 'fileupload.partial.jade',
+    res.render 'fileuploadPartial.jade',
       title   : '파일첨부'
       pageName: req.params.name
       filelist: filelist

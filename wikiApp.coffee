@@ -167,7 +167,6 @@ view = (name, req, res) ->
       return renderPage()
 
 exports.getNew = (req, res) ->
-  req.session.flashMessage = 'Flash message test'
   res.render 'new',
     title: 'New Page'
     pageName: '__new_' + new Date().getTime()

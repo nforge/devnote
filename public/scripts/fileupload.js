@@ -1,6 +1,5 @@
 // ajaxForm Plugin control code
 $(function() {
-
   var addControlToDeleteFileForm = function() {
     var filename;
     var deleteOptions = {

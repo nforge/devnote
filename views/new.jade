@@ -2,10 +2,11 @@ extends layout
 
 block content
   section(tabindex="0")#content.nBody
-    form(method="post", id='newpost', action="/wikis/#{wikiName}/pages").write.row.io
+    div.write.row.io
       //io: input only | ip: input preview | po: preview only
       div.span6
         fieldset.ic
+          form(method="post", id='newpost', action="/wikis/#{wikiName}/pages")
           menu
             div.btn-group
               button(type="button").btn.btnWrite.active: strong= __('Editing')
@@ -55,12 +56,12 @@ block content
                 a(href="http://daringfireball.net/projects/markdown/syntax", target="_blank")= __('show more details')
               button(type='button', title=__('close markdown help')).close &times;
               i.ar
-        p.attach
-          form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{pageName}/attachment.partial")
+          p.attach
+            form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{pageName}/attachment.partial")
             label(for="attachment") 첨부할 파일을 선택해 주세요
             input(type='file', name='attachment', id='attachment')
             input(type="submit", name='attach', value="첨부").btn.btn-primary
-            progree(vlaue='20', max='100')
+            progress(vlaue='50', max='100').fileuploadProgress
               strong 20
               = '%'
           div.progress.progress-warning
@@ -73,9 +74,7 @@ block content
                     tr
                         th(colspan=2) 첨부 파일
                 tbody#filelist
-                    if filelist == ''
-                        tr
-                            td(colspan=2) 첨부 파일이 없습니다.
+                  include fileuploadPartial
 
     div(id="preview").previewer.span6
     div(id="result")
@@ -112,7 +111,7 @@ block content
     draft.init('n4wiki-new', '#newpost', ['#title', editor]);
     draft.onRestore(preview.update);
     $('#title').focus();
-  script
+  script(type="text/javascript")
     var pageId;
     var socket = io.connect();
     socket.on('connected', function(id){
