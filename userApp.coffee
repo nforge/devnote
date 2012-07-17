@@ -5,9 +5,10 @@ exports.getUsers = (req, res) ->
     when 'login' then login req, res
     else users req, res
 
-login = (req, res) ->
+exports.login = (req, res) ->
   res.render 'user/login'
     title: 'login'
+    return_to: req.header('Referrer')
 
 # get userlist
 users = (req, res) ->
@@ -27,10 +28,13 @@ exports.postLogin =  (req, res) ->
           req.session.user = User.findUserById(req.body.id)
           req.session.success = req.session.user.name + ' logined.'
           console.log req.session.success
-          res.redirect req.header('Referrer')
+          if req.body.return_to and req.body.return_to != req.header('Referrer')
+            res.redirect req.body.return_to
+          else
+            res.redirect '/'
       else
         req.session.error = err.message
-        res.redirect req.header('Referrer')
+        res.redirect '/login'
 
 # post logout
 exports.postLogout =  (req, res) ->

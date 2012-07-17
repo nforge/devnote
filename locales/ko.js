@@ -75,8 +75,6 @@
 	"Id": "아이디",
 	"Email": "이메일",
 	"At least 4 characters in length.": "4자리 이상으로 입력해 주세요.",
-	" #Salted Password": " #Salted Password",
-	"Anonymous": "Anonymous",
 	"Total <strong>%s</strong>": "전체: <strong>%s</strong>명",
 	"Delete all": "전체 삭제",
 	"User name": "사용자 이름",
@@ -90,4 +88,9 @@
 	"Insert into text area": "본문에 삽입",
 	"Select file to upload": "Select file to upload",
 	"File Attachments": "File Attachments"
+	"Markdown": "마크다운",
+	"Close markdown help": "마크다운 도움말 닫기",
+	"'%s' page has been deleted.": "'%s' 페이지가 삭제되었습니다."
+	"Username or password is not valid!": "사용자 이름이나 비밀번호를 잘못 입력하셨습니다!",
+	"Password is not valid!": "비밀번호를 잘못 입력하셨습니다!"
 }

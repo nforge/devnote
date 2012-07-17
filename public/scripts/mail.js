@@ -73,7 +73,7 @@ var _updateUsingServiceMessage = function(service) {
 
 // Hide using-wellknown-service-message if configured host differs from selected service's.
 var updateUsingServiceMessage = function() {
-  if ($("#host").val().trim().toLowerCase() == selected.host) {
+  if ($.trim($("#host").val()).toLowerCase() == selected.host) {
     _updateUsingServiceMessage(selected.service);
   } else {
     _clearUsingServiceMessage();

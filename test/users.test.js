@@ -122,7 +122,7 @@ suite("User", function() {
           password: 'rrrR'
       }, function(err, findUser) {
         //Then
-        assert.equal(err.message, "User id or password is not valid!");
+        assert.equal(err.message, "Password is not valid!");
       });
     });
     test("아이디 틀림", function() {
