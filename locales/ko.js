@@ -81,9 +81,13 @@
 	"Delete all": "전체 삭제",
 	"User name": "사용자 이름",
 	"Add user": "새 사용자 등록",
-  " If you want to hide the detailed configuration, ": " 상세 설정을 숨기시려면, ",
+	" If you want to hide the detailed configuration, ": " 상세 설정을 숨기시려면, ",
 	"#Salted Password": "#Salted Password",
 	"Markdown": "Markdown",
 	"show more details": "show more details",
-	"close markdown help": "close markdown help"
+	"Close markdown help": "Close markdown help",
+	"File doesn't exist": "File doesn't exist",
+	"Insert into text area": "본문에 삽입",
+	"Select file to upload": "Select file to upload",
+	"File Attachments": "File Attachments"
 }
