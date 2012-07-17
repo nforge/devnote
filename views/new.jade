@@ -34,10 +34,10 @@ block content
           input(type='file', name='attachment', id='attachment')
           div.progress.progress-warning
             div#progressbar.bar
-      div
-        = __('File Attachments')
-        ul.files#filelist
-          include fileuploadPartial.jade
+          div
+            strong= __('File Attachments')
+            ul.files#filelist
+              include fileuploadPartial.jade
 
     div.span6
       fieldset.pc
