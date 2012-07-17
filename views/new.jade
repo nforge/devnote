@@ -5,7 +5,7 @@ block content
     div.span6
       form(method="post", id='newpost', action="/wikis/#{wikiName}/pages")
         // io: input only | ip: input preview | po: preview only
-        fieldset
+        fieldset.ic
           menu
             div.btn-group
               button(type="button").btn.btnWrite.active: strong= __('Editing')
@@ -64,28 +64,20 @@ block content
               i
               = __('Preview')
 
-      div.attach.ic
+      p.attach
         form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{attachDir}/attachment.partial")
-          label(for="attachment") 첨부할 파일을 선택해 주세요
+          label(for="attachment")= __('Select file to upload')
           input(type='file', name='attachment', id='attachment')
-          input(type="submit", name='attach', value="첨부").btn.btn-primary
-          progree(vlaue='20', max='100')
+          progress(vlaue='50', max='100').fileuploadProgress
             strong 20
             = '%'
-        div.progress.progress-warning
-          div#progressbar.bar
-        div#alert.alert.alert-error.fade.out.hide
-          h4.alert-heading 업로드할 파일을 선택해 주세요
-        div
-          table.table.table-bordered.table-condensed
-            thead
-              tr
-                th(colspan=2) 첨부 파일
-            tbody#filelist
-              if filelist == ''
-                tr
-                  td(colspan=2) 첨부 파일이 없습니다.
-
+      div
+        table.table.table-bordered.table-condensed
+          thead
+            tr
+              th(colspan=2)= __('File Attachments')
+          tbody#filelist
+            include fileuploadPartial
     div.span6
       fieldset.pc
         // pc: preview container
