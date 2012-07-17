@@ -75,15 +75,12 @@
 	"Id": "아이디",
 	"Email": "이메일",
 	"At least 4 characters in length.": "4자리 이상으로 입력해 주세요.",
-	" #Salted Password": " #Salted Password",
-	"Anonymous": "Anonymous",
 	"Total <strong>%s</strong>": "전체: <strong>%s</strong>명",
 	"Delete all": "전체 삭제",
 	"User name": "사용자 이름",
 	"Add user": "새 사용자 등록",
-  " If you want to hide the detailed configuration, ": " 상세 설정을 숨기시려면, ",
-	"#Salted Password": "#Salted Password",
-	"Markdown": "Markdown",
-	"show more details": "show more details",
-	"close markdown help": "close markdown help"
+	" If you want to hide the detailed configuration, ": " 상세 설정을 숨기시려면, ",
+	"Markdown": "마크다운",
+	"Close markdown help": "마크다운 도움말 닫기",
+	"'%s' page has been deleted.": "'%s' 페이지가 삭제되었습니다."
 }
