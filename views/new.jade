@@ -32,16 +32,13 @@ block content
         form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{attachDir}/attachment.partial")
           label(for="attachment")= __('Select file to upload')
           input(type='file', name='attachment', id='attachment')
-          progress(vlaue='50', max='100').fileuploadProgress
-            strong 20
-            = '%'
+          div.progress.progress-warning
+            div#progressbar.bar
       div
-        table.table.table-bordered.table-condensed
-          thead
-            tr
-              th(colspan=2)= __('File Attachments')
-          tbody#filelist
-            include fileuploadPartial
+        = __('File Attachments')
+        ul.files#filelist
+          include fileuploadPartial.jade
+
     div.span6
       fieldset.pc
         // pc: preview container

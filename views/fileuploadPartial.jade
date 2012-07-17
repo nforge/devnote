@@ -1,13 +1,13 @@
 if filelist == ''
-  tr
-    td(colspan='2', id='nofile')= __("File doesn't exist")
+  li(tabindex="0")
+    =__("File doesn't exist")
 each filename in filelist
-  tr
-    td.filelink
-      a(href='/attachment/#{pageName}/#{filename}',target='_blank') #{filename}
-    td
+  li(tabindex="0")
+    span.i
       form(method="post", id='filedelete', class='filedelete', action="/wikis/#{wikiName}/pages/#{pageName}/attachment/#{filename}")
+        i.icon-upload
+        a(href='/attachment/#{pageName}/#{filename}',target='_blank') #{filename}
         input(name='filename', type='hidden', id='filename', value='#{filename}')
         input(type="hidden", name="_method", id='_method', value="delete")
-        input(type="button", class="insertInto", value=__('Insert into text area')).btn.btn-warning
-        input(type="submit", name="submit", value=__('Delete')).btn.btn-danger
+        input(type="button", class="insertInto", value=__('Insert into text area')).label.label-info
+        button(name="submit").close &times;

@@ -5,7 +5,7 @@ mark{background:#ff0;color:#000}
 a{text-decoration:underline}
 
 /* Font */
-boutton, 
+boutton,
 select,
 .btn,
 .label{font-family:돋움,Dotum,Arial,Helvetica,sans-serif}
@@ -33,21 +33,21 @@ textarea,
 }
 
 /* Bootstrap Override */
-textarea, 
-input[type="text"], 
-input[type="password"], 
-input[type="datetime"], 
-input[type="datetime-local"], 
-input[type="date"], 
-input[type="month"], 
-input[type="time"], 
-input[type="week"], 
-input[type="number"], 
-input[type="email"], 
-input[type="url"], 
-input[type="search"], 
-input[type="tel"], 
-input[type="color"], 
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
 .uneditable-input{border-radius:2px}
 .btn{line-height:15px;border-radius:2px;letter-spacing:-1px;text-decoration:none !important}
 .btn-small{color:#565960;border-radius:2px;font-size:11px;line-height:14px}
@@ -122,7 +122,7 @@ input[type="color"],
 .nHead .search *{vertical-align:top}
 .nHead .account{position:relative;clear:both;padding:6px 0}
 .nHead .author{font-size:11px;line-height:31px;vertical-align:top}
-.nHead .author a{text-decoration:none;font:bold 12px/31px Tahoma,Geneva,sans-serif} 
+.nHead .author a{text-decoration:none;font:bold 12px/31px Tahoma,Geneva,sans-serif}
 .nHead .btn-group{position:relative;display:inline-block;margin:0 6px 0 0}
 .nHead .btn{float:none;padding:9px 8px 6px;margin:0 -5px 0 0;width:13px;overflow:hidden;font-size:0}
 .nHead .btn i{position:relative;top:-1px;margin:0 5px 0 0;opacity:.7;filter:alpha(opacity=70)}
@@ -243,7 +243,7 @@ input[type="color"],
 .write .files .e{font:10px Tahoma, Geneva, sans-serif}
 .write .files .close{width:24px;height:24px;font-size:15px;line-height:1;float:none}
 .write .attach progress{border:0;height:3px;vertical-align:middle;opacity:.5}
-.fileuploadProgress {border:0;height:3px;vertical-align:middle;opacity:.5;width: 100%}
+.progreebar {border:0;height:3px;vertical-align:middle;opacity:.5;width: 100%}
 @media all and (min-width:768px){
 .write .ic .tog{display:block;position:absolute;top:50%;right:-13px;height:46px;width:13px;padding:0;margin:-23px 0 0 0;overflow:hidden;background:#f9f9f9;border:1px solid #e3e3e4;border-left:0;border-radius:0 3px 3px 0;white-space:nowrap;box-shadow:0 1px 1px #e6e6e6}
 .write .ic .tog i{display:inline-block;width:13px;height:8px;background-position:-22px 0}
@@ -287,7 +287,7 @@ input[type="color"],
 .result .title{font-weight:bold}
 
 /* Text Area */
-.tx{font-size:14px;line-height:1.7} 
+.tx{font-size:14px;line-height:1.7}
 .tx img,
 .tx video,
 .tx audio,
