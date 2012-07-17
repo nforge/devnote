@@ -6,52 +6,51 @@ block content
   urlToPages = joinPath('/wikis', wikiName, 'pages')
   urlToPage  = joinPath('/wikis', wikiName, 'pages', selectedPageName)
 
-  section(id="content", tabindex="0").nBody
-    div.row.task
-      nav.lnb.span3
-        div.tob
-          h1
-            i.icon-user
-            if user
-              = user.name
-            else
-              = __('Anonymous')
-          ul
-            each page in pages
-              li
-                a(href="/wikis/#{wikiName}/pages/#{page.name}")
-                  date = sprintf("%d.%02d.%02d", page.date.getFullYear(), page.date.getMonth(), page.date.getDate());
-                  if selectedPageName == page.name
-                      strong= page.name
-                        time= date
-                  else
-                      = page.name
-                        time= date
+  div.row.task
+    nav.lnb.span3
+      div.tob
+        h1
+          i.icon-user
+          if user
+            = user.name
+          else
+            = __('Anonymous')
+        ul
+          each page in pages
+            li
+              a(href="/wikis/#{wikiName}/pages/#{page.name}")
+                date = sprintf("%d.%02d.%02d", page.date.getFullYear(), page.date.getMonth(), page.date.getDate());
+                if selectedPageName == page.name
+                    strong= page.name
+                      time= date
+                else
+                    = page.name
+                      time= date
 
-      article.article.span9
-        if typeof deletedPageName != 'undefined'
-          div.alert.alert-success= __("'%s' page has been deleted.", deletedPageName)
+    article.article.span9
+      if typeof deletedPageName != 'undefined'
+        div.alert.alert-success= __("'%s' page has been deleted.", deletedPageName)
 
-        hgroup.page-header
-          h1= selectedPageName
+      hgroup.page-header
+        h1= selectedPageName
+        form(method="post", action=urlToPage).inline
           menu.btn-group
             a(href='#{urlToPage}?action=edit').btn.btn-primary= __('Edit')
             a(href='#{urlToPage}?action=history').btn= __('History')
-            form(method="post", action=urlToPage).inline
-              input(type="hidden", name="_method", id='_method', value="delete")
-              input(type="submit", value=__('Delete'), name="submit").btn
-            if user
-              form(method="post", action='#{urlToWiki}/subscribes/#{selectedPageName}').inline
-                if subscribed
-                  input(type="hidden", name="_method", id="_method", value="delete")
-                  input(type="submit", value=__('Unsubscribe'), name="submit").btn
-                else
-                  input(type="hidden", name="_method", id="_method", value="put")
-                  input(type="submit", value=__('Subscribe'), name="submit").btn
+            input(type="hidden", name="_method", id='_method', value="delete")
+            input(type="submit", value=__('Delete'), name="submit").btn
+          if user
+            form(method="post", action='#{urlToWiki}/subscribes/#{selectedPageName}').inline
+              if subscribed
+                input(type="hidden", name="_method", id="_method", value="delete")
+                input(type="submit", value=__('Unsubscribe'), name="submit").btn
+              else
+                input(type="hidden", name="_method", id="_method", value="put")
+                input(type="submit", value=__('Subscribe'), name="submit").btn
 
-        // Text
-        article.tx
-          != selectedPageContent
+      // Text
+      article.tx
+        != selectedPageContent
 
   script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/scripts/keynavi.js")
