@@ -83,4 +83,6 @@
 	"Markdown": "마크다운",
 	"Close markdown help": "마크다운 도움말 닫기",
 	"'%s' page has been deleted.": "'%s' 페이지가 삭제되었습니다."
+	"Username or password is not valid!": "사용자 이름이나 비밀번호를 잘못 입력하셨습니다!",
+	"Password is not valid!": "비밀번호를 잘못 입력하셨습니다!"
 }

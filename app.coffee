@@ -113,8 +113,9 @@ app.del  ROOT_PATH + '/subscribes/:name', wikiApp.postUnsubscribe # unsubscribe 
 app.post API_ROOT_PATH + '/pages/:name', wikiApp.postRollback     # wikipage rollback
 
 # Login & Logout
-app.post ROOT_PATH + '/users/login', userApp.postLogin   # post login
-app.post ROOT_PATH + '/users/logout', userApp.postLogout   # post logout
+app.get '/login', userApp.login        # get login
+app.post '/login', userApp.postLogin   # post login
+app.post '/logout', userApp.postLogout # post logout
 
 # User
 app.get  ROOT_PATH + '/users', userApp.getUsers        # get user list
