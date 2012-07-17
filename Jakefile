@@ -47,7 +47,7 @@ task('build', function() {
   console.log(green,'Required files are being copied', reset);
 
   var targetsToCopy = [
-    {from: 'node_modules/hljs/highlight.js', to: 'public/scripts/highlight.js'},
+    {from: 'node_modules/hljs/hljs.js', to: 'public/scripts/highlight.js'},
     {from: 'node_modules/github-flavored-markdown/scripts/showdown.js', to: 'public/scripts/showdown.js'},
     {from: 'lib/highlight-c.js', to: 'public/scripts/highlight-c.js'},
     {from: 'node_modules/hljs/styles/zenburn.css', to: 'public/stylesheets/zenburn.css'},
@@ -83,6 +83,8 @@ task('build', function() {
         jake.Task['test'].invoke();
       }
     });
+  } else {
+    jake.Task['test'].invoke();
   }
 }, true);
 

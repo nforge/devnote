@@ -81,7 +81,7 @@
     "node": ">=0.6"
   },
   "scripts": {
-    "postinstall": "node node_modules/jake/bin/cli.js test",
+    "postinstall": "node node_modules/jake/bin/cli.js build",
     "test"  : "node node_modules/jake/bin/cli.js test",
     "start" : "jake start"
   }
