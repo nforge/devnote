@@ -1,6 +1,6 @@
 var preview = {
   last_text: '',
-  converter: new Showdown.converter(),
+  converter: new Showdown.converter()
 };
 
 preview.update = function() {

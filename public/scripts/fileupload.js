@@ -47,7 +47,6 @@ $(function() {
       $('#alert').addClass('in');
       if (filename === "") {
         $('.alert-heading').html('업로드할 파일을 선택해 주세요');
-        $('#alert').show();
         return false;
       }
       return true;
@@ -57,7 +56,6 @@ $(function() {
 
       $('.alert-heading').html(filename + ' 파일이 업로드 되었습니다.');
       $('#filelist').html(text);
-      $('#alert').show();
       _replaceFileInputControl();
       addControlToDeleteFileForm(filename);
       setProgressBar(100);
@@ -70,9 +68,8 @@ $(function() {
 
   $('#fileupload').ajaxForm(fileUploadOptions);
 
-  $('#attachment').click(function(event) {
+  $('#attachment').live('click', function(event) {
     setProgressBar(0);
-    $('#alert').hide();
   });
   $('#fileupload').change(function(event) {
     if ($('#attachment').val() !== "") {

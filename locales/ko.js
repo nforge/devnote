@@ -81,16 +81,15 @@
 	"Add user": "새 사용자 등록",
 	" If you want to hide the detailed configuration, ": " 상세 설정을 숨기시려면, ",
 	"#Salted Password": "#Salted Password",
-	"Markdown": "Markdown",
+	"Markdown": "마크다운",
 	"show more details": "show more details",
-	"Close markdown help": "Close markdown help",
+	"Close markdown help": "마크다운 도움말 닫기",
 	"File doesn't exist": "파일이 존재하지 않습니다.",
 	"Insert into text area": "본문에 삽입",
 	"Select file to upload": "Select file to upload",
 	"File Attachments": "첨부 파일",
-	"Markdown": "마크다운",
-	"Close markdown help": "마크다운 도움말 닫기",
 	"'%s' page has been deleted.": "'%s' 페이지가 삭제되었습니다.",
 	"Username or password is not valid!": "사용자 이름이나 비밀번호를 잘못 입력하셨습니다!",
-	"Password is not valid!": "비밀번호를 잘못 입력하셨습니다!"
+	"Password is not valid!": "비밀번호를 잘못 입력하셨습니다!",
+	"Anonymous": "Anonymous"
 }

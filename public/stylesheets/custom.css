@@ -49,6 +49,11 @@ input[type="search"],
 input[type="tel"],
 input[type="color"],
 .uneditable-input{border-radius:2px}
+button.btn,
+input[type="submit"].btn {
+  *padding-top: 3px;
+  *padding-bottom: 3px;
+}
 .btn{line-height:15px;border-radius:2px;letter-spacing:-1px;text-decoration:none !important}
 .btn-small{color:#565960;border-radius:2px;font-size:11px;line-height:14px}
 .btn.active{box-shadow:inset 0 2px 4px rgba(0,0,0,0.05),0 1px 2px rgba(0,0,0,0.05)}
@@ -120,14 +125,14 @@ input[type="color"],
 .nHead .gnb strong{position:relative;color:#2f83c5}
 .nHead .account *,
 .nHead .search *{vertical-align:top}
-.nHead .account{position:relative;clear:both;padding:6px 0}
+.nHead .account{position:relative;clear:both;padding:6px 0;*top:-60px;}
 .nHead .author{font-size:11px;line-height:31px;vertical-align:top}
 .nHead .author a{text-decoration:none;font:bold 12px/31px Tahoma,Geneva,sans-serif}
 .nHead .btn-group{position:relative;display:inline-block;margin:0 6px 0 0}
 .nHead .btn{float:none;padding:9px 8px 6px;margin:0 -5px 0 0;width:13px;overflow:hidden;font-size:0}
-.nHead .btn i{position:relative;top:-1px;margin:0 5px 0 0;opacity:.7;filter:alpha(opacity=70)}
+.nHead .btn i{position:relative;top:-1px;margin:0 5px 0 0;opacity:.7;filter:alpha(opacity=70);*width:20px}
 .nHead .tog{display:inline-block;width:31px}
-.nHead .search{position:relative;display:none;margin:0}
+.nHead .search{position:relative;display:none;margin:0;*top:-65px}
 .nHead .search.open{height:36px;z-index:2;display:block;margin:10px 45px 0 0}
 .nHead .search .sb{position:absolute;top:0}
 .nHead .search .si{left:0;padding:4px 34px 4px 9px;width:100%;height:26px;font-size:12px;box-shadow:0 1px 2px rgba(0,0,0,0.05),inset 0 1px 1px rgba(0, 0, 0, 0.075);-webkit-transition:.5s;-moz-transition:.5s;-o-transition:.5s}

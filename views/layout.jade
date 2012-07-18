@@ -9,14 +9,16 @@ html(lang="ko")
       meta(http-equiv='Content-Language', content='en')
     - }
     meta(name="viewport", content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1")
+    meta(http-equiv="X-UA-Compatible", content="IE=EmulateIE7")
     link(rel='stylesheet', href='/stylesheets/syntax.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap.css')
     link(rel='stylesheet', href='/bootstrap/css/bootstrap-responsive.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/custom.css')
     link(rel='stylesheet', href='/codemirror2/lib/codemirror.css')
-    // [if ie 9]><link rel="stylesheet" href="css/custom.ie9.css"><![endif]
-    // [if lt ie 9]><script src="js/html5.rwd.js"></script><![endif]
+    //[if IE 9]><link rel="stylesheet" href="/stylesheets/custom.ie9.css"><![endif]
+    //[if lt IE 9]><script src="/scripts/html5.rwd.js"></script><![endif]
+
   body
     div.top
     div.container
@@ -49,16 +51,15 @@ html(lang="ko")
               a(href="#", title="Feedback").btn.btn-small
                 i.icon-comment
                 = __('Feedback')
-
-            button(type="button").btn.tog.btn-small
-              i.icon-search
-              = __('Search')
+              button(type="button").btn.tog.btn-small
+                i.icon-search
+                = __('Search')
           form(action="/wikis/#{wikiName}/pages").search
             input(type="hidden", name="action", value='search').btn
             input(type="search", name="keyword", required).si
-            button(type="submit").sb
+            button(type="submit",title=__('Search')).sb
               i.icon-search
-              = __('Search')
+
       // /HEADER
 
       section(id="content", tabindex="0").nBody
@@ -73,7 +74,6 @@ html(lang="ko")
       // /FOOTER
 
     block script
-      script(src='/scripts/html5shiv.js')
       script(src='/scripts/yepnope.js')
       script
         yepnope({
