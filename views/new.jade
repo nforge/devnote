@@ -99,7 +99,7 @@ block prepend script
         user = JSON.parse(data.user);
       }
 
-      $('#title').popover({title:"Already existed page name!", content: "["+ user.id + "] user already working with this title. Try out another page name.", trigger: 'manual'});
+      $('#title').popover({title:"Already existed page name!", content: "["+ user.id + "] user already working with this title. Try out another page name.", trigger: 'manual', placement:'bottom'});
       $('#title').popover('show');
     });
 
