@@ -4,7 +4,7 @@
 	"<span>Unsaved draft exists.</span> Click <a id='restore-draft'>here</a><span> to recover it.</span>": "<span>저장되지 않은 draft가 있습니다. </span><a id='restore-draft'>여기</a><span>를 클릭하시면 불러옵니다.</span>",
 	"New": "새 페이지",
 	"Edit": "편집",
-	"History": "역사",
+	"History": "히스토리",
 	"Delete": "삭제",
 	"Subscribe": "구독",
 	"Unsubscribe": "구독 해제",
