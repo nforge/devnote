@@ -146,3 +146,8 @@ exports.start = (port, callback) ->
 exports.stop = -> app.close
 
 exports.start LISTEN_PORT if not module.parent
+
+process.on 'uncaughtException', (err) ->
+  console.log "uncaughtException occurred! ------>", err.message
+  console.log err
+
