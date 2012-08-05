@@ -40,14 +40,15 @@ block content
             a(href='#{urlToPage}?action=history').btn= __('History')
             input(type="hidden", name="_method", id='_method', value="delete")
             input(type="submit", value=__('Delete'), name="submit").btn
-        if user
-          form(method="post", action='#{urlToWiki}/subscribes/#{selectedPageName}').inline
+      if user
+        form(method="post", action='#{urlToWiki}/subscribes/#{selectedPageName}').inline
+          div(style='float: right')
             if subscribed
               input(type="hidden", name="_method", id="_method", value="delete")
-              input(type="submit", value=__('Unsubscribe'), name="submit").btn
+              input(type="submit", value=__('Unsubscribe'), name="submit").btn.btn-danger
             else
               input(type="hidden", name="_method", id="_method", value="put")
-              input(type="submit", value=__('Subscribe'), name="submit").btn
+              input(type="submit", value=__('Subscribe'), name="submit").btn.btn-success
 
       // Text
       article.tx

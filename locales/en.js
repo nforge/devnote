@@ -50,5 +50,12 @@
 	"Save": "Save",
 	"Title here": "Title here",
 	"Fill this form": "Fill this form",
-	"Welcome to %s": "Welcome to %s"
+	"Welcome to %s": "Welcome to %s",
+	"Markdown": "Markdown",
+	"show more details": "show more details",
+	"Close markdown help": "Close markdown help",
+	"Select file to upload": "Select file to upload",
+	"File Attachments": "File Attachments",
+	"File doesn't exist": "File doesn't exist",
+	"Anonymous": "Anonymous"
 }

@@ -6,7 +6,7 @@
 	"Edit": "편집",
 	"History": "히스토리",
 	"Delete": "삭제",
-	"Subscribe": "구독",
+	"Subscribe": "구독 하기",
 	"Unsubscribe": "구독 해제",
 	"View": "페이지 보기",
 	"Mail configuration": "메일 설정",
@@ -91,5 +91,6 @@
 	"'%s' page has been deleted.": "'%s' 페이지가 삭제되었습니다.",
 	"Username or password is not valid!": "사용자 이름이나 비밀번호를 잘못 입력하셨습니다!",
 	"Password is not valid!": "비밀번호를 잘못 입력하셨습니다!",
-	"Anonymous": "Anonymous"
+	"Anonymous": "Anonymous",
+	"User id or password is not valid!": "User id or password is not valid!"
 }
