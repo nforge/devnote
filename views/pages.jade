@@ -26,7 +26,8 @@ block content
                 else
                     = page.name
                       time= date
-
+      button(type='button',style='top: -49px').tog
+        span  메뉴 열기/닫기
     article.article.span9
       if typeof deletedPageName != 'undefined'
         div.alert.alert-success= __("'%s' page has been deleted.", deletedPageName)
