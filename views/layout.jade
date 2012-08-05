@@ -26,7 +26,8 @@ html(lang="ko")
       // HEADER
       header.nHead
         block header
-          h1: a(href="/") img(src='/images/note-bi.png')
+          h1: a(href="/") 
+            img(src='/images/note-bi.png')
           nav.gnb
             ul
               li: a(href="/wikis/#{wikiName}/new")= __('New note')
