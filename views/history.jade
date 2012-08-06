@@ -2,55 +2,51 @@ extends layout
 
 block content
   urlToPage = joinPath('/wikis', wikiName, 'pages', title)
+  div.span9.form-horizontal
+    div.page-header
+      h1= __('History')
+      form(method="post", action=urlToPage).inline
+        menu.btn-group
+          a(href="?").btn= __('View')
+          a(href="?action=edit").btn= __('Edit')
+          input(type="hidden", name="_method", id='_method', value="delete").btn
+          input(type="submit", value=__('Delete'), name="submit").btn
 
-  h1= __('History')
-  form(method="get", action=urlToPage)
-    table
-      thead
-        tr
-          td= __('Author')
-          td= __('Date')
-          td
-            input(type="hidden", value='diff', name="action")
-            input(type="submit", value=__('Diff'))
-          td= __('Message')
-      tbody(id="commits")
-        - var first = commits.ids[0];
-        - var last = commits.ids[commits.length - 1];
-        - commits.forEach(function(commit, index) {
-        - var date = new Date(commit.author.unixtime * 1000)
+    form(method="get", action=urlToPage)
+      table.table
+        thead
           tr
-            td= commit.author.name
-            td= date
-            td
-              input(type="radio", value=commits.ids[index], name="a")
-              input(type="radio", value=commits.ids[index], name="b")
-            td= commit.message
-            td
-              a(href="#{urlToPage}?rev=#{commits.ids[index]}", name=title)= __('Show')
-            td
-              a(href="#", class="rollback-button", name=title, id=commits.ids[index])= __('Rollback')
-        - });
-
-  ul(class="pager")
-    li
-      a(href="#{urlToPage}?action=history&until=#{first}&offset=-#{limit}")= __('« Newer')
-    li
-      a(href="#{urlToPage}?action=history&until=#{last}&offset=1")= __('Older »')
-
-  ul
-    li
-      a(href="?")= __('View')
-    li
-      a(href="?action=edit")= __('Edit')
-    li
-      a(href="?action=history")= __('History')
-  form(method="post", action=urlToPage)
-    input(type="hidden", name="_method", id='_method', value="delete")
-    input(type="submit", value=__('Delete'), name="submit")
-
-  script(type="text/javascript", src="/scripts/jquery.js")
-  script(type="text/javascript", src="/scripts/i18n.js")
-  script(type="text/javascript", src="/scripts/rollback.js")
-  script(type="text/javascript")
-    rollback.init('#{wikiName}');
+            th(scope="col")= __('Author')
+            th(scope="col")= __('Date')
+            th(scope="col")= __('Target')
+            th(scope="col")= __('Destination')
+            th(scope="col",colspan="3")= __('Message')
+        tbody(id="commits")
+          - var first = commits.ids[0];
+          - var last = commits.ids[commits.length - 1];
+          - commits.forEach(function(commit, index) {
+          - var date = new Date(commit.author.unixtime * 1000)
+            tr
+              td= commit.author.name
+              td= date
+              td
+                input(type="radio", value=commits.ids[index], name="a")
+              td
+                input(type="radio", value=commits.ids[index], name="b")
+              td= commit.message
+              td
+                a(href="#{urlToPage}?rev=#{commits.ids[index]}", name=title).label.label-warning= __('Show')
+              //- td
+              //-   a(href="#", class="rollback-button", name=title, id=commits.ids[index]).label= __('Rollback')
+          - });
+      div(style='float:right')
+        input(type="hidden", value='diff', name="action")
+        input(type="submit", value=__('Diff')).btn.btn-info
+      //- div(style='float:left').btn-group
+      //-   a(href="#{urlToPage}?action=history&until=#{first}&offset=-#{limit}").btn= __('« Newer')
+      //-   a(href="#{urlToPage}?action=history&until=#{last}&offset=1").btn= __('Older »')
+    script(type="text/javascript", src="/scripts/jquery.js")
+    script(type="text/javascript", src="/scripts/i18n.js")
+    script(type="text/javascript", src="/scripts/rollback.js")
+    script(type="text/javascript")
+      rollback.init('#{wikiName}');

@@ -1,19 +1,19 @@
 extends layout
 
 block content
-  link(rel='stylesheet', href='/stylesheets/diff.css')
+  hgroup.page-header
+    form(method="post", action="/wikis/#{wikiName}/pages/#{name}").inline
+      menu(style='float:right').btn-group
+        a(href="/wikis/#{wikiName}/pages/#{name}").btn= __('View')
+        a(href="/wikis/#{wikiName}/pages/#{name}?action=edit").btn= __('Edit')
+        a(href="/wikis/#{wikiName}/pages/#{name}?action=history").btn= __('History')
+        input(type="hidden", name="_method", id='_method', value="delete")
+        input(type="submit", value=__('Delete'), name="submit").btn.btn-danger
 
-  h1= name
+    link(rel='stylesheet', href='/stylesheets/diff.css')
+
+    h1= name
 
   div(class="diff")!= diff
 
-  ul
-    li
-      a(href="/wikis/#{wikiName}/pages/#{name}")= __('View')
-    li
-      a(href="/wikis/#{wikiName}/pages/#{name}?action=edit")= __('Edit')
-    li
-      a(href="/wikis/#{wikiName}/pages/#{name}?action=history")= __('History')
-  form(method="post", action="/wikis/#{wikiName}/pages/#{name}")
-    input(type="hidden", name="_method", id='_method', value="delete")
-    input(type="submit", value=__('Delete'), name="submit")
+  

@@ -49,7 +49,7 @@
 	"Configure mail": "메일 설정",
 	"Author": "작성자",
 	"Date": "날짜",
-	"Diff": "차이",
+	"Diff": "차이점 보기",
 	"Message": "메시지",
 	"« Newer": "« Newer",
 	"Older »": "Older »",
@@ -92,5 +92,7 @@
 	"Username or password is not valid!": "사용자 이름이나 비밀번호를 잘못 입력하셨습니다!",
 	"Password is not valid!": "비밀번호를 잘못 입력하셨습니다!",
 	"Anonymous": "Anonymous",
-	"User id or password is not valid!": "User id or password is not valid!"
+	"User id or password is not valid!": "User id or password is not valid!",
+	"Target": "Target",
+	"Destination": "Destination"
 }
