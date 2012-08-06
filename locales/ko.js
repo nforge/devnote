@@ -91,8 +91,12 @@
 	"'%s' page has been deleted.": "'%s' 페이지가 삭제되었습니다.",
 	"Username or password is not valid!": "사용자 이름이나 비밀번호를 잘못 입력하셨습니다!",
 	"Password is not valid!": "비밀번호를 잘못 입력하셨습니다!",
-	"Anonymous": "Anonymous",
+	"Anonymous": "게스트",
 	"User id or password is not valid!": "User id or password is not valid!",
 	"Target": "Target",
-	"Destination": "Destination"
+	"Destination": "Destination",
+	"Return To Page": "페이지 보기로 돌아가기",
+	"Note doesn't exist": "작성된 노트가 없습니다.",
+	"Page doesn't exist": "Page doesn't exist",
+	"Please, create new note.": "Please, create new note."
 }

@@ -92,6 +92,11 @@ list = (req, res) ->
   wiki.getPages (err, pages) ->
     if err
       error404 err, req, res
+    else if pages.length == 0 then res.render 'pages',
+      title: 'Pages'
+      pages: pages
+      selectedPageName: __("Page doesn't exist")
+      selectedPageContent: __('Please, create new note.')
     else
       pageName = req.query.page or pages[0].name
 

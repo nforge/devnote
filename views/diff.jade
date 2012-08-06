@@ -5,7 +5,6 @@ block content
     form(method="post", action="/wikis/#{wikiName}/pages/#{name}").inline
       menu(style='float:right').btn-group
         a(href="/wikis/#{wikiName}/pages/#{name}").btn= __('View')
-        a(href="/wikis/#{wikiName}/pages/#{name}?action=edit").btn= __('Edit')
         a(href="/wikis/#{wikiName}/pages/#{name}?action=history").btn= __('History')
         input(type="hidden", name="_method", id='_method', value="delete")
         input(type="submit", value=__('Delete'), name="submit").btn.btn-danger

@@ -7,10 +7,7 @@ block content
       h1= __('History')
       form(method="post", action=urlToPage).inline
         menu.btn-group
-          a(href="?").btn= __('View')
-          a(href="?action=edit").btn= __('Edit')
-          input(type="hidden", name="_method", id='_method', value="delete").btn
-          input(type="submit", value=__('Delete'), name="submit").btn
+          a(href="?").btn= __('Return To Page')
 
     form(method="get", action=urlToPage)
       table.table
