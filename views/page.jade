@@ -2,8 +2,8 @@ extends layout
 
 // BODY
 block content
-  urlToWiki  = joinPath('/wikis', wikiName)
-  urlToPages = joinPath('/wikis', wikiName, 'pages')
+  urlToWiki  = joinPath('/wikis', encodeURIComponent(wikiName))
+  urlToPages = joinPath('/wikis', encodeURIComponent(wikiName), 'pages')
   urlToPage  = joinPath('/wikis', wikiName, 'pages', title)
 
   article.article
