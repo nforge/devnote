@@ -92,11 +92,7 @@ list = (req, res) ->
   wiki.getPages (err, pages) ->
     if err
       error404 err, req, res
-    else if pages.length == 0 then res.render 'pages',
-      title: 'Pages'
-      pages: pages
-      selectedPageName: __("Page doesn't exist")
-      selectedPageContent: __('Please, create new note.')
+    else if pages.length == 0 then res.render 'nopage', {title: 'nopage'}
     else
       pageName = req.query.page or pages[0].name
 
@@ -189,7 +185,7 @@ exports.getNew = (req, res) ->
     newPage: true
 
 exports.postNew = (req, res) ->
-  name = req.body.name
+  name = req.body.name.trim()
   wiki.writePage name, req.body.body, (err, commitId) ->
     if req.session.user
       userId = req.session.user.id
