@@ -125,11 +125,16 @@ block prepend script
       $.fn.extend({
         insertAtCaret: function(myValue){
           editor.replaceRange(myValue, editor.getCursor(), editor.getCursor());
+        },
+        removeFromContent: function(removeStr){
+          var editorText = editor.getValue();
+          var regex = new RegExp(removeStr, "g");
+          editor.setValue(editorText.replace(regex, ""));
         }
       });
 
       //Insert attachments into contents textarea
-      var imageExtensions = ["jpg","png","gif"];
+      var imageExtensions = ["jpg","png","gif","bmp","svg","tif","tiff", "jpeg"];
       $('.insertInto').live("click",function(){
         var filename = $(this).siblings('input').val();
         var filetype = filename.substring(filename.lastIndexOf('.') + 1);
@@ -142,6 +147,18 @@ block prepend script
 
         $('#body').insertAtCaret(filename);
         preview.update();
+      });
+      $('#filedelete').live("submit", function() {
+        var filename = $(this).find('#filename').val();
+        var filetype = filename.substring(filename.lastIndexOf('.') + 1);
+        if ( _.include(imageExtensions, filetype) ){
+          filename = '<img src="/attachment/#{encodeURIComponent(attachDir)}/' + filename + '">';
+        } else {
+          filename = '/attachment/#{encodeURIComponent(attachDir)}/' + filename;
+        }
+        $('#body').removeFromContent(filename);
+        preview.update();
+        return false;
       });
     })
   script(type="text/javascript", src="/scripts/fileupload.js")
