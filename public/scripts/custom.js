@@ -21,15 +21,20 @@ jQuery(function($){
 	var $write = $('.nBody>.write');
 	var $btnWrite = $write.find('.btnWrite');
 	var $btnPreview = $write.find('.btnPreview');
+	var $menuBtn = $write.find('.menuBtn');
 	$btnWrite.click(function(){
 		$btnPreview.removeClass('active');
 		$btnWrite.addClass('active');
 		$write.removeClass('po ip').addClass('io');
+		$('form').removeClass('hide').addClass('show');
+		$('.attachmentList').removeClass('hide').addClass('show');
 	});
 	$btnPreview.click(function(){
 		$btnWrite.removeClass('active');
 		$btnPreview.addClass('active');
 		$write.removeClass('io ip').addClass('po');
+		$('form').removeClass('show').addClass('hide');
+		$('.attachmentList').removeClass('show').addClass('hide');
 	});
 	$write.find('.ic>.tog').click(function(){
 		if($write.hasClass('io')){

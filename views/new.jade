@@ -27,17 +27,22 @@ block content
             button(type="button").tog
               i
               = __('Preview')
-
-      p.attach
-        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{attachDir}/attachment.partial")
-          label(for="attachment")= __('Select file to upload')
-          input(type='file', name='attachment', id='attachment')
-          div.progress.progress-warning
-            div#progressbar.bar
-        div
-          strong= __('File Attachments')
-          ul.files#filelist
-            include fileuploadPartial.jade
+      form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{attachDir}/attachment.partial")
+        label(for="attachment")= __('Select file to upload')
+        input(type='file', name='attachment', id='attachment')
+        div.progress.progress-warning
+          div#progressbar.bar
+      div.attachmentList
+        strong= __('File Attachments')
+        ul.files#filelist
+          include fileuploadPartial.jade
+    div.span6
+      fieldset.pc
+        menu
+          div.btn-group
+            button(type="button").btn.btnWrite.active: strong= __('Editing')
+            button(type="button").btn.btnPreview: strong= __('Preview')
+          button(type="submit", name='save').btn.btn-primary: strong= __('Save')
 
     div.span6
       fieldset.pc
@@ -73,6 +78,7 @@ block prepend script
       theme: "default",
       lineWrapping: true
     });
+    editor
     activateSubmitKey(function(handler) { editor.setOption('onKeyEvent', handler); });
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
   if newPage
