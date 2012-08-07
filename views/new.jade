@@ -3,7 +3,7 @@ extends layout
 block content
   div.write.row
     div.span6
-      form(method="post", id='newpost', action="/wikis/#{wikiName}/pages")
+      form(method="post", id='newpost', action="/wikis/#{encodeURIComponent(wikiName)}/pages")
         // io: input only | ip: input preview | po: preview only
         fieldset.ic
           menu
@@ -29,7 +29,7 @@ block content
               = __('Preview')
 
       p.attach
-        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{wikiName}/pages/#{attachDir}/attachment.partial")
+        form(method="post", id='fileupload', enctype="multipart/form-data", multiple="multiple", action="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(attachDir)}/attachment.partial")
           label(for="attachment")= __('Select file to upload')
           input(type='file', name='attachment', id='attachment')
           div.progress.progress-warning
@@ -130,9 +130,9 @@ block prepend script
         var filetype = filename.substring(filename.lastIndexOf('.') + 1);
 
         if ( _.include(imageExtensions, filetype) ){
-          filename = '<img src="/attachment/#{attachDir}/' + filename + '">';
+          filename = '<img src="/attachment/#{encodeURIComponent(attachDir)}/' + filename + '">';
         } else {
-          filename = '/attachment/#{attachDir}/' + filename;
+          filename = '/attachment/#{encodeURIComponent(attachDir)}/' + filename;
         }
 
         $('#body').insertAtCaret(filename);

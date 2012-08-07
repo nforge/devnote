@@ -30,14 +30,14 @@ html(lang="ko")
             img(src='/images/note-bi.png')
           nav.gnb
             ul
-              li: a(href="/wikis/#{wikiName}/new")= __('New note')
-              li: a(href="/wikis/#{wikiName}/pages")= __('Note list')
+              li: a(href="/wikis/#{encodeURIComponent(wikiName)}/new")= __('New note')
+              li: a(href="/wikis/#{encodeURIComponent(wikiName)}/pages")= __('Note list')
           div.account
             if user
               span.author: a(href="#")= __('Welcome, %s', user.name)
             span.btn-group
               if user
-                a(href="/wikis/#{wikiName}/users").btn.btn-small
+                a(href="/wikis/#{encodeURIComponent(wikiName)}/users").btn.btn-small
                   i.icon-cog
                   = __('Administration')
                 form(method="post", action="/logout").inline
@@ -55,7 +55,7 @@ html(lang="ko")
               button(type="button").btn.tog.btn-small
                 i.icon-search
                 = __('Search')
-          form(action="/wikis/#{wikiName}/pages").search
+          form(action="/wikis/#{encodeURIComponent(wikiName)}/pages").search
             input(type="hidden", name="action", value='search').btn
             input(type="search", name="keyword", required).si
             button(type="submit",title=__('Search')).sb

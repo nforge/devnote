@@ -7,5 +7,5 @@ block content
   ul.result
     each rendered, name in pages
       li
-        p.title: a(href="/wikis/#{wikiName}/pages/#{name}")!= rendered.title
+        p.title: a(href="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(name)}")!= rendered.title
         p.text!= rendered.body

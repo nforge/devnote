@@ -2,10 +2,11 @@ extends layout
 
 block content
   hgroup.page-header
-    form(method="post", action="/wikis/#{wikiName}/pages/#{name}").inline
+    form(method="post", action="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(name)}").inline
       menu(style='float:right').btn-group
-        a(href="/wikis/#{wikiName}/pages/#{name}").btn= __('View')
-        a(href="/wikis/#{wikiName}/pages/#{name}?action=history").btn= __('History')
+        a(href="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(name)}").btn= __('View')
+        a(href="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(name)}?action=edit").btn= __('Edit')
+        a(href="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(name)}?action=history").btn= __('History')
         input(type="hidden", name="_method", id='_method', value="delete")
         input(type="submit", value=__('Delete'), name="submit").btn.btn-danger
 
@@ -14,5 +15,3 @@ block content
     h1= name
 
   div(class="diff")!= diff
-
-  

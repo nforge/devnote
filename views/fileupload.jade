@@ -6,7 +6,7 @@ block content
   h1= title
   div.container
     div.span4
-      form(method="post", id='fileupload', enctype="multipart/form-data", action="/wikis/#{wikiName}/pages/#{pageName}/attachment")
+      form(method="post", id='fileupload', enctype="multipart/form-data", action="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(wikiName)}/attachment")
         label(for="attachment") 첨부할 파일을 선택해 주세요
         input(type='file', name='attachment', id='attachment')
         input(type="submit", name="submit", value="첨부").btn-primary
@@ -22,9 +22,9 @@ block content
               td(colspan='2', id='nofile') 첨부 파일이 없습니다.
           each filename in filelist
             tr
-              td: a(href='/attachment/#{pageName}/#{filename}') #{filename}
+              td: a(href='/attachment/#{encodeURIComponent(wikiName)}/#{encodeURIComponent(filename)}') #{filename}
               td
-                form(method="post", action="/wikis/#{wikiName}/pages/#{pageName}/attachment/#{filename}")
+                form(method="post", action="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(wikiName)}/attachment/#{encodeURIComponent(filename)}")
                   input(name='filename', type='hidden', id='filename', value='#{filename}')
                   input(type="hidden", name="_method", id='_method', value="delete")
                   input(type="submit", name="submit", value="삭제").btn-danger

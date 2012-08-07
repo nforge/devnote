@@ -2,9 +2,9 @@ extends layout
 
 // BODY
 block content
-  urlToWiki  = joinPath('/wikis', wikiName)
-  urlToPages = joinPath('/wikis', wikiName, 'pages')
-  urlToPage  = joinPath('/wikis', wikiName, 'pages', selectedPageName)
+  urlToWiki  = joinPath('/wikis', encodeURIComponent(wikiName))
+  urlToPages = joinPath('/wikis', encodeURIComponent(wikiName), 'pages')
+  urlToPage  = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(selectedPageName))
 
   div.row.task
     nav.lnb.span3
@@ -18,7 +18,7 @@ block content
         ul
           each page in pages
             li
-              a(href="/wikis/#{wikiName}/pages/#{page.name}")
+              a(href="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(page.name)}")
                 date = sprintf("%d.%02d.%02d", page.date.getFullYear(), page.date.getMonth(), page.date.getDate());
                 if selectedPageName == page.name
                     strong= page.name
@@ -41,7 +41,7 @@ block content
             input(type="hidden", name="_method", id='_method', value="delete")
             input(type="submit", value=__('Delete'), name="submit").btn
       if user
-        form(method="post", action='#{urlToWiki}/subscribes/#{selectedPageName}').inline
+        form(method="post", action='#{urlToWiki}/subscribes/#{encodeURIComponent(selectedPageName)}').inline
           div(style='float: right')
             if subscribed
               input(type="hidden", name="_method", id="_method", value="delete")

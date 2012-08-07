@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  urlToPage = joinPath('/wikis', wikiName, 'pages', title)
+  urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', title)
   div.span9.form-horizontal
     div.page-header
       h1= __('History')

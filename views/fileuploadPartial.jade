@@ -4,9 +4,9 @@ if filelist == ''
 each filename in filelist
   li(tabindex="0")
     span.i
-      form(method="post", id='filedelete', class='filedelete', action="/wikis/#{wikiName}/pages/#{pageName}/attachment/#{filename}")
+      form(method="post", id='filedelete', class='filedelete', action="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(pageName)}/attachment/#{encodeURIComponent(filename)}")
         i.icon-upload
-        a(href='/attachment/#{pageName}/#{filename}',target='_blank') #{filename}
+        a(href='/attachment/#{encodeURIComponent(pageName)}/#{encodeURIComponent(filename)}',target='_blank') #{filename}
         input(name='filename', type='hidden', id='filename', value='#{filename}')
         input(type="hidden", name="_method", id='_method', value="delete")
         input(type="button", class="insertInto", value=__('Insert into text area')).label.label-info
