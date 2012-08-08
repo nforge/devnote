@@ -13,32 +13,43 @@ block content
       table.table
         thead
           tr
+            th(scope="col")= __('Page name')
             th(scope="col")= __('Author')
             th(scope="col")= __('Date')
-            th(scope="col")= __('Target')
-            th(scope="col")= __('Destination')
+            th(scope="col")= __('A')
+            th(scope="col")= __('B')
             th(scope="col",colspan="3")= __('Message')
+        tfoot
+          tr
+            th(scope="col",colspan="3")
+            th(scope="col",colspan="2")
+              input(type="submit", value=__('Diff')).btn.btn-info
+            th(scope="col",colspan="3")
         tbody(id="commits")
-          - var first = commits.ids[0];
-          - var last = commits.ids[commits.length - 1];
-          - commits.forEach(function(commit, index) {
-          - var date = new Date(commit.author.unixtime * 1000)
+          first = commits.ids[0]
+          last = commits.ids[commits.length - 1]
+          each commit, index in commits
+            date = new Date(commit.author.unixtime * 1000)
+            if commits.ids[index] == first
+              isFirst = true
+            else
+              isFirst = false
             tr
+              td= commit.filename
               td= commit.author.name
               td= date
               td
-                input(type="radio", value=commits.ids[index], name="a")
+                input(type="radio", name="diffA", value=encodeURIComponent(commit.filename) + ',' + commits.ids[index], checked=isFirst)
               td
-                input(type="radio", value=commits.ids[index], name="b")
+                input(type="radio", name="diffB", value=encodeURIComponent(commit.filename) + ',' + commits.ids[index], checked=isFirst)
               td= commit.message
               td
+                urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(commit.filename))
                 a(href="#{urlToPage}?rev=#{commits.ids[index]}", name=title).label.label-warning= __('Show')
               //- td
               //-   a(href="#", class="rollback-button", name=title, id=commits.ids[index]).label= __('Rollback')
-          - });
       div(style='float:right')
         input(type="hidden", value='diff', name="action")
-        input(type="submit", value=__('Diff')).btn.btn-info
       //- div(style='float:left').btn-group
       //-   a(href="#{urlToPage}?action=history&until=#{first}&offset=-#{limit}").btn= __('« Newer')
       //-   a(href="#{urlToPage}?action=history&until=#{last}&offset=1").btn= __('Older »')

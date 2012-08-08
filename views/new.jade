@@ -14,6 +14,8 @@ block content
           // ic: input container
           div.ic
             div.wTitle
+              if newPage == false
+                input(type="hidden", name="originalName", value=pageName)
               input(type="text", id="pagename", name="name", placeholder=__('Title here'), required="", value=pageName)#title
             div.wText
               textarea(name="body", placeholder=__('Fill this form'), rows="16", cols="32")#body

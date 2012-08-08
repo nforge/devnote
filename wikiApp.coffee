@@ -27,6 +27,7 @@ exports.init = (wikiname) ->
         throw err if err
 
 error404 = (err, req, res, next) ->
+  console.log err
   res.statusCode = 404
   res.render '404.jade',
   title: "404 Not Found",
@@ -41,7 +42,6 @@ error500 = (err, req, res, next) ->
 history = (name, req, res) ->
   handler = (err, commits) ->
     if err
-      console.log err
       error404 err, req, res
     else
       res.render 'history',
@@ -60,7 +60,10 @@ history = (name, req, res) ->
     wiki.getHistory name, HISTORY_LIMIT, handler
 
 diff = (name, req, res) ->
-  wiki.diff name, [req.query.a, req.query.b], (err, diff) ->
+  diffA = req.query.diffA.split ','
+  diffB = req.query.diffB.split ','
+
+  wiki.diff {filename: diffA[0], rev: diffA[1]}, {filename: diffB[0], rev: diffB[1]}, (err, diff) ->
     if err
       error404 err, req, res
     else
@@ -185,36 +188,48 @@ exports.getNew = (req, res) ->
     newPage: true
 
 exports.postNew = (req, res) ->
-  name = req.body.name.trim()
-  wiki.writePage name, req.body.body, (err, commitId) ->
-    if req.session.user
-      userId = req.session.user.id
-      if not lastVisits[userId]
-        lastVisits[userId] = {}
-      lastVisits[userId][name] = commitId
+  saveEditedPage = (name, body, callback) ->
+    wiki.writePage name, body, (err, commitId) ->
+      if req.session.user
+        userId = req.session.user.id
+        if not lastVisits[userId]
+          lastVisits[userId] = {}
+        lastVisits[userId][name] = commitId
 
-    if subscribers[name]
-      # send mail to subscribers of this page.
-      wiki.diff name, commitId, ['json', 'unified'], (err, diff) ->
-        user = req.session.user
+      if subscribers[name]
+        # send mail to subscribers of this page.
+        wiki.diff name, commitId, ['json', 'unified'], (err, diff) ->
+          user = req.session.user
 
-        subject = '[n4wiki] ' + name + ' was edited'
-        subject += (' by ' + user.id) if user
+          subject = '[n4wiki] ' + name + ' was edited'
+          subject += (' by ' + user.id) if user
 
-        if user
-          ids = _.without subscribers[name], user.id
-        else
-          ids = subscribers[name]
+          if user
+            ids = _.without subscribers[name], user.id
+          else
+            ids = subscribers[name]
 
-        to = (User.findUserById(id).email for id in ids)
+          to = (User.findUserById(id).email for id in ids)
 
-        mailer.send
-          to: to
-          subject: subject
-          text: diff['unified']
-          html: renderer.diff diff['json'], true
+          mailer.send
+            to: to
+            subject: subject
+            text: diff['unified']
+            html: renderer.diff diff['json'], true
 
-    res.redirect ROOT_PATH + '/pages/' + name
+      callback err
+
+  newPageName = req.body.name.trim()
+  originalPageName = req.body.originalName
+  body = req.body.body
+
+  if originalPageName and (originalPageName != newPageName)
+    wiki.renamePage originalPageName, newPageName, (err) ->
+      saveEditedPage newPageName, body, (err) ->
+        res.redirect ROOT_PATH + '/pages/' + newPageName
+  else
+    saveEditedPage newPageName, body, (err) ->
+      res.redirect ROOT_PATH + '/pages/' + newPageName
 
 exports.postDelete = (req, res) ->
   wiki.deletePage req.params.name, (err) ->
