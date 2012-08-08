@@ -5,7 +5,7 @@ block content
     div.span6
       form(method="post", id='newpost', action="/wikis/#{encodeURIComponent(wikiName)}/pages")
         // io: input only | ip: input preview | po: preview only
-        fieldset.ic
+        div.ic
           menu
             div.btn-group
               button(type="button").btn.btnWrite.active: strong= __('Editing')
@@ -136,27 +136,34 @@ block prepend script
         }
       });
 
+      function isImageFile(filename){
+        var imageExtensions = ["jpg","png","gif","bmp","svg","tif","tiff", "jpeg"];
+        var filetype = filename.substring(filename.lastIndexOf('.') + 1);
+        if (_.include(imageExtensions, filetype)){
+          return true;
+        } else {
+          return false;
+        }
+      }
       //Insert attachments into contents textarea
       var imageExtensions = ["jpg","png","gif","bmp","svg","tif","tiff", "jpeg"];
       $('.insertInto').live("click",function(){
-        var filename = $(this).siblings('input').val();
-        var filetype = filename.substring(filename.lastIndexOf('.') + 1);
-
-        if ( _.include(imageExtensions, filetype) ){
+        var filename = $(this).siblings('input:first').val();
+        if ( isImageFile(filename) ){
           filename = '<img src="/attachment/#{encodeURIComponent(attachDir)}/' + filename + '">';
         } else {
-          filename = '[' + filename + '](/attachment/#{encodeURIComponent(attachDir)}/' + filename + ')';        }
-
+          filename = ' [' + filename + '](/attachment/#{encodeURIComponent(attachDir)}/' + filename + ') ';
+        }
         $('#body').insertAtCaret(filename);
         preview.update();
       });
       $('#filedelete').live("submit", function() {
-        var filename = $(this).find('#filename').val();
+        var filename = $(this).find('input').val();
         var filetype = filename.substring(filename.lastIndexOf('.') + 1);
         if ( _.include(imageExtensions, filetype) ){
           filename = '<img src="/attachment/#{encodeURIComponent(attachDir)}/' + filename + '">';
         } else {
-          filename = '[' + filename + '](/attachment/#{encodeURIComponent(attachDir)}/' + filename + ')';
+          filename = ' [' + filename + '](/attachment/#{encodeURIComponent(attachDir)}/' + filename + ') ';
         }
         $('#body').removeFromContent(filename);
         preview.update();

@@ -9,5 +9,5 @@ each filename in filelist
         a(href='/attachment/#{encodeURIComponent(pageName)}/#{encodeURIComponent(filename)}',target='_blank') #{filename}
         input(name='filename', type='hidden', id='filename', value='#{filename}')
         input(type="hidden", name="_method", id='_method', value="delete")
-        input(type="button", class="insertInto", value=__('Insert into text area')).label.label-info
+        input(type="button", class="insertInto", id='#{filename}', value=__('Insert into text area')).label.label-info
         button(name="submit").fileDeleteBtn.close &times;
