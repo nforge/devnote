@@ -1,12 +1,17 @@
 extends ../layout
 
 block content
+  div.page-header
     h1= title
     p= content
-
-    p 이름: #{userInfo.name}
-    p 이메일: #{userInfo.email}
-    p 아이디: #{userInfo.id}
-    p #salted Password: #{userInfo.password}
-
-    a(href='/wikis/note/users') 목록보기
+  table(style='width: 300px').table.table-bordered
+    tr
+      td: strong 이름 
+      td #{userInfo.name}
+    tr
+      td: strong 이메일
+      td #{userInfo.email}
+    tr
+      td: strong 아이디 
+      td #{userInfo.id}
+  a(href='/wikis/note/users').btn 목록보기
