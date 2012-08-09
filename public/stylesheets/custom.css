@@ -114,7 +114,7 @@ input[type="submit"].btn {
 }
 
 /* nHead */
-.nHead h1{float:left;font-size:24px;line-height:0;margin:0 20px 0 0;-webkit-transition:.5s;-moz-transition:.5s;-o-transition:.5s}
+.nHead h1{float:left;font-size:24px;line-height:0;margin:0 20px 0 0}
 .nHead h1 a{display:inline-block;height:60px;line-height:60px;overflow:hidden;color:#333;text-decoration:none}
 .nHead .gnb{float:left;margin:0 -100% 0 0}
 .nHead .gnb ul{margin:0;padding:0;list-style:none;zoom:1}
@@ -207,7 +207,7 @@ input[type="submit"].btn {
 /* Write */
 .write{padding:50px 0 0 0}
 .write menu{text-align:right;margin:0 0 10px 0;padding:0}
-.write menu .btn-group{float:left}
+.write menu .btn-group{float:left;width:200px}
 .write .pc menu{display:none}
 .write .ic{position:relative}
 .write .ic .wTitle,
