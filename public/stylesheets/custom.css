@@ -334,5 +334,3 @@ input[type="submit"].btn {
 .tx blockquote{border-left:4px solid #ddd}
 .tx blockquote blockquote{border-left:3px solid #ddd}
 .tx blockquote>code:only-child{white-space:pre}
-.tx a[href^='#']:after{content:"†";color:#f00;font:12px Arial,Helvetica,sans-serif}
-.tx a[href^='http']:after{content:"↗";color:#f00;font:12px Arial,Helvetica,sans-serif}
