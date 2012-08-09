@@ -145,7 +145,9 @@ suite('wiki', function() {
       if (err) throw err;
       var next = this;
       wiki.getHistory(name, null, function(err, commits) {
-        wiki.diff(name, [commits.ids[1], commits.ids[0]], next);
+        wiki.diff(
+          {filename: name, rev: commits.ids[1]},
+          {filename: name, rev: commits.ids[0]}, next);
       });
     }, function then(err, diff) {
       if (err) throw err;
