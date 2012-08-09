@@ -111,7 +111,8 @@ block prepend script
     });
 
     socket.on('page name is ok', function(){
-      $('#title').popover('hide');
+      if( $('#title').val().replace(/ /g, "") !== "" )
+        $('#title').popover('hide');
     });
 
     $('#title').keyup(function(){
@@ -173,3 +174,14 @@ block prepend script
       });
     })
   script(type="text/javascript", src="/scripts/fileupload.js")
+  script
+    //before write post
+    $('#newpost').live("submit", function() {
+      if( $('#title').val().replace(/ /g, "") == "" ) {
+        $('#title').popover({title:"Title text is wrong", content: "Please, fill in the title text"});
+        $('#title').popover('show');
+        return false;
+      }
+      $('#title').popover('show');
+      return true;
+    });
