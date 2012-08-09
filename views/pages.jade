@@ -18,7 +18,7 @@ block content
         ul
           each page in pages
             li
-              a(href="/wikis/#{encodeURIComponent(wikiName)}/pages/#{encodeURIComponent(page.name)}")
+              a(href="/wikis/#{encodeURIComponent(wikiName)}/pages?selectedPageName=#{encodeURIComponent(page.name)}")
                 date = sprintf("%d.%02d.%02d", page.date.getFullYear(), page.date.getMonth(), page.date.getDate());
                 if selectedPageName == page.name
                     strong= page.name

@@ -88,16 +88,16 @@ search = (req, res) ->
 exports.getPages = (req, res) ->
   switch req.query.action
     when 'search' then search req, res
-    else list req, res
+    else list req, res, req.query.selectedPageName
 
 # get wikipage list
-list = (req, res) ->
+list = (req, res, selectedPageName) ->
   wiki.getPages (err, pages) ->
     if err
       error404 err, req, res
     else if pages.length == 0 then res.render 'nopage', {title: 'nopage'}
     else
-      pageName = req.query.page or pages[0].name
+      pageName = selectedPageName or req.query.page or pages[0].name
 
       wiki.getPage pageName, (err, page) ->
         subscribed = req.session.user and
