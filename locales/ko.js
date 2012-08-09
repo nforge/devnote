@@ -99,5 +99,7 @@
 	"Note doesn't exist": "작성된 노트가 없습니다.",
 	"Page doesn't exist": "Page doesn't exist",
 	"Please, create new note.": "Please, create new note.",
-	"Page name": "페이지 이름"
+	"Page name": "페이지 이름",
+	"A": "A",
+	"B": "B"
 }
