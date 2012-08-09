@@ -99,9 +99,10 @@ block prepend script
       pageId = id;
     });
     socket.on('dupped', function(data){
+      console.log( data );
       var user = {};
       if (data.user === "" || data.user === undefined ) {
-        user.id = 'anomynous'
+        user.id = 'anomynous';
       } else {
         user = JSON.parse(data.user);
       }

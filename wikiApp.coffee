@@ -74,16 +74,16 @@ diff = (name, req, res) ->
 
 search = (req, res) ->
   keyword = req.query.keyword
-  if not keyword
-    res.render 'search',
-      title: 'Search'
-      pages: {}
-  else
+  if keyword
     wiki.search keyword, (err, pages) ->
       throw err if err
       res.render 'search',
         title: 'Search'
         pages: renderer.search pages, keyword
+  else
+    res.render 'search',
+      title: 'Search'
+      pages: {}
 
 exports.getPages = (req, res) ->
   switch req.query.action

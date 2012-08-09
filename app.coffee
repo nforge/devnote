@@ -20,6 +20,7 @@ adminApp = require './adminApp'
 workingPage = require './lib/workingpage'
 i18n = require './lib/i18n'
 path = require 'path'
+wiki = require './lib/wiki'
 
 i18n.configure
   locales: ['en', 'ko']
@@ -39,12 +40,19 @@ io.sockets.on 'connection', (socket)->
   socket.emit 'connected', socket.id
   socket.on 'page name changed', (page)->
     result = workingPage.update page, page.user
-    console.log workingPage.findAll()
-    if result is false
-      console.log( workingPage.findByPageName page.name )
-      socket.emit 'dupped', workingPage.findByPageName page.name
-    else
-      socket.emit 'page name is ok'
+    isExistAlready = false 
+    wiki.getPages (err, pages) ->
+      throw err if err
+      if pages.length > 0 
+        for existPage in pages
+          if existPage.name is page.name
+            isExistAlready = true
+            socket.emit 'dupped', page
+            return;
+      if result is false
+        socket.emit 'dupped', workingPage.findByPageName page.name
+      else 
+        socket.emit 'page name is ok'
 
   socket.on 'disconnect', ->
     workingPage.remove socket.id
