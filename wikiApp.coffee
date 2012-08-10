@@ -106,7 +106,7 @@ list = (req, res, selectedPageName) ->
 
         res.render 'pages',
           title: 'Pages'
-          pages: pages
+          pages: _.sortBy pages, 'name'
           selectedPageName: pageName
           selectedPageContent: renderer.markdown page.content
           deletedPageName: req.query.deletedPageName
