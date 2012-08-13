@@ -226,10 +226,10 @@ exports.postNew = (req, res) ->
   if originalPageName and (originalPageName != newPageName)
     wiki.renamePage originalPageName, newPageName, (err) ->
       saveEditedPage newPageName, body, (err) ->
-        res.redirect ROOT_PATH + '/pages/' + newPageName
+        res.redirect ROOT_PATH + '/pages/' + encodeURIComponent(newPageName)
   else
     saveEditedPage newPageName, body, (err) ->
-      res.redirect ROOT_PATH + '/pages/' + newPageName
+      res.redirect ROOT_PATH + '/pages/' + encodeURIComponent(newPageName)
 
 exports.postDelete = (req, res) ->
   wiki.deletePage req.params.name, (err) ->
@@ -256,11 +256,11 @@ exports.postSubscribe = (req, res) ->
     if not (userId in subscribers[name])
       subscribers[name].push userId
 
-  res.redirect ROOT_PATH + '/pages/' + name
+  res.redirect ROOT_PATH + '/pages/' + encodeURIComponent(name)
 
 exports.postUnsubscribe = (req, res) ->
   name = req.params.name
   if req.session.user and subscribers[name]
     subscribers[name] = _.without subscribers[name], req.session.user.id
 
-  res.redirect ROOT_PATH + '/pages/' + name
+  res.redirect ROOT_PATH + '/pages/' + encodeURIComponent(name)
