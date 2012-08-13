@@ -34,18 +34,23 @@ block content
               isFirst = true
             else
               isFirst = false
+            if commit.filename
+              filename = commit.filename
+            else
+              filename = ''
             tr
-              td= commit.filename
+              td= filename
               td= commit.author.name
               td= date
               td
-                input(type="radio", name="diffA", value=encodeURIComponent(commit.filename) + ',' + commits.ids[index], checked=isFirst)
+                input(type="radio", name="diffA", value=encodeURIComponent(filename) + ',' + commits.ids[index], checked=isFirst)
               td
-                input(type="radio", name="diffB", value=encodeURIComponent(commit.filename) + ',' + commits.ids[index], checked=isFirst)
+                input(type="radio", name="diffB", value=encodeURIComponent(filename) + ',' + commits.ids[index], checked=isFirst)
               td= commit.message
               td
-                urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(commit.filename))
-                a(href="#{urlToPage}?rev=#{commits.ids[index]}", name=title).label.label-warning= __('Show')
+                if commit.filename
+                  urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(commit.filename))
+                  a(href="#{urlToPage}?rev=#{commits.ids[index]}", name=title).label.label-warning= __('Show')
               //- td
               //-   a(href="#", class="rollback-button", name=title, id=commits.ids[index]).label= __('Rollback')
       div(style='float:right')
