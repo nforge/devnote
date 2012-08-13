@@ -449,17 +449,17 @@ suite('gitfs.log', function() {
     gitfs.log('FrontPage', null, function(err, actual) {
       if (err) throw err;
       assert.equal(actual.length, 2);
-      assert.equal(actual[0].message, givenCommits[1].message);
-      assert.equal(actual[1].message, givenCommits[0].message);
+      assert.equal(actual[0].commit.message, givenCommits[1].message);
+      assert.equal(actual[1].commit.message, givenCommits[0].message);
       done();
     });
   });
 
-  test('커밋된 후 삭제된 Index 페이지의 히스토리 가져오기', function(done) {
+  test('두번째 커밋때 추가된 Index 페이지의 히스토리 가져오기', function(done) {
     gitfs.log('Index', null, function(err, actual) {
       if (err) throw err;
       assert.equal(actual.length, 1);
-      assert.equal(actual[0].message, givenCommits[1].message);
+      assert.equal(actual[0].commit.message, givenCommits[1].message);
       done();
     });
   });
@@ -487,7 +487,7 @@ suite('gitfs.log', function() {
     }, function then(err, actual) {
       if (err) throw err;
       assert.equal(actual.length, 1);
-      assert.equal(actual[0].author.name, writer.name);
+      assert.equal(actual[0].commit.author.name, writer.name);
       done();
     })
   });
@@ -585,8 +585,8 @@ suite('gitfs.queryLog', function() {
   test('커밋로그를 지정한 갯수만큼만 가져오기', function(done) {
     gitfs.log('SecondPage', 2, function(err, commits) {
       assert.equal(commits.length, 2);
-      assert.equal(commits[0].message, 'bye');
-      assert.equal(commits[1].message, 'hello, world');
+      assert.equal(commits[0].commit.message, 'bye');
+      assert.equal(commits[1].commit.message, 'hello, world');
       done();
     });
   });
@@ -608,7 +608,9 @@ suite('gitfs.queryLog', function() {
         offset: 1
       }, this);
     }, function then(err, commits) {
-      assert.deepEqual(commits, expected);
+      assert.equal(commits.length, 1);
+      assert.deepEqual(commits[0].commit, expected[0].commit);
+      assert.deepEqual(commits.ids, expected.ids);
       done();
     });
   });
@@ -630,7 +632,10 @@ suite('gitfs.queryLog', function() {
         offset: -1
       }, this);
     }, function then(err, commits) {
-      assert.deepEqual(commits, expected);
+      assert.equal(commits.length, 2);
+      assert.deepEqual(commits[0].commit, expected[0].commit);
+      assert.deepEqual(commits[1].commit, expected[1].commit);
+      assert.deepEqual(commits.ids, expected.ids);
       done();
     });
   });
@@ -651,7 +656,9 @@ suite('gitfs.queryLog', function() {
         since: commits.ids[1]
       }, this);
     }, function then(err, commits) {
-      assert.deepEqual(commits, expected);
+      assert.equal(commits.length, 1);
+      assert.deepEqual(commits[0].commit, expected[0].commit);
+      assert.deepEqual(commits.ids, expected.ids);
       done();
     });
   });

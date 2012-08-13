@@ -25,17 +25,18 @@ block content
             th(scope="col",colspan="2")
               input(type="submit", value=__('Diff')).btn.btn-info
             th(scope="col",colspan="3")
-        tbody(id="commits")
-          first = commits.ids[0]
-          last = commits.ids[commits.length - 1]
-          each commit, index in commits
+        tbody(id="history")
+          first = history.ids[0]
+          last = history.ids[history.length - 1]
+          each entry, index in history
+            commit = entry.commit;
             date = new Date(commit.author.unixtime * 1000)
-            if commits.ids[index] == first
+            if history.ids[index] == first
               isFirst = true
             else
               isFirst = false
-            if commit.filename
-              filename = commit.filename
+            if entry.name
+              filename = entry.name
             else
               filename = ''
             tr
@@ -43,16 +44,16 @@ block content
               td= commit.author.name
               td= date
               td
-                input(type="radio", name="diffA", value=encodeURIComponent(filename) + ',' + commits.ids[index], checked=isFirst)
+                input(type="radio", name="diffA", value=encodeURIComponent(filename) + ',' + history.ids[index], checked=isFirst)
               td
-                input(type="radio", name="diffB", value=encodeURIComponent(filename) + ',' + commits.ids[index], checked=isFirst)
+                input(type="radio", name="diffB", value=encodeURIComponent(filename) + ',' + history.ids[index], checked=isFirst)
               td= commit.message
               td
-                if commit.filename
-                  urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(commit.filename))
-                  a(href="#{urlToPage}?rev=#{commits.ids[index]}", name=title).label.label-warning= __('Show')
+                if entry.name
+                  urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(entry.name))
+                  a(href="#{urlToPage}?rev=#{history.ids[index]}", name=title).label.label-warning= __('Show')
               //- td
-              //-   a(href="#", class="rollback-button", name=title, id=commits.ids[index]).label= __('Rollback')
+              //-   a(href="#", class="rollback-button", name=title, id=history.ids[index]).label= __('Rollback')
       div(style='float:right')
         input(type="hidden", value='diff', name="action")
       //- div(style='float:left').btn-group

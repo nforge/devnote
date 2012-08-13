@@ -40,13 +40,13 @@ error500 = (err, req, res, next) ->
   error: err.message,
 
 history = (name, req, res) ->
-  handler = (err, commits) ->
+  handler = (err, history) ->
     if err
       error404 err, req, res
     else
       res.render 'history',
         title: name
-        commits: commits
+        history: history
         limit: HISTORY_LIMIT
   if req.query.until
     offset = parseInt(req.query.offset or 0)
@@ -198,7 +198,7 @@ exports.postNew = (req, res) ->
 
       if subscribers[name]
         # send mail to subscribers of this page.
-        wiki.diff name, commitId, ['json', 'unified'], (err, diff) ->
+        wiki.diff {filename: name, rev: commitId}, null, ['json', 'unified'], (err, diff) ->
           user = req.session.user
 
           subject = '[n4wiki] ' + name + ' was edited'
@@ -238,15 +238,15 @@ exports.postDelete = (req, res) ->
 exports.postRollback = (req, res) ->
   name = req.params.name
   wiki.rollback name, req.body.id, (err) ->
-    wiki.getHistory name, HISTORY_LIMIT, (err, commits) ->
+    wiki.getHistory name, HISTORY_LIMIT, (err, history) ->
       if err
         error404 err, req, res
       else
         res.contentType 'json'
         res.send
-          commits: commits
+          history: history
           name: name
-          ids: commits.ids
+          ids: history.ids
 
 exports.postSubscribe = (req, res) ->
   name = req.params.name
