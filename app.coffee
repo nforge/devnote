@@ -40,10 +40,10 @@ io.sockets.on 'connection', (socket)->
   socket.emit 'connected', socket.id
   socket.on 'page name changed', (page)->
     result = workingPage.update page, page.user
-    isExistAlready = false 
+    isExistAlready = false
     wiki.getPages (err, pages) ->
       throw err if err
-      if pages.length > 0 
+      if pages.length > 0
         for existPage in pages
           if existPage.name is page.name
             isExistAlready = true
