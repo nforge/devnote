@@ -74,7 +74,7 @@ Test
     - Travis CI (if we can use...)
       - Sameple Project: http://travis-ci.org/doortts/node-test-samples
  - Test Server
-    - IP: 10.64.80.79
+    - TBD
 
 Development Environment
 ---
