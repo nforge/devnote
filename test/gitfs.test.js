@@ -701,8 +701,8 @@ suite('gitfs.getHeadTree', function() {
       timezone: '+0900'
     };
     var expectedtree = {
-      "My Diary": "f0088144f8ddcebcaef23def5467d45c2adcdb63",
-      "README": "6a1fea92897468a77a436724ae3306891f19b60c"
+      "My Diary": new Buffer("f0088144f8ddcebcaef23def5467d45c2adcdb63", 'hex'),
+      "README": new Buffer("6a1fea92897468a77a436724ae3306891f19b60c", 'hex')
     };
     step(function given() {
       var commit = {
