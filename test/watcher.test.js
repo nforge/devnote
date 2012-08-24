@@ -29,7 +29,7 @@ suite("file changed detect", function() {
   // }
   test("getFiles", function(done) {
     watcher.getFiles(testDir, function(files) {
-      assert.equal(Object.keys(files).toString(), "package.json,README");
+      assert.equal(Object.keys(files).sort().toString(), ["package.json","README"].sort().toString());
       done();
     })
   })
