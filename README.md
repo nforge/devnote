@@ -1,6 +1,30 @@
 개발자 노트(Devnote)
 ====================
 
+실행방법
+=======
+
+소스 내려받기
+
+    git clone https://github.com/nforge/devnote.git
+
+npm을 이용해서 의존 모듈 설치
+
+    npm intsall
+
+coffeescirpt global로 설치(권한유저로 실행)
+
+    sudo npm install coffee-script -g
+
+Build 도구 Jake global로 설치(권한유저로 실행)
+
+    sudo npm install jake -g
+
+devnote 실행
+
+    coffee app
+
+
 특징
 ====
 
