@@ -79,13 +79,9 @@ task('build', function() {
         proc.stderr.on('data', function(data){
           console.log(data)
         });
-      } else {
-        jake.Task['test'].invoke();
-      }
+      } 
     });
-  } else {
-    jake.Task['test'].invoke();
-  }
+  } 
 }, true);
 
 task('start', function() {
