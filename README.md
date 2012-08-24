@@ -4,29 +4,36 @@
 ![travis-ci](https://secure.travis-ci.org/nforge/devnote.png?branch=master)
 
 실행방법
-=======
+========
 
-소스 내려받기
+아래 사이트에서 node.js 최신버전을 다운로드 받아 설치
+
+    http://nodejs.org/
+
+쉘에서 아래의 명령을 실행하여 devnote 설치
 
     git clone https://github.com/nforge/devnote.git
-
-npm을 이용해서 의존 모듈 설치
-
     cd devnote
-    npm install
+    npm install --production
 
-coffeescirpt global로 설치(권한유저로 실행)
+쉘에서 아래의 명령을 실행하여 devnote 실행
 
-    sudo npm install coffee-script -g
+    npm start --production
 
-Build 도구 Jake global로 설치(권한유저로 실행)
+개발 참여를 위한 준비
+=====================
 
-    sudo npm install jake -g
+C++ 컴파일러 설치
 
-devnote 실행
+Python 설치
 
-    coffee app
+쉘에서 아래 명령을 실행하여 개발 및 테스트에 필요한 npm 모듈 설치
 
+    npm install --production=false
+
+테스트 실행해보기
+
+    npm test
 
 특징
 ====
