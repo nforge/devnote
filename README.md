@@ -1,6 +1,8 @@
 개발자 노트(Devnote)
 ====================
 
+![travis-ci](https://secure.travis-ci.org/nforge/devnote.png?branch=master)
+
 실행방법
 =======
 
