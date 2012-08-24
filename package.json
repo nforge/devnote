@@ -80,6 +80,7 @@
     "node": ">=0.8"
   },
   "scripts": {
+    "postinstall": "node node_modules/jake/bin/cli.js build",
     "test"  : "node node_modules/jake/bin/cli.js test",
     "start" : "node node_modules/coffee-script/bin/coffee app"
   }
