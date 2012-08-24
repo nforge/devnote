@@ -78,7 +78,7 @@
   "bundleDependencies": [],
   "license": "MIT",
   "engine": {
-    "node": ">=0.6"
+    "node": ">=0.8"
   },
   "scripts": {
     "postinstall": "node node_modules/jake/bin/cli.js build",

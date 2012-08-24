@@ -19,7 +19,7 @@ var REPO_PATH = 'note.pages.git';
 //     $ echo 'ref: refs/heads/master' > ./pages.git/HEAD
 //     - 확인: 폴더 정상적으로 생성되었는지 여부
 var _ifExistsSync = function(file, func) {
-  if (path.existsSync(file)) {
+  if (fs.existsSync(file)) {
     return func(file);
   }
 }
@@ -105,7 +105,7 @@ suite('gitfs._serializeBlob', function() {
       gitfs._createObjectBucket(digest, this);
     }, function then(err) {
       if (err) throw err;
-      assert.ok(path.existsSync(bucketPath));
+      assert.ok(fs.existsSync(bucketPath));
       done();
     });
   });
