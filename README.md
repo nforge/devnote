@@ -12,6 +12,7 @@
 
 npm을 이용해서 의존 모듈 설치
 
+    cd devnote
     npm install
 
 coffeescirpt global로 설치(권한유저로 실행)
