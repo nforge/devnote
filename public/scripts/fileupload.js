@@ -13,14 +13,14 @@ $(function() {
         $('.filedelete').ajaxForm(deleteOptions);
         setProgressBar(0);
       }
-    }
+    };
     $('.filedelete').ajaxForm(deleteOptions);
-  }
+  };
 
   var setProgressBar = function(value) {
     $('#progressbar').css("width", value + "%");
     $('#progressbar').text(value + "%");
-  }
+  };
 
   var _getFileNameOnly = function(filename) {
     var fakepath = 'fakepath';
@@ -29,15 +29,15 @@ $(function() {
       filename = filename.substring(fakepath.length + fakepathPostion + 1);
     }
     return filename;
-  }
+  };
 
   var insertLinkIntoBody = function(filename) {
     $('input[id="' + filename + '"]').trigger('click');
-  }
+  };
 
   var _replaceFileInputControl = function() {
     $("#attachment").replaceWith("<input type='file' name='attachment' id='attachment' >");
-  }
+  };
   var fileUploadOptions = {
     beforeSubmit: function() {
       var filename = _getFileNameOnly($('#attachment').val());
@@ -64,7 +64,7 @@ $(function() {
     uploadProgress: function(event, position, total, percentComplete) {
       setProgressBar(percentComplete);
     }
-  }
+  };
 
   $('#fileupload').ajaxForm(fileUploadOptions);
 
@@ -76,4 +76,4 @@ $(function() {
       $('#fileupload').submit();
     }
   });
-})
+});

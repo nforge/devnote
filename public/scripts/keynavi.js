@@ -7,17 +7,17 @@ var _activateLinkKey = function(keyCode, url) {
       self.location = url;
     }
   });
-}
+};
 
 // 'e' for editing page
 var activateEditKey = function(url) {
   _activateLinkKey(69, url || '?action=edit');
-}
+};
 
 // 'n' for new page
 var activateNewKey = function(url) {
   _activateLinkKey(78, url || '/wikis/note/new');
-}
+};
 
 // ctrl + enter for submit form
 var activateSubmitKey = function(eventListener) {
@@ -25,7 +25,7 @@ var activateSubmitKey = function(eventListener) {
     if (event.ctrlKey && event.which == 13) {
       $(event.target).parents('form').get(0).submit();
     }
-  }
+  };
 
   $('textarea').keydown(eventHandler);
   $('input').keydown(eventHandler);
@@ -33,4 +33,4 @@ var activateSubmitKey = function(eventListener) {
   if (eventListener) {
     eventListener(eventHandler);
   }
-}
+};
