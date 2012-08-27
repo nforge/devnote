@@ -9,11 +9,16 @@ var _ = require('underscore');
 var ZOMBIE_TEST_ON_WINDOWS = ZOMBIE_TEST_ON_WINDOWS || (process.platform == 'win32' ? true : false);
 
 var WIKINAME = 'note';
+var user = {
+  name: 'tester',
+  email: 'tester@mail.com',
+  timezone: '+0900'
+};
 
 suite('wiki', function() {
   setup(function(done) {
     wiki.init(WIKINAME, function(err) {
-      wiki.writePage('frontpage', 'welcome to n4wiki', function(err) {
+      wiki.writePage('frontpage', 'welcome to n4wiki', user, function(err) {
         if (err) throw err;
         done();
       });
@@ -24,7 +29,7 @@ suite('wiki', function() {
     var name = 'SecondPage';
     var content = 'n4wiki details';
 
-    wiki.writePage(name, content, function(err) {
+    wiki.writePage(name, content, user, function(err) {
       if (err) throw err;
       wiki.getPage(name, function(err, actual) {
         assert.equal(content, actual.content);
@@ -37,9 +42,9 @@ suite('wiki', function() {
     var name = 'my diary';
     var content = 'It\'s a very busy today';
 
-    wiki.writePage(name, content, function(err) {
+    wiki.writePage(name, content, user, function(err) {
       if (err) throw err;
-      wiki.deletePage(name, function(err, tree) {
+      wiki.deletePage(name, user, function(err, tree) {
         if (err) throw err;
         assert.deepEqual(tree[name], undefined);
         done();
@@ -49,7 +54,7 @@ suite('wiki', function() {
 
   test('사용자는 모든 위키 페이지 목록을 볼 수 있다.', function(done) {
     step(function given() {
-      wiki.writePage('secondPage', 'hello', this);
+      wiki.writePage('secondPage', 'hello', user, this);
     }, function when(err) {
       if (err) throw err;
       wiki.getPages(this);
@@ -69,10 +74,10 @@ suite('wiki', function() {
     var name = 'SecondPage';
     var content = 'hello';
 
-    wiki.writePage(name, content, function(err) {
+    wiki.writePage(name, content, user, function(err) {
       if (err) throw err;
       var content = 'hello, world';
-      wiki.writePage(name, content, function(err) {
+      wiki.writePage(name, content, user, function(err) {
         if (err) throw err;
         wiki.getHistory(name, null, function(err, commits) {
           wiki.rollback(name, commits.ids[1], function(err) {
@@ -90,7 +95,10 @@ suite('wiki', function() {
     var name = 'SecondPage';
 
     step(function given() {
-      async.mapSeries(['hello', 'hello, world'], async.apply(wiki.writePage, name), this);
+      var next = this;
+      wiki.writePage(name, 'hello', user, function(err) {
+        wiki.writePage(name, 'hello, world', user, next);
+      });
     }, function when(err) {
       if (err) throw err;
       var next = this;
@@ -109,7 +117,7 @@ suite('wiki', function() {
     var name = 'SecondPage';
     var content = 'hello';
 
-    wiki.writePage(name, content, function(err) {
+    wiki.writePage(name, content, user, function(err) {
       if (err) throw err;
       wiki.search('SecondPage', function(err, result) {
         assert.equal(Object.keys(result).length, 1);
@@ -123,7 +131,7 @@ suite('wiki', function() {
     var name = 'SecondPage';
     var content = 'hello';
 
-    wiki.writePage(name, content, function(err) {
+    wiki.writePage(name, content, user, function(err) {
       if (err) throw err;
       wiki.search('ll', function(err, result) {
         assert.equal(Object.keys(result).length, 1);
@@ -140,7 +148,10 @@ suite('wiki', function() {
     var name = 'SecondPage';
 
     step(function given() {
-      async.mapSeries(['hello', 'hello, world'], async.apply(wiki.writePage, name), this);
+      var next = this;
+      wiki.writePage(name, 'hello', user, function(err) {
+        wiki.writePage(name, 'hello, world', user, next);
+      });
     }, function when(err) {
       if (err) throw err;
       var next = this;
