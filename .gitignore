@@ -4,7 +4,10 @@ node_modules/*
 public/scripts/highlight-c.js
 public/scripts/highlight.js
 public/scripts/showdown.js
+public/scripts/i18n.js
+public/scripts/sprintf.js
 public/stylesheets/zenburn.css
 public/attachment
 nohup.out
 public/locales/*.js
+notes/note.git

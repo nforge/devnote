@@ -6,7 +6,7 @@
 실행방법
 ========
 
-[node.js](http://nodejs.org/) 최신버전을 다운로드 받아 설치
+[node.js](http://nodejs.org/) 최신버전(v0.8.0 이상)을 다운로드 받아 설치
 
 쉘에서 아래의 명령을 실행하여 devnote 설치
 
