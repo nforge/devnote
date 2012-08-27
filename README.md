@@ -1,14 +1,12 @@
 개발자 노트(Devnote)
 ====================
 
-![travis-ci](https://secure.travis-ci.org/nforge/devnote.png?branch=master)
+[![travis-ci](https://secure.travis-ci.org/nforge/devnote.png?branch=master)](http://travis-ci.org//nforge/devnote)
 
 실행방법
 ========
 
-아래 사이트에서 node.js 최신버전을 다운로드 받아 설치
-
-    http://nodejs.org/
+[node.js](http://nodejs.org/) 최신버전을 다운로드 받아 설치
 
 쉘에서 아래의 명령을 실행하여 devnote 설치
 

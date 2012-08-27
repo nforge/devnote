@@ -104,5 +104,9 @@
 	"B": "B",
 	"greetings": "greetings",
 	"welcome greetings": "만나서 반갑습니다.",
-	"Admin": "관리"
+	"Admin": "관리",
+	"Timezone": "시간대",
+	"Current password": "현재 비밀번호",
+	"New password": "새 비밀번호",
+	"Edit user": "사용자 설정 변경"
 }

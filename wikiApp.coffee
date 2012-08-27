@@ -23,7 +23,7 @@ exports.init = (wikiname) ->
       console.log err.message
     else
       data = fs.readFileSync 'frontpage.md'
-      wiki.writePage 'frontpage', data, (err) ->
+      wiki.writePage 'frontpage', data, null, (err) ->
         throw err if err
 
 error404 = (err, req, res, next) ->
@@ -192,7 +192,7 @@ exports.getNew = (req, res) ->
 
 exports.postNew = (req, res) ->
   saveEditedPage = (name, body, callback) ->
-    wiki.writePage name, body, (err, commitId) ->
+    wiki.writePage name, body, req.session.user, (err, commitId) ->
       if req.session.user
         userId = req.session.user.id
         if not lastVisits[userId]
@@ -227,7 +227,7 @@ exports.postNew = (req, res) ->
   body = req.body.body
 
   if originalPageName and (originalPageName != newPageName)
-    wiki.renamePage originalPageName, newPageName, (err) ->
+    wiki.renamePage originalPageName, newPageName, req.session.user, (err) ->
       saveEditedPage newPageName, body, (err) ->
         res.redirect ROOT_PATH + '/pages/' + encodeURIComponent(newPageName)
   else
@@ -235,7 +235,7 @@ exports.postNew = (req, res) ->
       res.redirect ROOT_PATH + '/pages/' + encodeURIComponent(newPageName)
 
 exports.postDelete = (req, res) ->
-  wiki.deletePage req.params.name, (err) ->
+  wiki.deletePage req.params.name, req.session.user, (err) ->
     res.redirect ROOT_PATH + '/pages?deletedPageName=' + req.params.name
 
 exports.postRollback = (req, res) ->
