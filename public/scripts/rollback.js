@@ -1,6 +1,7 @@
 var rollback = {
   init: function(wikiName) {
-    var rollback_handler = function(e) {
+    var $rollbackButton,
+    rollback_handler = function(e) {
       $.post('/api/' + wikiName + '/pages/' + this.name, {
         id: this.id,
         action: 'rollback'
@@ -11,7 +12,7 @@ var rollback = {
         var tbody = '<tbody id="commits">';
         var urlToPages = '/wikis/' + wikiName + '/pages';
         for (var i = 0; i < commits.length; i++) {
-          var date = new Date(commits[i].author.unixtime * 1000)
+          var date = new Date(commits[i].author.unixtime * 1000);
           tbody += '<tr>';
           tbody += '<td>' + commits[i].author.name + '</td>';
           tbody += '<td>' + date + '</td>';
@@ -25,22 +26,22 @@ var rollback = {
           tbody += '<td><a';
           tbody += ' href="#"';
           tbody += ' class="rollback-button"';
-          tbody += ' name=' + name + ';
+          tbody += ' name=' + name;
           tbody += ' id=' + ids[i] + '>';
           tbody += i18n.__('Rollback') + '</a></td>';
           tbody += '</tr>';
         }
         tbody += '</tbody>';
         $('#commits').replaceWith(tbody);
-        $('.rollback-button').unbind('click');
-        $('.rollback-button').click(rollback_handler);
+        $rollbackButton.unbind('click')
+          .click(rollback_handler);
       }, 'json');
-    }
+    };
 
     $(function() {
       i18n.onReady(function() {
-        $('.rollback-button').click(rollback_handler);
+        $rollbackButton = $('.rollback-button').click(rollback_handler);
       });
     });
   }
-}
+};

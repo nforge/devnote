@@ -16,9 +16,9 @@
       var now = Math.round((new Date()).getTime() / 1000);
       var timeoutId = setTimeout(callback, timeout);
       if ( now < deferTime + timeout ){
-        clearTimeout(timeoutId)
+        clearTimeout(timeoutId);
       }
-    }
+    };
 
     // 일정 시간 이내의 call은 캔슬하고 마지막 콜만 남김
     // _.debounce 호환
@@ -38,4 +38,4 @@
           debounceTime = undefined;
         }, waitTime);
       }
-    }
+    };
