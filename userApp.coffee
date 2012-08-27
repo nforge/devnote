@@ -54,6 +54,7 @@ exports.postNew = (req, res) ->
     id: req.body.id,
     name: req.body.name,
     email: req.body.email,
+    timezone: req.body.timezone,
     password: req.body.password
   userInfo = User.findUserById req.body.id
 
