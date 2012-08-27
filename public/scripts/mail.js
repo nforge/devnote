@@ -20,30 +20,30 @@ var guessMailConfig = function() {
       ssl: false,
       tls: true,
       authMethod: 'LOGIN',
-      port: 587,
+      port: 587
     },
     "gmail.com": {
       service: "Gmail",
       host: "smtp.gmail.com",
       ssl: true,
       tls: true,
-      port: 465,
+      port: 465
     },
     "yahoo.com": {
       service: "Yahoo",
       host: "smtp.mail.yahoo.com",
       ssl: true,
       tls: true,
-      port: 465,
+      port: 465
     },
     "hotmail.com": {
       service: "Hotmail",
       host: "smtp.live.com",
       ssl: false,
       tls: true,
-      port: 587,
-    },
-  }
+      port: 587
+    }
+  };
 
   selected = wellknowns[domain];
 
@@ -61,15 +61,15 @@ var guessMailConfig = function() {
     _updateUsingServiceMessage(selected.service);
     lastDomain = domain;
   }
-}
+};
 
 var _clearUsingServiceMessage = function() {
   $("#using-wellknown-service-message").html('');
-}
+};
 
 var _updateUsingServiceMessage = function(service) {
   $("#using-wellknown-service-message").html(i18n.__('Your email will be sent using <b>%s</b>.', service));
-}
+};
 
 // Hide using-wellknown-service-message if configured host differs from selected service's.
 var updateUsingServiceMessage = function() {
@@ -78,23 +78,22 @@ var updateUsingServiceMessage = function() {
   } else {
     _clearUsingServiceMessage();
   }
-}
+};
 
 $(function() {
   i18n.onReady(function() {
+    var $detailed = $('#detailed');
     $("#from").keyup(guessMailConfig);
     $("#host").keyup(updateUsingServiceMessage);
 
-    $("#detailed").on("hide", function() {
+    $detailed.on("hide", function() {
       $("#detailed-toggle-message").text(i18n.__(' If you want to see the detailed configuration and/or fix it, '));
       $("#detailed-toggle-link").text(i18n.__('click here.'));
-    });
-    $("#detailed").on("hidden", function() {
+    }).on("hidden", function() {
       // Don't display #detailed so that tab key ignores it, for user's convenience.
-      $("#detailed").css("display", "none");
-    });
-    $("#detailed").on("show", function() {
-      $("#detailed").css("display", "block");
+      $detailed.css("display", "none");
+    }).on("show", function() {
+      $detailed.css("display", "block");
       $("#detailed-toggle-message").text(i18n.__(" If you want to hide the detailed configuration, "));
       $("#detailed-toggle-link").text(i18n.__('click here.'));
     });
