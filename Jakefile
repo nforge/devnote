@@ -1,7 +1,6 @@
 #!/usr/bin/env jake
 var spawn = require('child_process').spawn;
 var exec  = require('child_process').exec;
-var Mocha = require('mocha');
 var fs = require('fs');
 var util = require('util');
 var async = require('async');
@@ -71,7 +70,6 @@ task('build', function() {
 
         proc.on('exit', function(){
           console.log(green, '....build end');
-          jake.Task['test'].invoke();
         });
         proc.stdout.on('data', function(data){
           console.log(data);
@@ -111,6 +109,7 @@ task('testAll', function(){
 
 desc("mocha test in *nix os - run with node")
 task('testnix', function(){
+  var Mocha = require('mocha');
   var options = {};
   options.timeout = 5000;
   var mocha = new Mocha(options);
@@ -136,6 +135,7 @@ task('testnix', function(){
 
 desc("mocha test in windows - run with node")
 task('testWin', function(){
+  var Mocha = require('mocha');
   var mocha = new Mocha;
   mocha.reporter('spec').ui('tdd');
 
