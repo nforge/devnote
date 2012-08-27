@@ -8,3 +8,6 @@ public/stylesheets/zenburn.css
 public/attachment
 nohup.out
 public/locales/*.js
+notes/*
+public/scripts/i18n.js
+public/scripts/sprintf.js
