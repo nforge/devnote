@@ -101,5 +101,8 @@
 	"Please, create new note.": "Please, create new note.",
 	"Page name": "페이지 이름",
 	"A": "A",
-	"B": "B"
+	"B": "B",
+	"greetings": "greetings",
+	"welcome greetings": "만나서 반갑습니다.",
+	"Admin": "관리"
 }

@@ -32,6 +32,7 @@ html(lang="ko")
             ul
               li: a(href="/wikis/#{encodeURIComponent(wikiName)}/new")= __('New note')
               li: a(href="/wikis/#{encodeURIComponent(wikiName)}/pages")= __('Note list')
+              li: a(href="/wikis/#{encodeURIComponent(wikiName)}/users")= __('Admin')
           div.account
             if user
               span.author: a(href="#")= __('Welcome, %s', user.name)
