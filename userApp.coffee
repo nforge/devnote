@@ -54,6 +54,7 @@ exports.postNew = (req, res) ->
     id: req.body.id,
     name: req.body.name,
     email: req.body.email,
+    timezone: req.body.timezone,
     password: req.body.password
   userInfo = User.findUserById req.body.id
 
@@ -71,7 +72,7 @@ exports.getId = (req, res) ->
 
 exports.postId = (req, res) ->
   targetUser = User.findUserById req.params.id
-  isValid = user.changePassword req.body.previousPassword,
+  isValid = User.changePassword req.body.previousPassword,
     req.body.newPassword, targetUser
   targetUser.email = req.body.email if isValid
   User.save targetUser if isValid
@@ -86,4 +87,3 @@ exports.postDropuser = (req, res) ->
   userInfo = User.findUserById req.body.id
   User.remove({id: req.body.id}) if userInfo
   res.redirect '/wikis/note/users'
-

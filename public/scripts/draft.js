@@ -1,8 +1,8 @@
-var draft = {}
+var draft = {};
 
 var _key = function(name) {
   return prefix + '-' + name;
-}
+};
 
 var existDraft = function(fields) {
   for (var i in fields) {
@@ -12,9 +12,9 @@ var existDraft = function(fields) {
   }
 
   return false;
-}
+};
 
-var _callbackAfterRestoreDraft = function() {}
+var _callbackAfterRestoreDraft = function() {};
 
 var restoreDraft = function(fields) {
   for (var i in fields) {
@@ -30,7 +30,7 @@ var restoreDraft = function(fields) {
   }
 
   _callbackAfterRestoreDraft();
-}
+};
 
 var bindFormAndLocalStorage = function(form, fields) {
   var _bind = function(field) {
@@ -49,7 +49,7 @@ var bindFormAndLocalStorage = function(form, fields) {
         localStorage.setItem(_key(field), $(field).val());
       });
     }
-  }
+  };
 
   for (var i in fields) {
     _bind(fields[i]);
@@ -60,11 +60,11 @@ var bindFormAndLocalStorage = function(form, fields) {
       localStorage.removeItem(_key(fields[i]));
     }
   });
-}
+};
 
 draft.onRestore = function(callback) {
   _callbackAfterRestoreDraft = callback;
-}
+};
 
 draft.init = function(_prefix, form, fields) {
   if (typeof(localStorage) != 'object') {
@@ -95,9 +95,9 @@ draft.init = function(_prefix, form, fields) {
     }
 
     bindFormAndLocalStorage(form, fields);
-  }
+  };
 
   $(function() {
     i18n.onReady(_init);
   });
-}
+};
