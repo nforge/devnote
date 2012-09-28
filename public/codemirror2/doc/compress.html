@@ -1,19 +1,22 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8"/>
     <title>CodeMirror: Compression Helper</title>
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Droid+Sans|Droid+Sans:bold"/>
     <link rel="stylesheet" type="text/css" href="docs.css"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   </head>
   <body>
 
 <h1><span class="logo-braces">{ }</span> <a href="http://codemirror.net/">CodeMirror</a></h1>
 
-<pre class="grey">
-<img src="baboon.png" class="logo" alt="logo"/>/* Script compression
+<div class="grey">
+<img src="baboon.png" class="logo" alt="logo"/>
+<pre>
+/* Script compression
    helper */
 </pre>
+</div>
 
     <p>To optimize loading CodeMirror, especially when including a
     bunch of different modes, it is recommended that you combine and
@@ -27,6 +30,13 @@
       <input type="hidden" id="download" name="download" value="codemirror-compressed.js"/>
       <p>Version: <select id="version" onchange="setVersion(this);" style="padding: 1px">
         <option value="http://codemirror.net/">HEAD</option>
+        <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v3.0beta1;f=">3.0beta1</option>
+        <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.34;f=">2.34</option>
+        <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.33;f=">2.33</option>
+        <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.32;f=">2.32</option>
+        <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.31;f=">2.31</option>
+        <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.3;f=">2.3</option>
+        <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.25;f=">2.25</option>
         <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.24;f=">2.24</option>
         <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.23;f=">2.23</option>
         <option value="http://marijnhaverbeke.nl/git/codemirror2?a=blob_plain;hb=v2.22;f=">2.22</option>
@@ -54,6 +64,7 @@
           <option value="http://codemirror.net/mode/clike/clike.js">clike.js</option>
           <option value="http://codemirror.net/mode/clojure/clojure.js">clojure.js</option>
           <option value="http://codemirror.net/mode/coffeescript/coffeescript.js">coffeescript.js</option>
+          <option value="http://codemirror.net/mode/commonlisp/commonlisp.js">commonlisp.js</option>
           <option value="http://codemirror.net/mode/css/css.js">css.js</option>
           <option value="http://codemirror.net/mode/diff/diff.js">diff.js</option>
           <option value="http://codemirror.net/mode/ecl/ecl.js">ecl.js</option>
@@ -62,6 +73,7 @@
           <option value="http://codemirror.net/mode/go/go.js">go.js</option>
           <option value="http://codemirror.net/mode/groovy/groovy.js">groovy.js</option>
           <option value="http://codemirror.net/mode/haskell/haskell.js">haskell.js</option>
+          <option value="http://codemirror.net/mode/haxe/haxe.js">haxe.js</option>
           <option value="http://codemirror.net/mode/htmlembedded/htmlembedded.js">htmlembedded.js</option>
           <option value="http://codemirror.net/mode/htmlmixed/htmlmixed.js">htmlmixed.js</option>
           <option value="http://codemirror.net/mode/javascript/javascript.js">javascript.js</option>
@@ -71,6 +83,7 @@
           <option value="http://codemirror.net/mode/markdown/markdown.js">markdown.js</option>
           <option value="http://codemirror.net/mode/mysql/mysql.js">mysql.js</option>
           <option value="http://codemirror.net/mode/ntriples/ntriples.js">ntriples.js</option>
+          <option value="http://codemirror.net/mode/ocaml/ocaml.js">ocaml.js</option>
           <option value="http://codemirror.net/mode/pascal/pascal.js">pascal.js</option>
           <option value="http://codemirror.net/mode/perl/perl.js">perl.js</option>
           <option value="http://codemirror.net/mode/php/php.js">php.js</option>
@@ -86,12 +99,14 @@
           <option value="http://codemirror.net/mode/rust/rust.js">rust.js</option>
           <option value="http://codemirror.net/mode/scheme/scheme.js">scheme.js</option>
           <option value="http://codemirror.net/mode/shell/shell.js">shell.js</option>
+          <option value="http://codemirror.net/mode/sieve/sieve.js">sieve.js</option>
           <option value="http://codemirror.net/mode/smalltalk/smalltalk.js">smalltalk.js</option>
           <option value="http://codemirror.net/mode/smarty/smarty.js">smarty.js</option>
           <option value="http://codemirror.net/mode/sparql/sparql.js">sparql.js</option>
           <option value="http://codemirror.net/mode/stex/stex.js">stex.js</option>
           <option value="http://codemirror.net/mode/tiddlywiki/tiddlywiki.js">tiddlywiki.js</option>
           <option value="http://codemirror.net/mode/tiki/tiki.js">tiki.js</option>
+          <option value="http://codemirror.net/mode/vb/vb.js">vb.js</option>
           <option value="http://codemirror.net/mode/vbscript/vbscript.js">vbscript.js</option>
           <option value="http://codemirror.net/mode/velocity/velocity.js">velocity.js</option>
           <option value="http://codemirror.net/mode/verilog/verilog.js">verilog.js</option>
@@ -101,9 +116,11 @@
         </optgroup>
         <optgroup label="Utilities and add-ons">
           <option value="http://codemirror.net/lib/util/overlay.js">overlay.js</option>
+          <option value="http://codemirror.net/lib/util/multiplex.js">multiplex.js</option>
           <option value="http://codemirror.net/lib/util/runmode.js">runmode.js</option>
           <option value="http://codemirror.net/lib/util/simple-hint.js">simple-hint.js</option>
           <option value="http://codemirror.net/lib/util/javascript-hint.js">javascript-hint.js</option>
+          <option value="http://codemirror.net/lib/util/xml-hint.js">xml-hint.js</option>
           <option value="http://codemirror.net/lib/util/foldcode.js">foldcode.js</option>
           <option value="http://codemirror.net/lib/util/dialog.js">dialog.js</option>
           <option value="http://codemirror.net/lib/util/search.js">search.js</option>
