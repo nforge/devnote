@@ -26,7 +26,15 @@ img {
 .CodeMirror {
     border: 1px solid rgb(204, 204, 204);
     border-radius: 2px 2px 2px 2px;
-    padding-right: 4px;
+}
+
+/*
+ * In Edit Page, The preview toggle button should have higher z-index than the
+ * vertical scroll bar on CodeMirror editor. The scroll bar's z-index has been 5
+ * since v2.33.
+ */
+.write button.tog {
+    z-index: 6;
 }
 
 /*
