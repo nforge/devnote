@@ -2,6 +2,7 @@ extends layout
 
 // BODY
 block content
+  fileName = encodeURIComponent(title +',')
   urlToWiki  = joinPath('/wikis', encodeURIComponent(wikiName))
   urlToPages = joinPath('/wikis', encodeURIComponent(wikiName), 'pages')
   urlToPage  = joinPath('/wikis', wikiName, 'pages', title)
@@ -11,7 +12,7 @@ block content
       div.alert.alert-info!= __("This is an old revision of this page, as edited by %s at %s. It may differ significantly from the <a href='%s'>current revision</a>.", page.commit.author.name, new Date(page.commit.author.unixtime * 1000), urlToPage)
 
     if lastVisit
-      urlToDiffSinceLastVisit = urlToPage + '?action=diff&a=' + lastVisit.id + '&b=' + page.commitId
+      urlToDiffSinceLastVisit = urlToPage + '?action=diff&diffA=' + fileName + lastVisit.id + '&diffB=' + fileName + page.commitId
       div.alert.alert-info!= __("Something changed since your last visit, %s. <a href='%s'>Click here</a> to see the difference.", lastVisit.date, urlToDiffSinceLastVisit)
 
     hgroup.page-header
