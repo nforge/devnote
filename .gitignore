@@ -11,3 +11,5 @@ public/locales/*.js
 notes
 public/scripts/i18n.js
 public/scripts/sprintf.js
+.idea
+.gitignore~

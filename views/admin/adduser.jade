@@ -4,7 +4,7 @@ block prepend nav
   selected = 'adduser'
 
 block content
-  form(method="post", action="/wikis/note/users/new").span9.form-horizontal
+  form(method="post", name="adduser", action="#").span9.form-horizontal
     div.page-header
       h1= __('New user')
 
@@ -31,6 +31,22 @@ block content
     div.control-group
       label(for="password").control-label= __('Password')
       div.controls
-        input(type="password", name="password", id="password", placeholder=__("At least 4 characters in length."), required)
+        input(type="password", name="password", id="password", placeholder=__("At least 4 characters in length."))
 
-    button(type="submit").btn.btn-primary: strong= __('Save')
+    button(type="submit", name='submit').btn.btn-primary: strong= __('Save')
+  script(src='/scripts/jquery.js')
+  script(src='/scripts/i18n.js')
+  script(src='/bootstrap/js/bootstrap.js')
+  script(src="/scripts/validate.js")
+  script
+    var passwordPlaceholder = $("#password").attr("placeholder");
+    var validator = new FormValidator('adduser', [{
+      name: 'password',
+      rules: 'required|min_length[4]'
+    }], function(errors, event){
+      if( errors.length > 0 ){
+        $('#password').popover({title: "Too short password", content: passwordPlaceholder ,trigger:'manual'});
+        $('#password').popover('show');
+      }
+    });
+
