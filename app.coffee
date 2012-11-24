@@ -8,6 +8,7 @@
 Module dependencies.
 ###
 util = require 'util'
+devnoteutil = require './lib/util'
 express = require 'express'
 http = require 'http'
 socket = require 'socket.io'
@@ -19,7 +20,6 @@ fileApp = require './fileApp'
 adminApp = require './adminApp'
 workingPage = require './lib/workingpage'
 i18n = require './lib/i18n'
-path = require 'path'
 wiki = require './lib/wiki'
 
 i18n.configure
@@ -51,7 +51,7 @@ io.sockets.on 'connection', (socket)->
             return;
       if result is false
         socket.emit 'dupped', workingPage.findByPageName page.name
-      else 
+      else
         socket.emit 'page name is ok'
 
   socket.on 'disconnect', ->
@@ -92,7 +92,7 @@ app.locals.use (req, res) ->
     res.locals.loginMessage = loginMessage
 
   res.locals.wikiName = WIKINAME
-  res.locals.joinPath = path.join
+  res.locals.joinPath = devnoteutil.join
   res.locals.sprintf = require('./lib/sprintf').sprintf
 
 app.configure 'development', ->
