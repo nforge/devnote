@@ -108,5 +108,6 @@
 	"Timezone": "시간대",
 	"Current password": "현재 비밀번호",
 	"New password": "새 비밀번호",
-	"Edit user": "사용자 설정 변경"
+	"Edit user": "사용자 설정 변경",
+	"얼씨구": "얼씨구"
 }

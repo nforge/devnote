@@ -26,7 +26,7 @@ html(lang="ko")
       // HEADER
       header.nHead
         block header
-          h1: a(href="/") 
+          h1: a(href="/")
             img(src='/images/note-bi.png')
           nav.gnb
             ul
@@ -50,7 +50,7 @@ html(lang="ko")
                 a(href="/login").btn.btn-small
                   i.icon-user
                   = __('Login')
-              a(href="#", title="Feedback").btn.btn-small
+              a(href="/admin/mail?to=nforge@nhn.com", title=__("Feedback"), id="feedback").btn.btn-small
                 i.icon-comment
                 = __('Feedback')
               button(type="button").btn.tog.btn-small
@@ -72,7 +72,7 @@ html(lang="ko")
       footer.nFoot
         block footer
           p.nforge nforge
-          p.nhn 
+          p.nhn
             a(href='http://nhn.com') © NHN Corp
       // /FOOTER
 
@@ -82,5 +82,17 @@ html(lang="ko")
         yepnope({
           test: (typeof jQuery !== 'undefined'),
           yep: '/scripts/custom.js',
-          nope: ['/scripts/jquery.js', '/scripts/custom.js']
+          nope: ['/scripts/jquery.js', '/scripts/custom.js'],
+          complete: function(url, result, key){
+            yepnope({
+              test: ( $().popover === undefined),
+              yep: '/bootstrap/js/bootstrap.js',
+              complete: function(url, result, key){
+                $("#feedback").popover({
+                  content: "개발팀에게 제품에 대한 피드백 보내기",
+                  placement: "bottom"
+                });
+              }
+            });
+          }
         });

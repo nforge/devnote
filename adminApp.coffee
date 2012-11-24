@@ -42,6 +42,7 @@ exports.mail = (req, res) ->
   res.render 'admin/mail.jade'
     notConfigured: !(config.get 'mail')
     title: 'Mail'
+    to: req.query.to
     urls:
       mailConf: '/admin/mailconf'
 
