@@ -60,8 +60,9 @@ history = (name, req, res) ->
     wiki.getHistory name, HISTORY_LIMIT, handler
 
 diff = (name, req, res) ->
-  diffA = req.query.diffA.split ','
-  diffB = req.query.diffB.split ','
+  [diffA, diffB] = [req.query.diffA, req.query.diffB].map (param) ->
+    index = param.lastIndexOf(',')
+    [param.substr(0, index), param.substr(index + 1)]
 
   wiki.diff {filename: diffA[0], rev: diffA[1]}, {filename: diffB[0], rev: diffB[1]}, (err, diff) ->
     if err

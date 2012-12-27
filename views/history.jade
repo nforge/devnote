@@ -44,9 +44,9 @@ block content
               td= commit.author.name
               td= date
               td
-                input(type="radio", name="diffA", value=encodeURIComponent(filename) + ',' + history.ids[index], checked=isFirst)
+                input(type="radio", name="diffA", value=filename + ',' + history.ids[index], checked=isFirst)
               td
-                input(type="radio", name="diffB", value=encodeURIComponent(filename) + ',' + history.ids[index], checked=isFirst)
+                input(type="radio", name="diffB", value=filename + ',' + history.ids[index], checked=isFirst)
               td= commit.message
               td
                 if entry.name
