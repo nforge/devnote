@@ -109,5 +109,7 @@
 	"Current password": "현재 비밀번호",
 	"New password": "새 비밀번호",
 	"Edit user": "사용자 설정 변경",
-	"얼씨구": "얼씨구"
+	"Yes": "예",
+	"No": "아니오",
+    "Are you sure to delete?": "정말로 삭제하시겠습니까?"
 }
