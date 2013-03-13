@@ -68,7 +68,7 @@ diff = (name, req, res) ->
     if err
       error404 err, req, res
     else
-      res.render 'diff'
+      res.render 'diff',
         title: 'Diff'
         name: name
         diff: renderer.diff diff

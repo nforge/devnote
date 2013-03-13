@@ -7,7 +7,7 @@ exports.getUsers = (req, res) ->
     else users req, res
 
 exports.login = (req, res) ->
-  res.render 'user/login'
+  res.render 'user/login',
     title: 'login'
     return_to: req.header('Referrer')
 
@@ -47,7 +47,7 @@ exports.postLogout =  (req, res) ->
   res.redirect req.header('Referrer')
 
 exports.getNew = (req, res) ->
-  res.render 'admin/adduser'
+  res.render 'admin/adduser',
     title: 'new user'
     defaultTimezone: util.convertOffsetToTimezone new Date().getTimezoneOffset()
 
