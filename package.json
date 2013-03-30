@@ -82,6 +82,6 @@
   "scripts": {
     "postinstall": "node node_modules/jake/bin/cli.js build",
     "test"  : "node node_modules/jake/bin/cli.js test",
-    "start" : "node node_modules/coffee-script/bin/coffee app"
+    "start" : "node node_modules/coffee-script/bin/coffee app.coffee"
   }
 }

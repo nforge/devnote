@@ -13,7 +13,7 @@ exports.mailconf = (req, res) ->
   if options.auth
     options.username = options.auth.user
 
-  res.render 'admin/mailconf.jade'
+  res.render 'admin/mailconf.jade',
     options: options
     title: 'Mail Configuration'
 
@@ -39,7 +39,7 @@ exports.postMailconf = (req, res) ->
   res.redirect '/'
 
 exports.mail = (req, res) ->
-  res.render 'admin/mail.jade'
+  res.render 'admin/mail.jade',
     notConfigured: !(config.get 'mail')
     title: 'Mail'
     to: req.query.to
