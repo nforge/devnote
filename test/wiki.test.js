@@ -53,21 +53,25 @@ suite('wiki', function() {
   });
 
   test('사용자는 모든 위키 페이지 목록을 볼 수 있다.', function(done) {
-    step(function given() {
-      wiki.writePage('secondPage', 'hello', user, this);
-    }, function when(err) {
-      if (err) throw err;
-      wiki.getPages(this);
-    }, function then(err, pages) {
-      assert.equal(pages.length, 2);
-      assert.ok(_.any(pages, function(page) {
-        return page.name == 'frontpage';
-      }));
-      assert.ok(_.any(pages, function(page) {
-        return page.name == 'secondPage';
-      }));
-      done();
-    });
+    step(
+        function given() {
+          wiki.writePage('secondPage', 'hello', user, this);
+        },
+        function when(err) {
+          if (err) throw err;
+          wiki.getPages(this);
+        },
+        function then(err, pages) {
+          assert.equal(pages.length, 2);
+          assert.ok(_.any(pages, function(page) {
+            return page.name == 'frontpage';
+          }));
+          assert.ok(_.any(pages, function(page) {
+            return page.name == 'secondPage';
+          }));
+          done();
+        }
+    );
   });
 
   test('사용자는 위키 페이지를 특정 시점으로 되돌릴 수 있다.', function(done) {
