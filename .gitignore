@@ -14,3 +14,4 @@ public/scripts/sprintf.js
 .idea
 .DS*
 .gitignore~
+config.json
