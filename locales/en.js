@@ -57,5 +57,10 @@
 	"Select file to upload": "Select file to upload",
 	"File Attachments": "File Attachments",
 	"File doesn't exist": "File doesn't exist",
-	"Anonymous": "Anonymous"
+	"Anonymous": "Anonymous",
+	"Admin": "Admin",
+	"Are you sure to delete?": "Are you sure to delete?",
+	"Yes": "Yes",
+	"No": "No",
+	"'%s' page has been deleted.": "'%s' page has been deleted."
 }
