@@ -2,12 +2,12 @@ extends layout
 
 // BODY
 block content
-  fileName = encodeURIComponent(title +',')
-  urlToWiki  = joinPath('/wikis', encodeURIComponent(wikiName))
-  urlToPages = joinPath('/wikis', encodeURIComponent(wikiName), 'pages')
-  urlToPage  = joinPath('/wikis', wikiName, 'pages', title)
+    - fileName = encodeURIComponent(title +',')
+    - urlToWiki  = joinPath('/wikis', encodeURIComponent(wikiName))
+    - urlToPages = joinPath('/wikis', encodeURIComponent(wikiName), 'pages')
+    - urlToPage  = joinPath('/wikis', wikiName, 'pages', title)
 
-  article.article
+    article.article
     if page.isOld
       div.alert.alert-info!= __("This is an old revision of this page, as edited by %s at %s. It may differ significantly from the <a href='%s'>current revision</a>.", page.commit.author.name, new Date(page.commit.author.unixtime * 1000), urlToPage)
 
@@ -47,6 +47,6 @@ block content
 
   script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/scripts/keynavi.js")
-  script(type="text/javascript")
+  script(type="text/javascript").
     activateEditKey();
     activateNewKey('#{urlToWiki}/new');

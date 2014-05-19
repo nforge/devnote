@@ -1,7 +1,7 @@
 extends adminLayout
 
 block prepend nav
-  selected = 'mailconf'
+  - selected = 'mailconf'
 
 block content
   form(method="post", action="/admin/mailconf", id="mailForm").span9.form-horizontal
@@ -39,7 +39,7 @@ block content
       div.control-group
         label(name="ssl").control-label= __('SSL')
         div.controls
-          input(type="text", name="ssl", id="ssl", checked=options.ssl, type="checkbox")
+          input(name="ssl", id="ssl", checked=options.ssl, type="checkbox")
 
       div.control-group
         label(name="tls").control-label= __('TLS')

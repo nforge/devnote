@@ -21,7 +21,7 @@ block content
   div(id="preview")
 
   script(type="text/javascript", src="/scripts/jquery.js")
-  script(type="text/javascript")
+  script(type="text/javascript").
     // for using highlight.js both server and client
     var module = module || {}; //This prevents error on 'module.exports' statements
   script(type="text/javascript", src="/scripts/highlight.js")
@@ -35,7 +35,7 @@ block content
   script(type="text/javascript", src="/scripts/sprintf.js")
   script(type="text/javascript", src="/scripts/i18n.js")
   script(type="text/javascript", src="/scripts/draft.js")
-  script(type="text/javascript")
+  script(type="text/javascript").
     var editor = CodeMirror.fromTextArea(document.getElementById("body"), {
       mode: 'markdown',
       lineNumbers: true,

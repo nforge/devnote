@@ -16,7 +16,7 @@ block content
             div.wTitle
               if newPage == false
                 input(type="hidden", name="originalName", value=pageName)
-              input(type="text", id="pagename", name="name", placeholder=__('Title here'), required="", value=pageName)#title
+              input(type="text", name="name", placeholder=__('Title here'), required="", value=pageName)#pagename
             div.wText
               textarea(name="body", placeholder=__('Fill this form'), rows="16", cols="32")#body
                 if typeof body != 'undefined'
@@ -56,7 +56,7 @@ block prepend script
   script(type='text/javascript', src="/scripts/underscore.js")
   script(src='/bootstrap/js/bootstrap.js')
   script(src="/socket.io/socket.io.js")
-  script(type="text/javascript")
+  script(type="text/javascript").
     // for using highlight.js both server and client
     var module = module || {}; //This prevents error on 'module.exports' statements
     // ToDo: Above code will be a problems in someday. Recommend to fix it!
@@ -71,7 +71,7 @@ block prepend script
   script(type="text/javascript", src="/scripts/sprintf.js")
   script(type="text/javascript", src="/scripts/i18n.js")
   script(type="text/javascript", src="/scripts/draft.js")
-  script(type="text/javascript")
+  script(type="text/javascript").
     var editor = CodeMirror.fromTextArea(document.getElementById("body"), {
       mode: 'markdown',
       lineNumbers: true,
@@ -83,16 +83,16 @@ block prepend script
     activateSubmitKey(function(handler) { editor.setOption('onKeyEvent', handler); });
     preview.init($(".CodeMirror"), function() { return editor.getValue(); });
   if newPage
-    script(type="text/javascript")
+    script(type="text/javascript").
       draft.init('n4wiki-new', '#newpost', ['#title', editor]);
       draft.onRestore(preview.update);
       $('#title').focus();
   else
-    script(type="text/javascript")
+    script(type="text/javascript").
       draft.init('n4wiki-edit-' + $('#pagename').val(), '#newpost', [editor]);
       draft.onRestore(preview.update);
       $('#body').focus();
-  script
+  script(type="text/javascript").
     var pageId;
     var socket = io.connect();
     socket.on('connected', function(id){
@@ -123,7 +123,7 @@ block prepend script
       }, 500);
     });
   script(type="text/javascript", src="/scripts/timming.js")
-  script(type="text/javascript")
+  script(type="text/javascript").
     $(function(){
       //JQuery Extension code for insertAtCaret
       $.fn.extend({
@@ -175,7 +175,7 @@ block prepend script
       });
     })
   script(type="text/javascript", src="/scripts/fileupload.js")
-  script
+  script(type="text/javascript").
     //before write post
     $('#newpost').live("submit", function() {
       if( $('#title').val().replace(/ /g, "") == "" ) {

@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', title)
+  - urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', title)
   div.span9.form-horizontal
     div.page-header
       h1= __('History')
@@ -26,19 +26,19 @@ block content
               input(type="submit", value=__('Diff')).btn.btn-info
             th(scope="col",colspan="3")
         tbody(id="history")
-          first = history.ids[0]
-          last = history.ids[history.length - 1]
+          - first = history.ids[0]
+          - last = history.ids[history.length - 1]
           each entry, index in history
-            commit = entry.commit;
-            date = new Date(commit.author.unixtime * 1000)
+            - commit = entry.commit;
+            - date = new Date(commit.author.unixtime * 1000)
             if history.ids[index] == first
-              isFirst = true
+              - isFirst = true
             else
-              isFirst = false
+              - isFirst = false
             if entry.name
-              filename = entry.name
+              - filename = entry.name
             else
-              filename = ''
+              - filename = ''
             tr
               td= filename
               td= commit.author.name
@@ -50,7 +50,7 @@ block content
               td= commit.message
               td
                 if entry.name
-                  urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(entry.name))
+                  - urlToPage = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(entry.name))
                   a(href="#{urlToPage}?rev=#{history.ids[index]}", name=title).label.label-warning= __('Show')
               //- td
               //-   a(href="#", class="rollback-button", name=title, id=history.ids[index]).label= __('Rollback')
@@ -62,5 +62,5 @@ block content
     script(type="text/javascript", src="/scripts/jquery.js")
     script(type="text/javascript", src="/scripts/i18n.js")
     script(type="text/javascript", src="/scripts/rollback.js")
-    script(type="text/javascript")
+    script(type="text/javascript").
       rollback.init('#{wikiName}');

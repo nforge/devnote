@@ -2,8 +2,8 @@ extends layout
 
 // BODY
 block content
-  urlToWiki  = joinPath('/wikis', wikiName)
-  urlToNewPages = joinPath('/wikis', wikiName, 'new')
+  - urlToWiki  = joinPath('/wikis', wikiName)
+  - urlToNewPages = joinPath('/wikis', wikiName, 'new')
 
   article.article
     hgroup.page-header
@@ -17,6 +17,6 @@ block content
 
   script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/scripts/keynavi.js")
-  script(type="text/javascript")
+  script(type="text/javascript").
     activateEditKey();
     activateNewKey('#{urlToWiki}/new');

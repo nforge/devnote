@@ -2,9 +2,10 @@ extends layout
 
 // BODY
 block content
-  urlToWiki  = joinPath('/wikis', encodeURIComponent(wikiName))
-  urlToPages = joinPath('/wikis', encodeURIComponent(wikiName), 'pages')
-  urlToPage  = joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(selectedPageName))
+  - fileName    =joinPath('/wikis', encodeURIComponent(wikiName))
+  - urlToWiki   =joinPath('/wikis', encodeURIComponent(wikiName), 'pages')
+  - urlToPages  =joinPath('/wikis', encodeURIComponent(wikiName), 'pages', encodeURIComponent(selectedPageName))
+  - urlToPage   =joinPath('/wikis', wikiName, 'pages', selectedPageName)
 
   div.row.task
     nav.lnb.span3
@@ -19,7 +20,7 @@ block content
           each page in pages
             li
               a(href="/wikis/#{encodeURIComponent(wikiName)}/pages?selectedPageName=#{encodeURIComponent(page.name)}")
-                date = sprintf("%d.%02d.%02d", page.date.getFullYear(), page.date.getMonth(), page.date.getDate());
+                - date = sprintf("%d.%02d.%02d", page.date.getFullYear(), page.date.getMonth(), page.date.getDate());
                 if selectedPageName == page.name
                     strong= page.name
                       time= date
@@ -57,5 +58,5 @@ block content
   script(type="text/javascript", src="/scripts/jquery.js")
   script(type="text/javascript", src="/scripts/keynavi.js")
   script(type="text/javascript")
-    activateEditKey();
-    activateNewKey('#{urlToWiki}/new');
+    activateEditKey()
+    activateNewKey('#{urlToWiki}/new')

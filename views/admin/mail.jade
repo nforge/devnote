@@ -1,7 +1,7 @@
 extends adminLayout
 
 block prepend nav
-  selected = 'mail'
+  - selected = 'mail'
 
 block content
   form(method="post", action="/admin/mail", id="mailForm").span9.form-horizontal

@@ -1,7 +1,7 @@
 extends adminLayout
 
 block prepend nav
-  selected = 'userlist'
+  - selected = 'userlist'
 
 block content
   form(method="post", action="/wikis/note/user/#{user.id}").span9.form-horizontal

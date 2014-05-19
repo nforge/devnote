@@ -72,28 +72,29 @@ app.configure ->
   app.use express.session()
   app.use express.methodOverride()
   app.use i18n.init
+  # Session-persisted message middleware
+  app.use (req, res, next) ->
+    err = req.session.error
+    loginMessage = req.session.success
+    delete req.session.error
+    #delete req.session.success
+
+    res.locals.user = req.session.user
+
+    res.locals.loginMessage = loginMessage || ''
+    res.locals.wikiName = 'note'
+    if err
+      res.locals.flashMessage = err
+    if loginMessage
+      res.locals.loginMessage = loginMessage
+
+    res.locals.wikiName = WIKINAME
+    res.locals.joinPath = devnoteutil.join
+    res.locals.sprintf = require('./lib/sprintf').sprintf
+    next()
   app.use app.router
   app.use express.logger 'dev'
 
-# Session-persisted message middleware
-app.locals.use (req, res) ->
-  err = req.session.error
-  loginMessage = req.session.success
-  delete req.session.error
-  #delete req.session.success
-
-  res.locals.user = req.session.user
-
-  res.locals.loginMessage = loginMessage || ''
-  res.locals.wikiName = 'note'
-  if err
-    res.locals.flashMessage = err
-  if loginMessage
-    res.locals.loginMessage = loginMessage
-
-  res.locals.wikiName = WIKINAME
-  res.locals.joinPath = devnoteutil.join
-  res.locals.sprintf = require('./lib/sprintf').sprintf
 
 app.configure 'development', ->
   app.use express.static __dirname + '/public'

@@ -1,7 +1,7 @@
 extends adminLayout
 
 block prepend nav
-  selected = 'adduser'
+  - selected = 'adduser'
 
 block content
   form(method="post", name="adduser", action="#").span9.form-horizontal
@@ -38,7 +38,7 @@ block content
   script(src='/scripts/i18n.js')
   script(src='/bootstrap/js/bootstrap.js')
   script(src="/scripts/validate.js")
-  script
+  script(type="text/javascript").
     var passwordPlaceholder = $("#password").attr("placeholder");
     var validator = new FormValidator('adduser', [{
       name: 'password',

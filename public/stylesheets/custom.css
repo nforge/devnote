@@ -183,7 +183,7 @@ input[type="submit"].btn {
 .lnb strong{display:block;padding:10px 8px 10px 0;text-decoration:none;color:#666}
 .lnb li strong{position:relative;color:#111;font-weight:bold}
 .lnb li strong:after{content:"";display:block;position:absolute;top:19px;right:0;border:3px solid #fff;border-left-color:#111;border-right:0;margin:-3px 0 0 0}
-.lnb li time{font-size:10px;color:#999;font-weight:normal}
+.lnb li time{font-size:10px;color:#999;font-weight:normal;margin-left: 10px}
 .task{padding:20px 0 0 0}
 .task .page-header{margin-top:0;padding-top:12px}
 .task .page-header h1{font-size:20px}

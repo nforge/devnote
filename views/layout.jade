@@ -1,4 +1,4 @@
-!!!5
+doctype html
 html(lang="ko")
   head
     meta(charset="utf-8")
@@ -78,7 +78,7 @@ html(lang="ko")
 
     block script
       script(src='/scripts/yepnope.js')
-      script
+      script(type='text/javascript').
         yepnope({
           test: (typeof jQuery !== 'undefined'),
           yep: '/scripts/custom.js',
