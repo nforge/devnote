@@ -1,7 +1,7 @@
 개발자 노트(Devnote)
 ====================
 
-[![travis-ci](https://secure.travis-ci.org/nforge/devnote.png?branch=master)](http://travis-ci.org//nforge/devnote)
+[![travis-ci](https://secure.travis-ci.org/nforge/devnote.png?branch=master)](http://travis-ci.org/nforge/devnote)
 
 > 분산형 문서작성 환경: 개발자노트(DEVNOTE)
 >
